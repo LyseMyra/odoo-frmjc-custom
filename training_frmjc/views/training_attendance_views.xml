@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_training_attendance_list" model="ir.ui.view">
+        <field name="name">training.attendance.list</field>
+        <field name="model">training.attendance</field>
+        <field name="arch" type="xml">
+            <list string="Présences"
+                  decoration-success="statut == 'present'"
+                  decoration-danger="statut == 'absent'"
+                  decoration-warning="statut == 'a_confirmer'"
+                  decoration-muted="statut == 'justifie'">
+                <field name="partner_id" string="Stagiaire"/>
+                <field name="session_id" string="Session"/>
+                <field name="date"/>
+                <field name="demi_journee"/>
+                <field name="heures"/>
+                <field name="statut" widget="badge"/>
+                <field name="intervenant_id" optional="show"/>
+                <field name="confirme_le" optional="hide"/>
+                <field name="valide_intervenant" string="✓ Intervenant" optional="show"/>
+                <field name="est_valide" string="Validée" optional="show"/>
+                <button name="action_marquer_present" string="Présent" type="object"
+                        class="btn-sm btn-success"
+                        invisible="statut != 'a_confirmer' and statut != 'absent'"/>
+                <button name="action_marquer_absent" string="Absent" type="object"
+                        class="btn-sm btn-danger"
+                        invisible="statut != 'a_confirmer'"/>
+                <button name="action_justifier" string="Justifier" type="object"
+                        class="btn-sm btn-warning"
+                        invisible="statut != 'absent'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_training_attendance_form" model="ir.ui.view">
+        <field name="name">training.attendance.form</field>
+        <field name="model">training.attendance</field>
+        <field name="arch" type="xml">
+            <form string="Présence">
+                <header>
+                    <button name="action_marquer_present" string="Marquer présent(e)"
+                            type="object" class="btn-primary"
+                            invisible="statut not in ('a_confirmer', 'absent')"/>
+                    <button name="action_marquer_absent" string="Marquer absent(e)"
+                            type="object"
+                            invisible="statut != 'a_confirmer'"/>
+                    <button name="action_justifier" string="Absence justifiée"
+                            type="object" class="btn-warning"
+                            invisible="statut != 'absent'"/>
+                    <field name="statut" widget="statusbar"
+                           statusbar_visible="a_confirmer,present,absent,justifie"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group string="Identification">
+                            <field name="inscription_id"/>
+                            <field name="partner_id" readonly="1"/>
+                            <field name="session_id" readonly="1"/>
+                        </group>
+                        <group string="Date et horaire">
+                            <field name="date"/>
+                            <field name="demi_journee"/>
+                            <field name="heures"/>
+                            <field name="mois_annee" readonly="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Confirmation portail">
+                            <field name="confirme_le" readonly="1"/>
+                            <field name="signature" widget="image" invisible="not signature"/>
+                        </group>
+                        <group string="Confirmation intervenant">
+                            <field name="intervenant_id"/>
+                            <field name="valide_intervenant"/>
+                            <field name="valide_intervenant_le" readonly="1"/>
+                            <field name="est_valide" readonly="1"/>
+                            <field name="note_formateur"/>
+                        </group>
+                    </group>
+                    <group string="Absence / justificatif" invisible="statut not in ('absent', 'justifie')">
+                        <field name="motif_absence"/>
+                        <field name="justificatif" widget="binary"/>
+                        <field name="justificatif_filename"/>
+                        <field name="date_justificatif"/>
+                        <field name="relance_envoyee" readonly="1"/>
+                        <field name="date_relance" readonly="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_training_attendance_search" model="ir.ui.view">
+        <field name="name">training.attendance.search</field>
+        <field name="model">training.attendance</field>
+        <field name="arch" type="xml">
+            <search string="Présences">
+                <field name="partner_id" string="Stagiaire"/>
+                <field name="session_id"/>
+                <field name="date"/>
+                <field name="mois_annee" string="Mois (YYYY-MM)"/>
+                <filter name="a_confirmer" string="À confirmer"
+                        domain="[('statut','=','a_confirmer')]"/>
+                <filter name="present" string="Présents"
+                        domain="[('statut','=','present')]"/>
+                <filter name="absent" string="Absents"
+                        domain="[('statut','=','absent')]"/>
+                <filter name="non_justifie" string="Absences non justifiées"
+                        domain="[('statut','=','absent'),('motif_absence','=',False)]"/>
+                <separator/>
+                <filter name="group_session" string="Par session"
+                        context="{'group_by': 'session_id'}"/>
+                <filter name="group_stagiaire" string="Par stagiaire"
+                        context="{'group_by': 'partner_id'}"/>
+                <filter name="group_date" string="Par date"
+                        context="{'group_by': 'date'}"/>
+                <filter name="group_mois" string="Par mois"
+                        context="{'group_by': 'mois_annee'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_training_attendance" model="ir.actions.act_window">
+        <field name="name">Présences</field>
+        <field name="res_model">training.attendance</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_training_attendance_search"/>
+        <field name="context">{'search_default_a_confirmer': 1}</field>
+    </record>
+
+    <record id="action_training_attendance_absences" model="ir.actions.act_window">
+        <field name="name">Absences à traiter</field>
+        <field name="res_model">training.attendance</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_training_attendance_search"/>
+        <field name="domain">[('statut','=','absent')]</field>
+        <field name="context">{'search_default_non_justifie': 1}</field>
+    </record>
+
+</odoo>

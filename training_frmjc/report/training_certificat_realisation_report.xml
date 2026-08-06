@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Rapport lié à training.inscription (attestation de complétion de la formation) -->
+    <record id="report_certificat_realisation" model="ir.actions.report">
+        <field name="name">Certificat de réalisation</field>
+        <field name="model">training.inscription</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">training_frmjc.tmpl_certificat_realisation</field>
+        <field name="report_file">training_frmjc.tmpl_certificat_realisation</field>
+        <field name="binding_model_id" ref="model_training_inscription"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="training_frmjc.paperformat_frmjc_a4"/>
+    </record>
+
+    <template id="tmpl_certificat_realisation">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+
+                        <t t-set="mois_fr" t-value="{1:'janvier',2:'février',3:'mars',4:'avril',5:'mai',6:'juin',7:'juillet',8:'août',9:'septembre',10:'octobre',11:'novembre',12:'décembre'}"/>
+                        <t t-set="session" t-value="doc.session_id"/>
+                        <t t-set="hab" t-value="session.habilitation_id"/>
+                        <t t-set="signataire" t-value="session.signataire_nom or session.responsable_id.name or '…'"/>
+                        <t t-set="titre_sign" t-value="session.signataire_titre or 'Directrice / Directeur'"/>
+                        <t t-set="structure" t-value="doc.structure_accueil_id.name if doc.structure_accueil_id else (doc.structure_accueil or '')"/>
+                        <t t-set="today" t-value="context_timestamp(datetime.datetime.now())"/>
+
+                        <!-- Titre dans encadré -->
+                        <div style="border-left:4px solid #333; background:#f8f8f8; padding:.7rem 1.2rem; margin-bottom:1.5rem;">
+                            <h2 style="margin:0; font-size:1.2rem; font-weight:bold; letter-spacing:.5px;">
+                                CERTIFICAT DE RÉALISATION
+                            </h2>
+                        </div>
+
+                        <!-- Corps principal -->
+                        <p style="margin-bottom:.8rem; text-align:justify;">
+                            Je soussigné(e) <strong><t t-esc="signataire"/></strong>,
+                            <t t-esc="titre_sign"/>, représentante légale de l'organisme de formation
+                            <strong>FRMJC Bretagne - Pays de la Loire</strong>, certifie que :
+                        </p>
+
+                        <p style="text-align:center; margin-bottom:1.2rem;">
+                            <t t-esc="doc.partner_id.name"/>
+                            <t t-if="structure">
+                                alternant·e de la structure
+                                <strong><t t-esc="structure"/></strong>
+                            </t>
+                            a suivi l'action de formation intitulée :
+                        </p>
+
+                        <!-- Formation encadrée -->
+                        <div style="text-align:center; margin-bottom:1.5rem;">
+                            <p style="font-size:1.15rem; font-weight:bold; margin:0 0 .3rem 0; letter-spacing:.5px;">
+                                <t t-esc="(hab.type_formation or '').upper()"/>
+                            </p>
+                            <t t-if="hab.specialite">
+                                <p style="font-size:.95rem; letter-spacing:.5px; text-transform:uppercase; margin:0 0 .2rem 0;">
+                                    Spécialité <t t-esc="hab.specialite"/>
+                                </p>
+                            </t>
+                            <t t-if="hab.mention">
+                                <p style="font-size:.95rem; letter-spacing:.5px; text-transform:uppercase; margin:0;">
+                                    Mention <t t-esc="hab.mention"/>
+                                </p>
+                            </t>
+                        </div>
+
+                        <!-- Informations clés -->
+                        <p style="margin:.4rem 0;">
+                            <strong>Dates de la formation :</strong>
+                            <t t-if="session.date_debut and session.date_fin">
+                                du <t t-esc="session.date_debut.strftime('%d/%m/%Y')"/>
+                                au <t t-esc="session.date_fin.strftime('%d/%m/%Y')"/>
+                            </t>
+                        </p>
+                        <t t-if="session.volume_heures_prevues">
+                            <p style="margin:.4rem 0;">
+                                <strong>Durée de la formation :</strong>
+                                <t t-esc="int(session.volume_heures_prevues)"/> heures
+                            </p>
+                        </t>
+                        <p style="margin:.4rem 0;">
+                            <strong>Lieu de la formation :</strong>
+                            <t t-esc="session.lieu_formation or 'En itinérance'"/>
+                        </p>
+                        <t t-if="session.nature_action">
+                            <p style="margin:.4rem 0 1.5rem 0;">
+                                Nature de l'action de formation :
+                                <strong><t t-esc="session.nature_action"/></strong>
+                            </p>
+                        </t>
+
+                        <!-- Texte légal -->
+                        <p style="text-align:justify; margin-bottom:.8rem;">
+                            Les documents et éléments ayant servi à l'établissement du présent certificat
+                            sont les suivants : feuilles d'émargement ou tout document justifiant de la
+                            participation effective du bénéficiaire (émargements numériques, captures
+                            d'écran...).
+                        </p>
+                        <p style="text-align:justify; margin-bottom:2rem;">
+                            Sans préjudice des délais imposés par les règles fiscales, comptables ou
+                            commerciales, je m'engage à conserver l'ensemble des pièces justificatives
+                            qui ont permis d'établir le présent certificat pendant une durée de 3 ans à
+                            compter de la fin de l'année du dernier paiement. En cas de cofinancement des
+                            fonds européens la durée de conservation est étendue conformément aux
+                            obligations conventionnelles spécifiques.
+                        </p>
+
+                        <!-- Signature -->
+                        <p>
+                            Fait à Rennes, le
+                            <t t-esc="today.day"/>
+                            <t t-esc="mois_fr.get(today.month, '')"/>
+                            <t t-esc="today.year"/>
+                        </p>
+                        <div style="text-align:right; margin-top:1.5rem;">
+                            <p style="margin:0;"><t t-esc="signataire"/></p>
+                        </div>
+
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

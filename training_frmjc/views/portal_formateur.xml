@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ── Page de confirmation de présence — intervenant ── -->
+    <template id="portal_formateur_presences" name="Présences — Intervenant">
+        <t t-call="web.layout">
+            <t t-set="head">
+                <title>Liste de présence</title>
+                <style>
+                    body { background: #f4f6f9; }
+                    .frmjc-card { max-width: 760px; margin: 2rem auto; }
+                    .frmjc-header { background: #1a5276; color: #fff; padding: 1.2rem 1.5rem; border-radius: .5rem .5rem 0 0; }
+                    .frmjc-header h4 { margin: 0; font-size: 1.3rem; }
+                    .frmjc-meta { font-size: .9rem; opacity: .85; margin-top: .3rem; }
+                    .frmjc-body { background: #fff; border: 1px solid #dee2e6; border-top: none; padding: 1.5rem; border-radius: 0 0 .5rem .5rem; }
+                    .presence-row td { vertical-align: middle; }
+                    .radio-group label { cursor: pointer; margin-right: 1rem; white-space: nowrap; }
+                    .radio-group input { margin-right: .3rem; }
+                    .badge-confirme { background: #27ae60; color: #fff; padding: .2em .6em; border-radius: .3rem; font-size: .85rem; }
+                    .badge-absent { background: #c0392b; color: #fff; padding: .2em .6em; border-radius: .3rem; font-size: .85rem; }
+                    .badge-attente { background: #f39c12; color: #fff; padding: .2em .6em; border-radius: .3rem; font-size: .85rem; }
+                    .note-input { width: 100%; font-size: .85rem; padding: .25rem .5rem; border: 1px solid #ced4da; border-radius: .3rem; }
+                    .btn-valider { background: #1a5276; color: #fff; border: none; padding: .7rem 2rem; font-size: 1rem; border-radius: .4rem; cursor: pointer; }
+                    .btn-valider:hover { background: #154360; }
+                    .alert-info-frmjc { background: #d6eaf8; border-left: 4px solid #1a5276; padding: .8rem 1rem; border-radius: .3rem; margin-bottom: 1rem; font-size: .9rem; }
+                </style>
+            </t>
+            <div class="frmjc-card">
+                <div class="frmjc-header">
+                    <h4>Liste de présence</h4>
+                    <div class="frmjc-meta">
+                        <t t-esc="fj.session_id.name"/> —
+                        <t t-esc="fj.date.strftime('%A %d %B %Y').capitalize()"/>
+                    </div>
+                </div>
+                <div class="frmjc-body">
+
+                    <t t-if="already_confirmed">
+                        <div class="alert-info-frmjc">
+                            ℹ Vous avez déjà soumis cette liste le
+                            <strong><t t-esc="fj.confirme_le.strftime('%d/%m/%Y à %H:%M')"/></strong>.
+                            Vous pouvez modifier et resoumettre si nécessaire.
+                        </div>
+                    </t>
+
+                    <p>
+                        <strong>Intervenant :</strong> <t t-esc="fj.intervenant_id.name"/>
+                    </p>
+
+                    <t t-if="not attendances">
+                        <p style="color:#777;">Aucun stagiaire trouvé pour cette journée.</p>
+                    </t>
+                    <t t-else="">
+                        <form t-att-action="'/formation/formateur/%s/valider' % fj.token" method="POST">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+
+                            <table style="width:100%; border-collapse:collapse; margin-bottom:1rem;">
+                                <thead>
+                                    <tr style="background:#eaf0fb; text-align:left;">
+                                        <th style="padding:.6rem .8rem; border-bottom:2px solid #dee2e6;">Stagiaire</th>
+                                        <th style="padding:.6rem .8rem; border-bottom:2px solid #dee2e6;">Demi-journée</th>
+                                        <th style="padding:.6rem .8rem; border-bottom:2px solid #dee2e6;">Statut stagiaire</th>
+                                        <th style="padding:.6rem .8rem; border-bottom:2px solid #dee2e6;">Votre confirmation</th>
+                                        <th style="padding:.6rem .8rem; border-bottom:2px solid #dee2e6;">Note (optionnel)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="attendances" t-as="att">
+                                        <tr class="presence-row" style="border-bottom:1px solid #f0f0f0;">
+                                            <td style="padding:.6rem .8rem; font-weight:500;">
+                                                <t t-esc="att.partner_id.name"/>
+                                            </td>
+                                            <td style="padding:.6rem .8rem;">
+                                                <t t-if="att.demi_journee == 'matin'">Matin</t>
+                                                <t t-else="">Après-midi</t>
+                                            </td>
+                                            <td style="padding:.6rem .8rem;">
+                                                <t t-if="att.statut == 'present'">
+                                                    <span class="badge-confirme">Présent(e)</span>
+                                                </t>
+                                                <t t-elif="att.statut == 'absent'">
+                                                    <span class="badge-absent">Absent(e)</span>
+                                                </t>
+                                                <t t-elif="att.statut == 'justifie'">
+                                                    <span class="badge-absent">Justifié(e)</span>
+                                                </t>
+                                                <t t-else="">
+                                                    <span class="badge-attente">À confirmer</span>
+                                                </t>
+                                            </td>
+                                            <td style="padding:.6rem .8rem;">
+                                                <div class="radio-group">
+                                                    <label>
+                                                        <input type="radio"
+                                                               t-att-name="'presence_%d' % att.id"
+                                                               value="present"
+                                                               t-att-checked="att.statut == 'present' and 'checked' or None"/>
+                                                        ✓ Présent(e)
+                                                    </label>
+                                                    <label>
+                                                        <input type="radio"
+                                                               t-att-name="'presence_%d' % att.id"
+                                                               value="absent"
+                                                               t-att-checked="att.statut in ('absent', 'justifie') and 'checked' or None"/>
+                                                        ✗ Absent(e)
+                                                    </label>
+                                                </div>
+                                            </td>
+                                            <td style="padding:.6rem .8rem;">
+                                                <input type="text"
+                                                       t-att-name="'note_%d' % att.id"
+                                                       t-att-value="att.note_formateur or ''"
+                                                       class="note-input"
+                                                       placeholder="Observation..."/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+
+                            <div style="text-align:right; margin-top:1rem;">
+                                <button type="submit" class="btn-valider">
+                                    Valider la liste de présence
+                                </button>
+                            </div>
+                        </form>
+                    </t>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- ── Page de confirmation envoyée ── -->
+    <template id="portal_formateur_confirme" name="Confirmation envoyée — Intervenant">
+        <t t-call="web.layout">
+            <t t-set="head">
+                <title>Présences enregistrées</title>
+                <style>
+                    body { background: #f4f6f9; }
+                    .frmjc-card { max-width: 540px; margin: 4rem auto; background: #fff; border-radius: .5rem; box-shadow: 0 2px 12px rgba(0,0,0,.1); padding: 3rem 2rem; text-align: center; }
+                    .check-icon { font-size: 3.5rem; color: #27ae60; margin-bottom: 1rem; }
+                    h3 { color: #1a5276; }
+                    .sub { color: #666; margin-top: .5rem; }
+                </style>
+            </t>
+            <div class="frmjc-card">
+                <div class="check-icon">✓</div>
+                <h3>Présences enregistrées</h3>
+                <p class="sub">
+                    Vos confirmations pour le
+                    <strong><t t-esc="fj.date.strftime('%d/%m/%Y')"/></strong>
+                    (<t t-esc="fj.session_id.name"/>)
+                    ont bien été prises en compte.
+                </p>
+                <p style="margin-top:1rem; font-size:.9rem; color:#888;">
+                    <t t-esc="nb_confirmes"/> présence(s) confirmée(s) sur <t t-esc="nb_total"/> demi-journée(s).
+                </p>
+            </div>
+        </t>
+    </template>
+
+</odoo>

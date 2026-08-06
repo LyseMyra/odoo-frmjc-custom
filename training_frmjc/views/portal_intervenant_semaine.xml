@@ -1,0 +1,448 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="portal_intervenant_semaine" name="Présences hebdomadaires — Intervenant">
+        <t t-call="web.layout">
+            <t t-set="head">
+                <title>Listes de présence</title>
+                <style>
+                    body { background: #f4f6f9; font-family: 'Segoe UI', Arial, sans-serif; }
+                    .frmjc-wrap { max-width: 820px; margin: 2rem auto; padding: 0 1rem; }
+                    .frmjc-header {
+                        background: #1a5276; color: #fff;
+                        padding: 1.2rem 1.5rem;
+                        border-radius: .5rem .5rem 0 0;
+                    }
+                    .frmjc-header h4 { margin: 0; font-size: 1.3rem; }
+                    .frmjc-meta { font-size: .9rem; opacity: .85; margin-top: .3rem; }
+                    .frmjc-body {
+                        background: #fff;
+                        border: 1px solid #dee2e6; border-top: none;
+                        padding: 1.5rem;
+                        border-radius: 0 0 .5rem .5rem;
+                    }
+                    /* Blocs demi-journée */
+                    .dj-block {
+                        border: 1px solid #dee2e6;
+                        border-radius: .4rem;
+                        margin-bottom: 1rem;
+                        overflow: hidden;
+                    }
+                    .dj-header {
+                        display: flex; align-items: center; gap: .8rem;
+                        padding: .7rem 1rem;
+                        background: #eaf0fb;
+                        font-weight: 600;
+                    }
+                    .dj-header.active { background: #d5f5e3; }
+                    .dj-header.past   { background: #f5f5f5; color: #888; }
+                    .dj-header.signed { background: #d5f5e3; }
+                    .dj-body { padding: 1rem; }
+                    /* Badges */
+                    .badge-signe   { background: #27ae60; color: #fff; padding: .2em .7em; border-radius: .3rem; font-size: .82rem; }
+                    .badge-attente { background: #f39c12; color: #fff; padding: .2em .7em; border-radius: .3rem; font-size: .82rem; }
+                    .badge-locked  { background: #aaa;    color: #fff; padding: .2em .7em; border-radius: .3rem; font-size: .82rem; }
+                    .badge-future  { background: #bdc3c7; color: #fff; padding: .2em .7em; border-radius: .3rem; font-size: .82rem; }
+                    /* Tableau présences */
+                    .att-table { width: 100%; border-collapse: collapse; margin-bottom: .8rem; font-size: .9rem; }
+                    .att-table th { background: #eaf0fb; padding: .5rem .7rem; text-align: left; border-bottom: 2px solid #dee2e6; }
+                    .att-table td { padding: .5rem .7rem; border-bottom: 1px solid #f0f0f0; vertical-align: middle; }
+                    .radio-grp label { cursor: pointer; margin-right: .8rem; white-space: nowrap; }
+                    .radio-grp input { margin-right: .3rem; }
+                    /* Signature */
+                    .sig-zone { border: 1px solid #dee2e6; border-radius: .4rem; padding: 1rem; background: #fafafa; }
+                    canvas.sig-pad {
+                        border: 2px solid #ced4da; border-radius: .4rem;
+                        cursor: crosshair; touch-action: none;
+                        width: 100%; max-width: 500px; height: 150px;
+                        display: block; margin: .5rem auto;
+                    }
+                    .btn-valider {
+                        background: #1a5276; color: #fff; border: none;
+                        padding: .65rem 1.8rem; font-size: 1rem;
+                        border-radius: .4rem; cursor: pointer; margin-top: .5rem;
+                    }
+                    .btn-valider:hover { background: #154360; }
+                    .btn-effacer {
+                        background: none; border: 1px solid #ced4da;
+                        padding: .3rem .9rem; border-radius: .3rem;
+                        cursor: pointer; font-size: .85rem; margin-top: .3rem;
+                    }
+                    /* Signature image */
+                    .sig-img { max-width: 200px; border: 1px solid #dee2e6; border-radius: .3rem; }
+                    /* Alert */
+                    .alert-success {
+                        background: #d5f5e3; border-left: 4px solid #27ae60;
+                        padding: .8rem 1rem; border-radius: .3rem;
+                        margin-bottom: 1rem; font-size: .9rem;
+                    }
+                    .alert-info {
+                        background: #d6eaf8; border-left: 4px solid #1a5276;
+                        padding: .8rem 1rem; border-radius: .3rem;
+                        margin-bottom: 1rem; font-size: .9rem;
+                    }
+                    .locked-msg { color: #999; font-style: italic; padding: .5rem 0; font-size: .88rem; }
+                    .future-msg { color: #bbb; font-style: italic; padding: .5rem 0; font-size: .88rem; }
+                </style>
+            </t>
+
+            <div class="frmjc-wrap">
+                <div class="frmjc-header">
+                    <h4>Listes de présence</h4>
+                    <div class="frmjc-meta">
+                        <t t-esc="semaine.session_id.name"/> —
+                        <t t-esc="semaine.intervenant_id.name"/> —
+                        Semaine du <t t-esc="semaine.week_start.strftime('%d/%m/%Y')"/>
+                    </div>
+                </div>
+
+                <div class="frmjc-body">
+
+                    <t t-if="signed_id">
+                        <div class="alert-success">
+                            ✅ La demi-journée a bien été signée. Vous pouvez revenir
+                            ici à la prochaine demi-journée pour la valider.
+                        </div>
+                    </t>
+
+                    <div class="alert-info">
+                        ℹ Seule la demi-journée <strong>en cours</strong> est active
+                        (matin jusqu'à 13h, après-midi à partir de 13h). Les autres
+                        sont affichées en lecture seule.
+                    </div>
+
+                    <t t-foreach="djs_data" t-as="item">
+                        <t t-set="dj"  t-value="item['dj']"/>
+                        <t t-set="atts" t-value="item['attendances']"/>
+                        <t t-set="is_active" t-value="item['is_active']"/>
+                        <t t-set="is_past"   t-value="item['is_past']"/>
+                        <t t-set="is_signed" t-value="dj.statut == 'signe'"/>
+                        <t t-set="dj_label"  t-value="'Matin' if dj.demi_journee == 'matin' else 'Après-midi'"/>
+                        <t t-set="date_str"  t-value="dj.date.strftime('%A %d %B').capitalize()"/>
+
+                        <div class="dj-block">
+
+                            <!-- En-tête du bloc -->
+                            <div t-attf-class="dj-header #{is_active and 'active' or (is_signed and 'signed' or (is_past and 'past' or ''))}">
+                                <span>
+                                    <t t-esc="date_str"/> — <t t-esc="dj_label"/>
+                                </span>
+                                <t t-if="is_signed">
+                                    <span class="badge-signe">Signé ✓</span>
+                                </t>
+                                <t t-elif="is_active">
+                                    <span class="badge-attente">⚡ En cours</span>
+                                </t>
+                                <t t-elif="is_past">
+                                    <span class="badge-locked">Délai dépassé</span>
+                                </t>
+                                <t t-else="">
+                                    <span class="badge-future">À venir</span>
+                                </t>
+                            </div>
+
+                            <!-- Corps du bloc -->
+                            <div class="dj-body">
+
+                                <!-- Demi-journée ACTIVE : formulaire complet -->
+                                <t t-if="is_active">
+                                    <form t-att-action="'/formation/intervenant/%s/valider/%d' % (semaine.token, dj.id)"
+                                          method="POST">
+                                        <input type="hidden" name="csrf_token"
+                                               t-att-value="request.csrf_token()"/>
+                                        <t t-set="sig_input_id"
+                                           t-value="'sig-data-%d' % dj.id"/>
+                                        <t t-set="canvas_id"
+                                           t-value="'sig-pad-%d' % dj.id"/>
+                                        <input type="hidden" t-att-name="'signature_data'"
+                                               t-att-id="sig_input_id"/>
+
+                                        <t t-if="atts">
+                                            <table class="att-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Stagiaire</th>
+                                                        <th>Statut actuel</th>
+                                                        <th>Confirmation</th>
+                                                        <th>Note (optionnel)</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <t t-foreach="atts" t-as="att">
+                                                        <tr>
+                                                            <td style="font-weight:500;">
+                                                                <t t-esc="att.partner_id.name"/>
+                                                            </td>
+                                                            <td>
+                                                                <t t-if="att.statut == 'present'">✓ Présent(e)</t>
+                                                                <t t-elif="att.statut == 'absent'">✗ Absent(e)</t>
+                                                                <t t-elif="att.statut == 'justifie'">⚠ Justifié(e)</t>
+                                                                <t t-else="">En attente</t>
+                                                            </td>
+                                                            <td>
+                                                                <div class="radio-grp">
+                                                                    <label>
+                                                                        <input type="radio"
+                                                                               t-att-name="'presence_%d' % att.id"
+                                                                               value="present"
+                                                                               t-att-checked="att.statut == 'present' and 'checked' or None"/>
+                                                                        ✓ Présent(e)
+                                                                    </label>
+                                                                    <label>
+                                                                        <input type="radio"
+                                                                               t-att-name="'presence_%d' % att.id"
+                                                                               value="absent"
+                                                                               t-att-checked="att.statut in ('absent', 'justifie') and 'checked' or None"/>
+                                                                        ✗ Absent(e)
+                                                                    </label>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <input type="text"
+                                                                       t-att-name="'note_%d' % att.id"
+                                                                       t-att-value="att.note_formateur or ''"
+                                                                       style="width:100%;font-size:.85rem;padding:.2rem .4rem;border:1px solid #ced4da;border-radius:.3rem;"
+                                                                       placeholder="Observation..."/>
+                                                            </td>
+                                                        </tr>
+                                                    </t>
+                                                </tbody>
+                                            </table>
+                                        </t>
+                                        <t t-else="">
+                                            <p style="color:#888;font-style:italic;">
+                                                Aucun stagiaire trouvé pour cette demi-journée.
+                                            </p>
+                                        </t>
+
+                                        <div class="sig-zone mt-3">
+                                            <p style="font-weight:600;margin:0 0 .4rem 0;">
+                                                Votre signature
+                                            </p>
+                                            <p style="font-size:.85rem;color:#666;margin:0 0 .4rem 0;">
+                                                Signez dans le cadre ci-dessous (souris ou doigt)
+                                            </p>
+                                            <canvas t-att-id="canvas_id" class="sig-pad"/>
+                                            <div style="text-align:center;margin-top:.3rem;">
+                                                <button type="button"
+                                                        t-att-onclick="'clearSig(%d)' % dj.id"
+                                                        class="btn-effacer">
+                                                    Effacer
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <button type="submit"
+                                                t-att-onclick="'return captureSig(%d)' % dj.id"
+                                                class="btn-valider">
+                                            ✅ Valider et signer cette demi-journée
+                                        </button>
+                                    </form>
+                                </t>
+
+                                <!-- Demi-journée SIGNÉE : liste complète + téléchargement -->
+                                <t t-elif="is_signed">
+                                    <t t-set="atts_presents"   t-value="atts.filtered(lambda a: a.statut == 'present')"/>
+                                    <t t-set="atts_attente"    t-value="atts.filtered(lambda a: a.statut == 'a_confirmer')"/>
+                                    <t t-set="atts_absents"    t-value="atts.filtered(lambda a: a.statut in ('absent', 'justifie'))"/>
+
+                                    <p style="font-size:.85rem; color:#555; margin:0 0 .6rem 0;">
+                                        Signé le <strong><t t-esc="dj.signe_le.strftime('%d/%m/%Y à %H:%M') if dj.signe_le else '—'"/></strong>
+                                        —
+                                        <strong><t t-esc="len(atts_presents)"/></strong> présent(s) /
+                                        <strong><t t-esc="len(atts_attente)"/></strong> en attente /
+                                        <strong><t t-esc="len(atts_absents)"/></strong> absent(s)
+                                    </p>
+
+                                    <t t-if="atts">
+                                        <table class="att-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Stagiaire</th>
+                                                    <th>Statut</th>
+                                                    <th>Signature</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <t t-foreach="atts" t-as="att">
+                                                    <tr>
+                                                        <td style="font-weight:500;"><t t-esc="att.partner_id.name"/></td>
+                                                        <td>
+                                                            <t t-if="att.statut == 'present'">
+                                                                <span style="color:#27ae60;">✓ Présent(e)</span>
+                                                            </t>
+                                                            <t t-elif="att.statut == 'a_confirmer'">
+                                                                <span style="color:#e67e22;">⏳ En attente</span>
+                                                            </t>
+                                                            <t t-elif="att.statut == 'justifie'">
+                                                                <span style="color:#8e44ad;">⚠ Justifié(e)</span>
+                                                            </t>
+                                                            <t t-else="">
+                                                                <span style="color:#e74c3c;">✗ Absent(e)</span>
+                                                            </t>
+                                                        </td>
+                                                        <td>
+                                                            <t t-if="att.signature">
+                                                                <img t-att-src="'/web/image/training.attendance/%d/signature' % att.id"
+                                                                     style="max-height:40px; max-width:120px;" alt=""/>
+                                                            </t>
+                                                            <t t-else="">
+                                                                <span style="color:#bbb; font-size:.8rem;">—</span>
+                                                            </t>
+                                                        </td>
+                                                    </tr>
+                                                </t>
+                                            </tbody>
+                                        </table>
+                                    </t>
+
+                                    <t t-if="dj.signature">
+                                        <div style="margin-top:.6rem;">
+                                            <p style="font-size:.8rem; color:#555; margin:0 0 .2rem 0;">Votre signature :</p>
+                                            <img t-att-src="'/web/image/training.formateur.demi_journee/%d/signature' % dj.id"
+                                                 class="sig-img" alt="Signature intervenant"/>
+                                        </div>
+                                    </t>
+                                </t>
+
+                                <!-- Passée non signée : liste informative -->
+                                <t t-elif="is_past">
+                                    <p class="locked-msg" style="margin-bottom:.6rem;">
+                                        Cette demi-journée est clôturée sans signature de l'intervenant.
+                                        Contactez le secrétariat si nécessaire.
+                                    </p>
+                                    <t t-if="atts">
+                                        <table class="att-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Stagiaire</th>
+                                                    <th>Statut</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <t t-foreach="atts" t-as="att">
+                                                    <tr>
+                                                        <td style="font-weight:500; color:#888;"><t t-esc="att.partner_id.name"/></td>
+                                                        <td>
+                                                            <t t-if="att.statut == 'present'">
+                                                                <span style="color:#27ae60;">✓ Présent(e)</span>
+                                                            </t>
+                                                            <t t-elif="att.statut == 'a_confirmer'">
+                                                                <span style="color:#e67e22;">⏳ En attente</span>
+                                                            </t>
+                                                            <t t-elif="att.statut == 'justifie'">
+                                                                <span style="color:#8e44ad;">⚠ Justifié(e)</span>
+                                                            </t>
+                                                            <t t-else="">
+                                                                <span style="color:#e74c3c;">✗ Absent(e)</span>
+                                                            </t>
+                                                        </td>
+                                                    </tr>
+                                                </t>
+                                            </tbody>
+                                        </table>
+                                    </t>
+                                </t>
+
+                                <!-- À venir -->
+                                <t t-else="">
+                                    <p class="future-msg">
+                                        Accessible le <t t-esc="dj.date.strftime('%d/%m/%Y')"/>
+                                        (<t t-esc="dj_label"/>).
+                                    </p>
+                                </t>
+
+                            </div><!-- /dj-body -->
+                        </div><!-- /dj-block -->
+                    </t>
+
+                    <t t-if="not djs_data">
+                        <p style="color:#888;">
+                            Aucune demi-journée planifiée pour cette semaine.
+                        </p>
+                    </t>
+
+                </div><!-- /frmjc-body -->
+            </div><!-- /frmjc-wrap -->
+
+            <!-- Signature pad JS partagé -->
+            <script type="text/javascript">
+            (function () {
+                function initPad(djId) {
+                    const canvas = document.getElementById('sig-pad-' + djId);
+                    if (!canvas) return;
+                    const ctx = canvas.getContext('2d');
+                    let drawing = false;
+                    canvas.width = 500;
+                    canvas.height = 150;
+                    ctx.strokeStyle = '#1a3e5c';
+                    ctx.lineWidth = 2.5;
+                    ctx.lineCap = 'round';
+                    ctx.lineJoin = 'round';
+
+                    function getPos(e) {
+                        const r = canvas.getBoundingClientRect();
+                        const sx = canvas.width / r.width;
+                        const sy = canvas.height / r.height;
+                        if (e.touches) {
+                            return { x: (e.touches[0].clientX - r.left) * sx,
+                                     y: (e.touches[0].clientY - r.top)  * sy };
+                        }
+                        return { x: (e.clientX - r.left) * sx,
+                                 y: (e.clientY - r.top)  * sy };
+                    }
+                    canvas.addEventListener('mousedown', e => {
+                        drawing = true;
+                        const p = getPos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y);
+                    });
+                    canvas.addEventListener('mousemove', e => {
+                        if (!drawing) return;
+                        const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke();
+                    });
+                    canvas.addEventListener('mouseup',    () => { drawing = false; });
+                    canvas.addEventListener('mouseleave', () => { drawing = false; });
+                    canvas.addEventListener('touchstart', e => {
+                        e.preventDefault(); drawing = true;
+                        const p = getPos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y);
+                    }, { passive: false });
+                    canvas.addEventListener('touchmove', e => {
+                        e.preventDefault();
+                        if (!drawing) return;
+                        const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke();
+                    }, { passive: false });
+                    canvas.addEventListener('touchend', () => { drawing = false; });
+                }
+
+                // Initialise tous les canvas présents dans la page
+                document.querySelectorAll('canvas.sig-pad').forEach(c => {
+                    initPad(c.id.replace('sig-pad-', ''));
+                });
+
+                window.clearSig = function(djId) {
+                    const canvas = document.getElementById('sig-pad-' + djId);
+                    if (!canvas) return;
+                    canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+                    const inp = document.getElementById('sig-data-' + djId);
+                    if (inp) inp.value = '';
+                };
+
+                window.captureSig = function(djId) {
+                    const canvas = document.getElementById('sig-pad-' + djId);
+                    if (!canvas) return true;
+                    const blank = document.createElement('canvas');
+                    blank.width = canvas.width; blank.height = canvas.height;
+                    if (canvas.toDataURL() === blank.toDataURL()) {
+                        alert('Veuillez apposer votre signature avant de valider.');
+                        return false;
+                    }
+                    const inp = document.getElementById('sig-data-' + djId);
+                    if (inp) inp.value = canvas.toDataURL('image/png');
+                    return true;
+                };
+            })();
+            </script>
+
+        </t>
+    </template>
+
+</odoo>

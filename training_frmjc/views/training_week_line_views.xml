@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_training_week_line_calendar" model="ir.ui.view">
+        <field name="name">training.week.line.calendar</field>
+        <field name="model">training.week.line</field>
+        <field name="arch" type="xml">
+            <calendar string="Ruban pedagogique"
+                      date_start="date_jour"
+                      mode="month"
+                      color="module_id">
+                <field name="module_id"/>
+                <field name="jour"/>
+                <field name="heures"/>
+                <field name="intervenant_id"/>
+            </calendar>
+        </field>
+    </record>
+
+    <record id="view_training_week_line_list" model="ir.ui.view">
+        <field name="name">training.week.line.list</field>
+        <field name="model">training.week.line</field>
+        <field name="arch" type="xml">
+            <list string="Affectations" editable="bottom">
+                <field name="jour"/>
+                <field name="module_id"/>
+                <field name="heure_debut" widget="float_time" optional="show"/>
+                <field name="heures" widget="float_time"/>
+                <field name="intervenant_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_training_week_line" model="ir.actions.act_window">
+        <field name="name">Ruban pedagogique</field>
+        <field name="res_model">training.week.line</field>
+        <field name="view_mode">calendar,list</field>
+    </record>
+
+</odoo>

@@ -1,0 +1,1033 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ══ ACTIONS ═══════════════════════════════════════════════════ -->
+
+    <record id="report_convention_alternance_action" model="ir.actions.report">
+        <field name="name">Convention d'alternance</field>
+        <field name="model">training.convention</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">training_frmjc.report_convention_alternance</field>
+        <field name="report_file">training_frmjc.report_convention_alternance</field>
+        <field name="print_report_name">'Convention_alternance_' + object.numero</field>
+        <field name="binding_model_id" ref="model_training_convention"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="training_frmjc.paperformat_frmjc_a4"/>
+    </record>
+
+    <record id="report_convention_formation_action" model="ir.actions.report">
+        <field name="name">Convention de formation continue</field>
+        <field name="model">training.convention</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">training_frmjc.report_convention_formation</field>
+        <field name="report_file">training_frmjc.report_convention_formation</field>
+        <field name="print_report_name">'Convention_formation_' + object.numero</field>
+        <field name="binding_model_id" ref="model_training_convention"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="training_frmjc.paperformat_frmjc_a4"/>
+    </record>
+
+    <record id="report_convention_cefa_action" model="ir.actions.report">
+        <field name="name">Fiche CEFA (apprentissage)</field>
+        <field name="model">training.convention</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">training_frmjc.report_convention_cefa</field>
+        <field name="report_file">training_frmjc.report_convention_cefa</field>
+        <field name="print_report_name">'Fiche_CEFA_' + object.numero</field>
+        <field name="binding_model_id" ref="model_training_convention"/>
+        <field name="paperformat_id" ref="training_frmjc.paperformat_frmjc_a4"/>
+        <field name="binding_type">report</field>
+    </record>
+
+
+    <!-- ══ STYLES COMMUNS ════════════════════════════════════════════ -->
+
+    <template id="convention_styles">
+        <style>
+            body { font-family: Arial, Helvetica, sans-serif; font-size: 10pt; color: #000; line-height: 1.45; }
+
+            /* ── Titre du document ── */
+            .doc-title-block { text-align: center; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 16px; }
+            .doc-title-block h1 { font-size: 14pt; font-weight: bold; text-transform: uppercase; margin: 0 0 4px 0; }
+            .doc-title-block .subtitle { font-size: 11pt; font-weight: bold; margin: 2px 0; }
+            .doc-title-block .hab { font-size: 10pt; margin: 2px 0; }
+            .doc-title-block .dates { font-size: 11pt; font-weight: bold; text-decoration: underline; margin: 8px 0 0 0; }
+
+            /* ── Parties ── */
+            .entre { text-align: center; font-weight: bold; margin: 14px 0 10px 0; }
+            .et-sep { text-align: center; margin: 6px 0; font-weight: bold; }
+            .partie { margin-bottom: 8px; }
+            .partie-title { font-weight: bold; text-decoration: underline; margin-bottom: 3px; }
+            .partie p { margin: 1px 0; }
+            .d-une-part { text-align: right; font-style: italic; margin: 4px 0 8px 0; }
+            .il-est-convenu { text-align: center; font-weight: bold; text-decoration: underline; margin: 16px 0; }
+
+            /* ── Articles ── */
+            .article { margin-bottom: 10px; }
+            .article-title { font-weight: bold; font-style: italic; text-decoration: underline; margin: 0 0 5px 0; }
+            .article p { margin: 3px 0; text-align: justify; }
+            .article ul { margin: 4px 0 4px 16px; padding: 0; }
+            .article li { margin: 2px 0; }
+
+            /* ── Tables ── */
+            table.data-table { width: 100%; border-collapse: collapse; font-size: 10pt; margin: 8px 0; }
+            table.data-table th { border: 1px solid #000; padding: 5px 8px; text-align: center; font-weight: bold; background: #e8e8e8; }
+            table.data-table td { border: 1px solid #000; padding: 5px 8px; }
+            table.data-table tfoot td { font-weight: bold; }
+
+            table.financement { width: 100%; border-collapse: collapse; font-size: 10pt; margin: 8px 0; }
+            table.financement th { border: 1px solid #000; padding: 5px 8px; text-align: center; font-weight: bold; background: #e8e8e8; }
+            table.financement td { border: 1px solid #000; padding: 5px 8px; }
+
+            /* ── Signatures ── */
+            .fait-a { margin: 16px 0 4px 0; }
+            .mention-laa { font-style: italic; font-size: 9pt; margin: 2px 0 10px 0; }
+            table.sig-table { width: 100%; border-collapse: collapse; margin-top: 10px; page-break-inside: avoid; }
+            table.sig-table td { border: 1px solid #000; padding: 8px; vertical-align: top; }
+            .sig-title { font-weight: bold; text-align: center; margin-bottom: 3px; }
+            .sig-sub { text-align: center; font-size: 9pt; font-style: italic; margin-bottom: 60px; }
+            .sig-name { text-align: center; font-size: 9pt; }
+
+            /* ── Fiche CEFA ── */
+            .cefa-section { border: 1px solid #000; padding: 8px 10px; margin-bottom: 8px; }
+            .cefa-section-title { font-weight: bold; text-decoration: underline; text-transform: uppercase; font-size: 10pt; margin-bottom: 8px; }
+            .cefa-row { margin: 4px 0; font-size: 10pt; }
+            .cefa-label { font-weight: bold; }
+            .cefa-val { border-bottom: 1px dotted #000; display: inline-block; min-width: 140px; padding: 0 3px; }
+            table.cef { width: 100%; border-collapse: collapse; }
+            table.cef td { padding: 2px 0; vertical-align: top; font-size: 10pt; }
+            .dotted-line { border-bottom: 1px dotted #000; margin: 4px 0; min-height: 18px; }
+
+            /* ── Misc ── */
+            hr.thin { border: none; border-top: 1px solid #000; margin: 8px 0; }
+            .page-break { page-break-before: always; }
+            .bold { font-weight: bold; }
+            .underline { text-decoration: underline; }
+            .center { text-align: center; }
+            .italic { font-style: italic; }
+            .small { font-size: 9pt; }
+            .frmjc-footer { font-size: 8pt; color: #555; border-top: 1px solid #aaa; padding-top: 4px; margin-top: 20px; text-align: center; }
+        </style>
+    </template>
+
+
+    <!-- ══════════════════════════════════════════════════════════════
+         CONVENTION D'ALTERNANCE
+    ══════════════════════════════════════════════════════════════ -->
+
+    <template id="report_convention_alternance">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <t t-call="training_frmjc.convention_styles"/>
+                    <div class="page">
+
+                        <!-- Variables -->
+                        <t t-set="sa"       t-value="o.structure_accueil_id"/>
+                        <t t-set="tuteur"   t-value="o.tuteur_id"/>
+                        <t t-set="stag"     t-value="o.partner_id"/>
+                        <t t-set="insc"     t-value="o.inscription_id"/>
+                        <t t-set="stag_f"   t-value="stag.sexe == 'f'"/>
+                        <t t-set="dd"       t-value="o.date_debut and o.date_debut.strftime('%d/%m/%Y') or '___/___/______'"/>
+                        <t t-set="df"       t-value="o.date_fin   and o.date_fin.strftime('%d/%m/%Y')   or '___/___/______'"/>
+
+                        <!-- Titre -->
+                        <div class="doc-title-block">
+                            <h1>Convention d'alternance — DEJEPS</h1>
+                            <p class="subtitle">Spécialité Animation Socio-Éducative ou Culturelle</p>
+                            <p class="subtitle">Mention Développement de Projets, Territoires et de Réseaux</p>
+                            <t t-if="o.formation_id and o.formation_id.habilitation_ids">
+                                <p class="hab">Habilitation N°<t t-esc="o.formation_id.habilitation_ids[0].numero"/></p>
+                            </t>
+                            <p class="dates">Formation du <t t-esc="dd"/> au <t t-esc="df"/></p>
+                        </div>
+
+                        <!-- Parties -->
+                        <p class="entre">Entre :</p>
+
+                        <div class="partie">
+                            <p class="partie-title">L'organisme de formation : La Fédération Régionale des Maisons des Jeunes et de la Culture de Bretagne</p>
+                            <p>5, rue de Lorraine 35000 RENNES</p>
+                            <p>06 50 12 07 96 — secretariat@frmjcbretagne.org</p>
+                            <p>Représentée par
+                                <t t-if="o.representant_frmjc_id">
+                                    <strong><t t-esc="o.representant_frmjc_id.name"/></strong>,
+                                    <t t-if="o.representant_frmjc_id.function"><t t-esc="o.representant_frmjc_id.function"/></t>
+                                    <t t-else="">Directeur·rice</t>
+                                </t>
+                                <t t-else=""><strong>...................................................................</strong></t>
+                            </p>
+                            <p>Association à but non lucratif régie par la loi de 1901</p>
+                            <p>N° de déclaration d'existence : 53 35 078 0035 / SIRET : 777 750 068 00051</p>
+                            <p class="d-une-part">D'une part,</p>
+                        </div>
+
+                        <p class="et-sep">Et :</p>
+
+                        <div class="partie">
+                            <p class="partie-title">La structure d'accueil :</p>
+                            <t t-if="sa">
+                                <p><strong><t t-esc="sa.name"/></strong></p>
+                                <t t-if="sa.street"><p><t t-esc="sa.street"/></p></t>
+                                <t t-if="sa.zip or sa.city"><p><t t-esc="sa.zip or ''"/> <t t-esc="sa.city or ''"/></p></t>
+                                <t t-if="sa.phone"><p><t t-esc="sa.phone"/></p></t>
+                                <t t-if="sa.vat"><p><strong>N° SIRET : <t t-esc="sa.vat"/></strong></p></t>
+                                <p>Représentée par
+                                    <t t-if="tuteur">
+                                        <strong><t t-esc="tuteur.name"/></strong>
+                                        en qualité de
+                                        <t t-if="tuteur.function"><t t-esc="tuteur.function"/></t>
+                                        <t t-else="">Directeur·rice</t>
+                                    </t>
+                                    <t t-else=""><strong>.....................................................................</strong></t>
+                                </p>
+                            </t>
+                            <t t-else="">
+                                <p><strong>..................................................................................</strong></p>
+                                <p>N° SIRET : .....................................</p>
+                                <p>Représentée par .......................................................................</p>
+                            </t>
+                            <p class="d-une-part">D'autre part,</p>
+                        </div>
+
+                        <p class="et-sep">Et</p>
+
+                        <div class="partie">
+                            <p class="partie-title">
+                                <t t-if="stag_f">La stagiaire :</t><t t-else="">Le stagiaire :</t>
+                            </p>
+                            <p><strong><t t-esc="stag.name or '...'"/></strong></p>
+                            <t t-if="stag.street"><p><t t-esc="stag.street"/></p></t>
+                            <t t-if="stag.zip or stag.city"><p><t t-esc="stag.zip or ''"/> <t t-esc="stag.city or ''"/></p></t>
+                            <t t-if="stag.phone">
+                                <p><t t-esc="stag.phone"/>
+                                <t t-if="stag.email"> — <t t-esc="stag.email"/></t></p>
+                            </t>
+                            <p class="d-une-part">D'autre part,</p>
+                        </div>
+
+                        <p class="il-est-convenu">Il est convenu ce qui suit :</p>
+
+                        <!-- Articles 1–13 -->
+                        <div class="article">
+                            <p class="article-title">Article 1</p>
+                            <p>La structure d'accueil accepte d'accueillir
+                            <t t-if="stag_f">la stagiaire</t><t t-else="">le stagiaire</t>
+                            susnommé·e pour effectuer son alternance dans le cadre de sa formation DEJEPS,
+                            soit du <strong><t t-esc="dd"/></strong> au <strong><t t-esc="df"/></strong>.
+                            <t t-if="stag_f">La stagiaire</t><t t-else="">Le stagiaire</t>
+                            effectuera 35 heures par semaine dont une partie en temps de travail personnel,
+                            qui sera à définir avec la structure d'accueil.</p>
+                        </div>
+
+                        <div class="article">
+                            <p class="article-title">Article 2</p>
+                            <p>Le ou la conseiller·ère (extérieur·e à la structure d'accueil) de
+                            <t t-if="stag_f">la stagiaire</t><t t-else="">le stagiaire</t>
+                            DEJEPS en alternance, s'engage auprès du centre de formation à assurer
+                            une fonction de formateur·rice / accompagnateur·rice tout au long de la
+                            formation, pendant les périodes de « formation pratique » indispensables
+                            à l'acquisition de l'identité professionnelle de
+                            <t t-if="stag_f">la</t><t t-else="">du</t> futur·e coordinateur·rice.</p>
+                        </div>
+
+                        <div class="article">
+                            <p class="article-title">Article 3</p>
+                            <p>La fonction de conseiller·ère doit permettre à
+                            <t t-if="stag_f">la stagiaire</t><t t-else="">au stagiaire</t>
+                            de construire des compétences générales et spécifiques liées à sa future
+                            fonction de coordination et l'alternance doit lui permettre d'intégrer
+                            les temps en entreprise et les temps en centre de formation dans une
+                            progression globale.</p>
+                        </div>
+
+                        <div class="article">
+                            <p class="article-title">Article 4</p>
+                            <p>Le ou la conseiller·ère doit pouvoir organiser la formation de terrain,
+                            accompagner <t t-if="stag_f">la stagiaire</t><t t-else="">le stagiaire</t>
+                            et évaluer sa progression. Pour ce faire, il ou elle est conseillé·e par
+                            l'organisme de Formation.</p>
+                        </div>
+
+                        <div class="article">
+                            <p class="article-title">Article 5</p>
+                            <p>Le ou la responsable de la structure d'accueil accepte que le ou la
+                            conseiller·ère participe aux rencontres avec
+                            <t t-if="stag_f">la stagiaire</t><t t-else="">le stagiaire</t>
+                            et le Centre de formation, prévues tout au long du parcours de formation.</p>
+                        </div>
+
+                        <div class="article">
+                            <p class="article-title">Article 6</p>
+                            <p>La structure d'accueil, s'efforcera de faciliter la formation de
+                            <t t-if="stag_f">la stagiaire</t><t t-else="">du stagiaire</t>
+                            en lui apportant tous les concours nécessaires et s'engage à lui fournir
+                            toute information, utile à la réalisation des différents travaux demandés.</p>
+                        </div>
+
+                        <div class="article">
+                            <p class="article-title">Article 7</p>
+                            <p>La structure d'accueil s'engage à mettre en oeuvre tous les moyens
+                            nécessaires à la validation des UC 3 et 4. La certification de ces UC
+                            pouvant se dérouler sur le site de la structure,
+                            <t t-if="stag_f">la stagiaire</t><t t-else="">le stagiaire</t>
+                            devra pouvoir bénéficier d'un temps aménagé pour le déroulement de son
+                            épreuve, ainsi que des moyens matériels et humains nécessaires à
+                            l'accueil des publics pendant l'examen.</p>
+                        </div>
+
+                        <div class="article">
+                            <p class="article-title">Article 8</p>
+                            <p>Les frais divers (de déplacement et de mission) occasionnés par
+                            l'activité de
+                            <t t-if="stag_f">la stagiaire</t><t t-else="">du stagiaire</t>
+                            dans la structure d'accueil, convenus avec celle-ci, seront à la charge
+                            de cette dernière.</p>
+                        </div>
+
+                        <div class="article">
+                            <p class="article-title">Article 9</p>
+                            <p>De par son statut de stagiaire de la formation professionnelle,
+                            <t t-if="stag_f">la stagiaire</t><t t-else="">le stagiaire</t>
+                            ne rentre pas dans le cadre de la gratification obligatoire.</p>
+                        </div>
+
+                        <div class="article">
+                            <p class="article-title">Article 10</p>
+                            <p><t t-if="stag_f">La stagiaire est tenue</t><t t-else="">Le stagiaire est tenu</t>
+                            de se conformer durant toute la période de son alternance aux règles de
+                            fonctionnement de la structure.</p>
+                        </div>
+
+                        <div class="article">
+                            <p class="article-title">Article 11</p>
+                            <p>Le stage dans la structure d'accueil ne pourra être interrompu à
+                            l'initiative de la structure d'accueil qu'en cas de faute grave commise par
+                            <t t-if="stag_f">la stagiaire</t><t t-else="">le stagiaire</t>
+                            dans le cadre de son alternance. La structure d'accueil en avisera
+                            immédiatement le Centre de formation. Une telle mesure peut entraîner
+                            l'exclusion du parcours de formation.</p>
+                            <p>En aucun cas l'exclusion de
+                            <t t-if="stag_f">la stagiaire</t><t t-else="">du stagiaire</t>
+                            par la structure d'accueil, ou l'abandon de la formation, ne peut remettre
+                            en question l'engagement de la structure d'accueil envers le centre de
+                            formation au titre de la convention de formation — Article VII.</p>
+                        </div>
+
+                        <div class="article">
+                            <p class="article-title">Article 12</p>
+                            <p>Pour toute la période de l'alternance dans la structure d'accueil, ou
+                            durant des missions extérieures résultant de l'alternance,
+                            <t t-if="stag_f">la stagiaire</t><t t-else="">le stagiaire</t>
+                            est couvert·e en risques et responsabilités par les dispositions propres à
+                            sa structure d'accueil. Au cas où le statut
+                            <t t-if="stag_f">de la stagiaire</t><t t-else="">du stagiaire</t>
+                            ne lui permettrait pas d'être couvert·e par la structure d'accueil,
+                            l'assurance particulière du Centre de formation MAIF 0914606N
+                            prendrait le relais.</p>
+                        </div>
+
+                        <div class="article">
+                            <p class="article-title">Article 13</p>
+                            <p>Cette convention prend effet à la date de sa signature et pour la
+                            durée indiquée à l'article 1.</p>
+                        </div>
+
+                        <!-- Description du poste — nouvelle page -->
+                        <div class="page-break">
+                            <p class="bold underline" style="margin-bottom:6px;">
+                                Description du poste et des missions confiées à
+                                <t t-if="stag_f">la stagiaire</t><t t-else="">au stagiaire</t>
+                            </p>
+                            <hr class="thin"/>
+
+                            <p class="bold" style="margin-top:10px;">Poste confié</p>
+                            <p>Intitulé du poste :
+                                <t t-if="insc and insc.fonction_visee">
+                                    <t t-esc="insc.fonction_visee"/>
+                                </t>
+                                <t t-else="">
+                                    <span class="cefa-val" style="min-width:320px;">&#160;</span>
+                                </t>
+                            </p>
+
+                            <p class="bold" style="margin-top:12px;">Mission(s) confiée(s) :</p>
+                            <t t-if="insc and insc.projet_professionnel">
+                                <p><t t-esc="insc.projet_professionnel"/></p>
+                            </t>
+                            <t t-else="">
+                                <div class="dotted-line">&#160;</div>
+                                <div class="dotted-line">&#160;</div>
+                                <div class="dotted-line">&#160;</div>
+                                <div class="dotted-line">&#160;</div>
+                            </t>
+
+                            <p class="bold" style="margin-top:12px;">Mission(s) complémentaire(s) à la mission d'alternance :</p>
+                            <div class="dotted-line">&#160;</div>
+                            <div class="dotted-line">&#160;</div>
+                            <div class="dotted-line">&#160;</div>
+
+                            <p class="bold" style="margin-top:12px;">Détail des activités de coordination en relation avec le diplôme :</p>
+                            <div class="dotted-line">&#160;</div>
+                            <div class="dotted-line">&#160;</div>
+                            <div class="dotted-line">&#160;</div>
+
+                            <p class="bold" style="margin-top:12px;">Public(s) concerné(s)</p>
+                            <div class="dotted-line">&#160;</div>
+                            <div class="dotted-line">&#160;</div>
+
+                            <p class="bold" style="margin-top:12px;">Projet durant la période d'alternance (même si pas définitif)</p>
+                            <div class="dotted-line">&#160;</div>
+                            <div class="dotted-line">&#160;</div>
+                            <div class="dotted-line">&#160;</div>
+
+                            <!-- Signatures -->
+                            <p class="fait-a">Fait le <t t-esc="o.date_creation.strftime('%d/%m/%Y') if o.date_creation else '___/___/______'"/>
+                            &#160;&#160;&#160;&#160; À : ............................................</p>
+                            <p class="mention-laa">(la mention « lu et approuvé » doit précéder chaque signature)</p>
+
+                            <table class="sig-table">
+                                <tr>
+                                    <td style="width:25%;">
+                                        <p class="sig-title">Structure d'accueil</p>
+                                        <p class="sig-sub">(nom, qualité, cachet et signature)</p>
+                                        <t t-if="tuteur">
+                                            <p class="sig-name"><t t-esc="tuteur.name"/></p>
+                                        </t>
+                                    </td>
+                                    <td style="width:25%;">
+                                        <p class="sig-title">Tutrice ou tuteur</p>
+                                        <p class="sig-sub">(nom et signature)</p>
+                                        <t t-if="tuteur">
+                                            <p class="sig-name"><t t-esc="tuteur.name"/></p>
+                                        </t>
+                                    </td>
+                                    <td style="width:25%;">
+                                        <p class="sig-title">Stagiaire</p>
+                                        <p class="sig-sub">(nom et signature)</p>
+                                        <p class="sig-name"><t t-esc="stag.name or '...'"/></p>
+                                    </td>
+                                    <td style="width:25%;">
+                                        <p class="sig-title">FRMJC Bretagne — Pays de La Loire</p>
+                                        <p class="sig-sub">(nom, qualité, cachet et signature)</p>
+                                        <t t-if="o.representant_frmjc_id">
+                                            <p class="sig-name"><t t-esc="o.representant_frmjc_id.name"/></p>
+                                        </t>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <div class="frmjc-footer">
+                                FRMJC Bretagne · Pays de la Loire · Fédération Régionale des Maisons des Jeunes et de la Culture ·
+                                Siège : 5, rue de Lorraine 35000 RENNES · 06 50 12 07 96 · secretariat@frmjcbzhpdll.org
+                            </div>
+                        </div>
+
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+
+    <!-- ══════════════════════════════════════════════════════════════
+         CONVENTION DE FORMATION (tripartite)
+    ══════════════════════════════════════════════════════════════ -->
+
+    <template id="report_convention_formation">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <t t-call="training_frmjc.convention_styles"/>
+                    <div class="page">
+
+                        <t t-set="sa"   t-value="o.structure_accueil_id"/>
+                        <t t-set="stag" t-value="o.partner_id"/>
+                        <t t-set="sess" t-value="o.session_id"/>
+                        <t t-set="dd"   t-value="o.date_debut and o.date_debut.strftime('%d/%m/%Y') or '___/___/______'"/>
+                        <t t-set="df"   t-value="o.date_fin   and o.date_fin.strftime('%d/%m/%Y')   or '___/___/______'"/>
+
+                        <!-- Titre -->
+                        <div class="doc-title-block">
+                            <h1>Convention de formation DEJEPS</h1>
+                            <p class="subtitle">Animation Socio-éducative ou culturelle</p>
+                            <p class="subtitle">Mention : Développement de projets, de territoires et de réseaux</p>
+                            <t t-if="o.formation_id and o.formation_id.habilitation_ids">
+                                <p class="hab">Habilitation N°<t t-esc="o.formation_id.habilitation_ids[0].numero"/></p>
+                            </t>
+                            <p class="dates">Formation du <t t-esc="dd"/> au <t t-esc="df"/></p>
+                        </div>
+
+                        <!-- Article I — Parties -->
+                        <div class="article">
+                            <p class="article-title">Article I.</p>
+                            <p><em>Par la présente convention, il est convenu ce qui suit, en application des
+                            dispositions du Livre IX du Code du travail portant organisation de la formation
+                            professionnelle continue dans le cadre de l'Éducation permanente,</em></p>
+                            <p><strong>Entre :</strong></p>
+                        </div>
+
+                        <p class="bold underline" style="margin:8px 0 4px 0;">L'organisme de formation</p>
+                        <div class="partie">
+                            <p><strong>La Fédération Régionale des Maisons des Jeunes et de la Culture de Bretagne</strong></p>
+                            <p>5, rue de Lorraine 35000 RENNES</p>
+                            <p>06 50 12 07 96 — secretariat@frmjcbretagne.org</p>
+                            <p>Représentée par
+                                <t t-if="o.representant_frmjc_id">
+                                    <strong><t t-esc="o.representant_frmjc_id.name"/></strong>,
+                                    <t t-if="o.representant_frmjc_id.function"><t t-esc="o.representant_frmjc_id.function"/></t>
+                                    <t t-else="">Présidente</t>
+                                </t>
+                                <t t-else=""><strong>..................................................................., Présidente</strong></t>
+                            </p>
+                            <p>Association à but non lucratif régie par la loi de 1901</p>
+                            <p>N° de déclaration d'existence : 53 35 078 0035</p>
+                            <p>SIRET : 777 750 068 00051</p>
+                            <p class="d-une-part">D'une part,</p>
+                        </div>
+
+                        <p class="et-sep"><strong>Et :</strong></p>
+                        <p class="bold underline" style="margin:8px 0 4px 0;">La structure d'accueil</p>
+                        <div class="partie">
+                            <t t-if="sa">
+                                <p><strong><t t-esc="sa.name"/></strong></p>
+                                <t t-if="sa.street"><p><t t-esc="sa.street"/></p></t>
+                                <t t-if="sa.zip or sa.city"><p><t t-esc="sa.zip or ''"/> <t t-esc="sa.city or ''"/></p></t>
+                                <t t-if="sa.phone"><p><t t-esc="sa.phone"/></p></t>
+                                <p>Représentée par
+                                    <t t-if="o.tuteur_id">
+                                        <strong><t t-esc="o.tuteur_id.name"/></strong>
+                                        en qualité de
+                                        <t t-if="o.tuteur_id.function"><t t-esc="o.tuteur_id.function"/></t>
+                                        <t t-else="">Directeur·rice</t>
+                                    </t>
+                                    <t t-else=""><strong>......................................................................</strong></t>
+                                </p>
+                                <t t-if="sa.vat"><p>N° SIRET : <t t-esc="sa.vat"/></p></t>
+                            </t>
+                            <t t-else="">
+                                <p><strong>........................................................................................</strong></p>
+                                <p>N° SIRET : .....................................</p>
+                                <p>Représentée par .....................................................................</p>
+                            </t>
+                            <p class="d-une-part">D'autre part,</p>
+                        </div>
+
+                        <p class="et-sep"><strong>Et</strong></p>
+                        <p class="bold underline" style="margin:8px 0 4px 0;">Le stagiaire</p>
+                        <div class="partie">
+                            <p><strong><t t-esc="stag.name or '...'"/></strong></p>
+                            <t t-if="stag.street"><p><t t-esc="stag.street"/></p></t>
+                            <t t-if="stag.zip or stag.city"><p><t t-esc="stag.zip or ''"/> <t t-esc="stag.city or ''"/></p></t>
+                            <t t-if="stag.phone">
+                                <p><t t-esc="stag.phone"/>
+                                <t t-if="stag.email"> — <t t-esc="stag.email"/></t></p>
+                            </t>
+                            <p class="d-une-part">D'autre part,</p>
+                        </div>
+
+                        <!-- Article II -->
+                        <div class="article">
+                            <p class="article-title">Article II.</p>
+                            <p>En exécution de la présente convention, la FRMJC Bretagne s'engage à
+                            organiser l'action de formation intitulée : <strong>«&#160;<t t-esc="o.formation_id.display_name or 'DEJEPS'"/>&#160;»</strong></p>
+                            <t t-if="o.formation_id and o.formation_id.habilitation_ids">
+                                <p>Agréée par la Direction Régionale de la Jeunesse, des Sports et de la
+                                Cohésion Sociale de Bretagne sous le numéro :
+                                <strong><t t-esc="o.formation_id.habilitation_ids[0].numero"/></strong></p>
+                            </t>
+                        </div>
+
+                        <!-- Article III -->
+                        <div class="article">
+                            <p class="article-title">Article III.</p>
+                            <p class="bold underline small">Durée et organisation de la formation</p>
+                            <p>Les séquences de formation seront dispensées du <strong><t t-esc="dd"/></strong>
+                            au <strong><t t-esc="df"/></strong>.</p>
+
+                            <p class="bold underline small" style="margin-top:8px;">La formation comprend des séquences en centre et en entreprise.</p>
+                            <p>La formation en Centre est fixée à 700 heures, organisées selon le planning
+                            remis au stagiaire et joint à la convention (Annexe 1 — Planning formation DEJEPS).
+                            Elle est organisée en 4 Unités de Compétence capitalisables.</p>
+                            <p>La formation en entreprise est fixée à temps plein en alternance. Le stagiaire
+                            doit rechercher un lieu d'exercice correspondant au secteur d'activité.
+                            Une convention d'alternance tripartite sera signée (Convention d'alternance DEJEPS).</p>
+
+                            <p class="bold underline small" style="margin-top:8px;">Effectif de la formation</p>
+                            <p>Cette formation sera composée d'un maximum de 20 stagiaires en parcours complet.</p>
+
+                            <p class="bold underline small" style="margin-top:8px;">Objectif et présentation du dispositif d'alternance</p>
+                            <p>La FRMJC Bretagne s'engage à remettre à la structure d'accueil les objectifs
+                            généraux de la formation et à suivre l'évolution du stagiaire. Une visite et un
+                            entretien seront organisés par un·e formateur·rice de la FRMJC Bretagne avec un·e
+                            représentant·e de la structure d'accueil et le stagiaire, afin d'évaluer le
+                            déroulement de l'alternance.</p>
+
+                            <p class="bold underline small" style="margin-top:8px;">Modalité d'évaluation et validation</p>
+                            <p><em>Des évaluations formatives seront proposées régulièrement. Le stagiaire
+                            s'engage à y participer. Il en découlera un réajustement des modalités et
+                            contenus de travail. Le stagiaire s'engage à les intégrer dans la suite
+                            de sa formation.</em></p>
+                        </div>
+
+                        <!-- Article IV -->
+                        <div class="article">
+                            <p class="article-title">Article IV.</p>
+                            <p class="bold underline small">Moyens techniques et pédagogiques</p>
+                            <p>La formation se déroule dans des locaux réservés à cet effet comprenant
+                            une salle de travail par formation ainsi que du matériel de reproduction,
+                            une documentation spécifique et du matériel pédagogique adapté.</p>
+                            <p class="bold underline small" style="margin-top:6px;">Lieux de formations</p>
+                            <p>La formation se déroulera sur différents lieux :</p>
+                            <ul>
+                                <li>FRMJC Bretagne, 5 rue de Lorraine, 35000 Rennes</li>
+                                <li>Différentes MJC de Bretagne</li>
+                                <li>Structures d'accueil des stagiaires</li>
+                            </ul>
+                            <p>La FRMJC Bretagne se réserve le droit de modifier les lieux de regroupement
+                            et préviendra les stagiaires au moins 15 jours avant toute modification.</p>
+                        </div>
+
+                        <!-- Article V -->
+                        <div class="article">
+                            <p class="article-title">Article V.</p>
+                            <p>Une convention d'alternance du stagiaire est annexée à la présente convention :
+                            elle précise les modalités du stage en entreprise ainsi que la fonction tutorale.
+                            Elle est signée du tuteur·rice, du stagiaire et du responsable de formation.</p>
+                            <p class="bold underline small" style="margin-top:6px;">Congés et absences</p>
+                            <p>Le stagiaire en formation professionnelle applique pendant la durée de son stage
+                            les horaires et congés prévus dans l'entreprise qui l'accueille.</p>
+                            <p class="bold underline small" style="margin-top:6px;">Le représentant de la structure d'accueil</p>
+                            <p>Un·e tuteur·rice est nommé·e par la structure. Il ou elle est chargé·e
+                            d'accompagner la personne en formation, pour l'accueillir et la guider dans ses
+                            expérimentations professionnelles.</p>
+                            <t t-if="o.tuteur_id">
+                                <p><t t-esc="o.tuteur_id.name"/>
+                                <t t-if="o.tuteur_id.function"> — <t t-esc="o.tuteur_id.function"/></t>
+                                <t t-if="o.tuteur_id.email"> — <t t-esc="o.tuteur_id.email"/></t></p>
+                            </t>
+                        </div>
+
+                        <!-- Article VI -->
+                        <div class="article">
+                            <p class="article-title">Article VI.</p>
+                            <p class="bold underline small">Règles de fonctionnement</p>
+                            <p>Le stagiaire s'engage à respecter le règlement intérieur de la formation
+                            de la FRMJC Bretagne.</p>
+                            <p class="bold underline small" style="margin-top:6px;">Absences</p>
+                            <p>Toute absence doit être signalée par le stagiaire dans les 24 heures à la
+                            FRMJC Bretagne.</p>
+                            <p class="bold underline small" style="margin-top:6px;">Attestation de présence</p>
+                            <p>La FRMJC Bretagne est responsable administrativement du stagiaire pendant
+                            le temps passé en centre de formation. Une attestation de présence sera adressée
+                            pour chaque semaine de formation en centre.</p>
+                            <p class="bold underline small" style="margin-top:6px;">Assurance</p>
+                            <p>La FRMJC Bretagne a souscrit une assurance responsabilité civile auprès de
+                            la MAIF — N° de sociétaire : 0914606N. Pour toute la période de l'alternance,
+                            le stagiaire est couvert en risques et responsabilité par les dispositions
+                            propres à sa structure d'accueil. Au cas où le statut d'un stagiaire ne lui
+                            permette pas d'être couvert par la structure d'accueil, l'assurance particulière
+                            du Centre de formation MAIF 0914606N prendrait le relais.</p>
+                        </div>
+
+                        <!-- Article VII — Financement -->
+                        <div class="article">
+                            <p class="article-title">Article VII.</p>
+                            <p class="bold underline small">a) Prise en charge de la formation et modalités de règlement</p>
+                            <p>Le coût total de la formation sans allègement est de :
+                            <strong><t t-esc="'%.2f €' % o.cout_total if o.cout_total else '___,__ €'"/></strong></p>
+
+                            <t t-if="o.financement_ids">
+                                <table class="financement" style="margin-top:8px;">
+                                    <thead>
+                                        <tr>
+                                            <th>Source de financement</th>
+                                            <th>Organisme / Détail</th>
+                                            <th style="text-align:right;">Montant (€)</th>
+                                            <th style="text-align:right;">%</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="o.financement_ids" t-as="ligne">
+                                            <tr>
+                                                <td><t t-esc="dict(ligne._fields['source'].selection).get(ligne.source, ligne.source)"/></td>
+                                                <td><t t-esc="ligne.organisme or ''"/></td>
+                                                <td style="text-align:right;"><t t-esc="'%.2f' % ligne.montant"/></td>
+                                                <td style="text-align:right;"><t t-esc="'%.1f %%' % ligne.pourcentage"/></td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="2"><strong>TOTAL</strong></td>
+                                            <td style="text-align:right;"><strong><t t-esc="'%.2f' % o.total_finance"/></strong></td>
+                                            <td style="text-align:right;"><strong>100 %</strong></td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </t>
+
+                            <p style="margin-top:8px;" class="bold underline small">b) Engagement de l'organisme de formation</p>
+                            <p>L'organisme de formation, en contrepartie des sommes reçues, s'engage à
+                            réaliser toutes les actions prévues dans le cadre de la présente convention
+                            ainsi qu'à fournir tout document justifiant la réalité et la validité des
+                            dépenses de formation engagées.</p>
+
+                            <p style="margin-top:6px;" class="bold underline small">c) Dédits et abandon</p>
+                            <p>En cas de résiliation de la présente convention par le stagiaire moins de
+                            15 jours francs avant le début de l'action mentionnée (UC), l'organisme de
+                            formation retiendra sur le coût total toute UC réellement engagée. Toute demande
+                            de résiliation devra faire l'objet d'une motivation écrite et détaillée.</p>
+                        </div>
+
+                        <!-- Article VIII -->
+                        <div class="article">
+                            <p class="article-title">Article VIII.</p>
+                            <p>La présente convention signée de l'ensemble des parties et accompagnée des
+                            annexes constitue un document justificatif des dépenses de formation.</p>
+                            <p>Si une contestation ou un différend ne peuvent être réglés à l'amiable,
+                            le Tribunal de Rennes sera seul compétent pour se prononcer sur le litige.</p>
+                            <p><strong>Cette convention est remplie en 3 exemplaires : le premier est
+                            destiné au stagiaire, le deuxième à la FRMJC Bretagne, le troisième à la
+                            structure d'accueil.</strong></p>
+                        </div>
+
+                        <!-- Signatures -->
+                        <p class="fait-a">Signature précédée de la mention « Lu et Approuvé ».</p>
+                        <p class="fait-a">Fait le <t t-esc="o.date_creation.strftime('%d/%m/%Y') if o.date_creation else '___/___/______'"/>
+                        &#160;&#160;&#160;&#160; À : ............................................</p>
+
+                        <table class="sig-table" style="margin-top:14px;">
+                            <tr>
+                                <td style="width:33%;">
+                                    <p class="sig-title">Stagiaire</p>
+                                    <p class="sig-sub">Nom et signature</p>
+                                    <p class="sig-name"><t t-esc="stag.name or '...'"/></p>
+                                </td>
+                                <td style="width:33%;">
+                                    <p class="sig-title">Structure d'accueil</p>
+                                    <p class="sig-sub">Nom, qualité et signature — Cachet</p>
+                                    <t t-if="o.tuteur_id">
+                                        <p class="sig-name"><t t-esc="o.tuteur_id.name"/></p>
+                                    </t>
+                                </td>
+                                <td style="width:33%;">
+                                    <p class="sig-title">FRMJC Bretagne</p>
+                                    <p class="sig-sub">Nom, qualité et signature — Cachet</p>
+                                    <t t-if="o.representant_frmjc_id">
+                                        <p class="sig-name"><t t-esc="o.representant_frmjc_id.name"/></p>
+                                        <t t-if="o.representant_frmjc_id.function">
+                                            <p class="sig-name italic"><t t-esc="o.representant_frmjc_id.function"/></p>
+                                        </t>
+                                    </t>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <div class="frmjc-footer">
+                            FRMJC Bretagne · 5 rue de Lorraine 35000 RENNES · 06 50 12 07 96 · secretariat@frmjcbzhpdll.org
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+
+    <!-- ══════════════════════════════════════════════════════════════
+         FICHE CEFA (APPRENTISSAGE)
+    ══════════════════════════════════════════════════════════════ -->
+
+    <template id="report_convention_cefa">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <t t-call="training_frmjc.convention_styles"/>
+                    <div class="page">
+
+                        <t t-set="sa"   t-value="o.structure_accueil_id"/>
+                        <t t-set="tut"  t-value="o.tuteur_id"/>
+                        <t t-set="rep"  t-value="tut"/>
+                        <t t-set="stag" t-value="o.partner_id"/>
+                        <t t-set="insc" t-value="o.inscription_id"/>
+                        <t t-set="dd"   t-value="o.date_debut and o.date_debut.strftime('%d/%m/%Y') or '___/___/______'"/>
+                        <t t-set="df"   t-value="o.date_fin   and o.date_fin.strftime('%d/%m/%Y')   or '___/___/______'"/>
+
+                        <!-- Titre -->
+                        <div class="doc-title-block">
+                            <h1>Fiche de renseignements — CEFA</h1>
+                            <p class="small italic">(Toutes les rubriques doivent être dûment renseignées de manière lisible)</p>
+                        </div>
+
+                        <!-- L'EMPLOYEUR -->
+                        <div class="cefa-section">
+                            <p class="cefa-section-title">L'Employeur :</p>
+                            <table class="cef">
+                                <tr>
+                                    <td style="width:50%;">
+                                        <p class="cefa-row">
+                                            <span class="cefa-label">Secteur : </span>
+                                            <t t-if="sa and sa.company_type == 'company'">
+                                                &#9745; Secteur privé &#160; &#9744; Secteur public
+                                            </t>
+                                            <t t-else="">
+                                                &#9744; Secteur privé &#160; &#9744; Secteur public
+                                            </t>
+                                        </p>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                            </table>
+                            <p class="cefa-row"><span class="cefa-label">Raison sociale : </span>
+                                <span class="cefa-val"><t t-esc="sa.name if sa else ''"/></span></p>
+                            <table class="cef">
+                                <tr>
+                                    <td style="width:50%;">
+                                        <p class="cefa-row"><span class="cefa-label">Forme juridique : </span>
+                                            <span class="cefa-val" style="min-width:80px;">&#160;</span></p>
+                                    </td>
+                                    <td style="width:50%;">
+                                        <p class="cefa-row"><span class="cefa-label">N° SIRET : </span>
+                                            <span class="cefa-val"><t t-esc="sa.vat if sa else ''"/></span></p>
+                                    </td>
+                                </tr>
+                            </table>
+                            <table class="cef">
+                                <tr>
+                                    <td style="width:60%;">
+                                        <p class="cefa-row"><span class="cefa-label">Convention collective nationale applicable : </span>
+                                            <span class="cefa-val"><t t-esc="sa.convention_collective if sa else ''"/></span></p>
+                                    </td>
+                                    <td style="width:40%;">
+                                        <p class="cefa-row"><span class="cefa-label">Code IDCC : </span>
+                                            <span class="cefa-val" style="min-width:60px;">&#160;</span></p>
+                                    </td>
+                                </tr>
+                            </table>
+                            <p class="cefa-row"><span class="cefa-label">Nom-Prénom du responsable : </span>
+                                <span class="cefa-val"><t t-esc="rep.name if rep else ''"/></span></p>
+                            <table class="cef">
+                                <tr>
+                                    <td style="width:50%;">
+                                        <p class="cefa-row"><span class="cefa-label">Téléphone : </span>
+                                            <span class="cefa-val"><t t-esc="sa.phone if sa else ''"/></span></p>
+                                    </td>
+                                    <td style="width:50%;">
+                                        <p class="cefa-row"><span class="cefa-label">E-mail : </span>
+                                            <span class="cefa-val"><t t-esc="sa.email if sa else ''"/></span></p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <!-- LE MAÎTRE D'APPRENTISSAGE -->
+                        <div class="cefa-section">
+                            <p class="cefa-section-title">Le Maître d'Apprentissage :</p>
+                            <table class="cef">
+                                <tr>
+                                    <td style="width:50%;">
+                                        <p class="cefa-row"><span class="cefa-label">NOM : </span>
+                                            <span class="cefa-val">
+                                                <t t-if="tut"><t t-esc="(tut.name or '').split(' ')[-1]"/></t>
+                                            </span>
+                                        </p>
+                                    </td>
+                                    <td style="width:50%;">
+                                        <p class="cefa-row"><span class="cefa-label">Prénom : </span>
+                                            <span class="cefa-val">
+                                                <t t-if="tut"><t t-esc="' '.join((tut.name or '').split(' ')[:-1])"/></t>
+                                            </span>
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+                            <p class="cefa-row"><span class="cefa-label">Date de naissance : </span>
+                                <span class="cefa-val">
+                                    <t t-if="tut and tut.date_naissance"><t t-esc="tut.date_naissance.strftime('%d/%m/%Y')"/></t>
+                                </span>
+                            </p>
+                            <table class="cef">
+                                <tr>
+                                    <td style="width:50%;">
+                                        <p class="cefa-row"><span class="cefa-label">Téléphone : </span>
+                                            <span class="cefa-val"><t t-esc="tut.phone if tut else ''"/></span></p>
+                                    </td>
+                                    <td style="width:50%;">
+                                        <p class="cefa-row"><span class="cefa-label">E-mail : </span>
+                                            <span class="cefa-val"><t t-esc="tut.email if tut else ''"/></span></p>
+                                    </td>
+                                </tr>
+                            </table>
+                            <p class="cefa-row"><span class="cefa-label">Diplôme ou expérience : </span>
+                                <span class="cefa-val" style="min-width:200px;">&#160;</span></p>
+                        </div>
+
+                        <!-- L'APPRENTI(E) -->
+                        <div class="cefa-section">
+                            <p class="cefa-section-title">L'Apprenti(e)</p>
+                            <p class="cefa-row"><span class="cefa-label">RQTH : </span>
+                                &#9744; Oui &#160; &#9744; Non</p>
+                            <table class="cef">
+                                <tr>
+                                    <td style="width:40%;">
+                                        <p class="cefa-row"><span class="cefa-label">NOM : </span>
+                                            <span class="cefa-val">
+                                                <t t-esc="(stag.name or '').split(' ')[-1]"/>
+                                            </span>
+                                        </p>
+                                    </td>
+                                    <td style="width:40%;">
+                                        <p class="cefa-row"><span class="cefa-label">Prénom : </span>
+                                            <span class="cefa-val">
+                                                <t t-esc="' '.join((stag.name or '').split(' ')[:-1])"/>
+                                            </span>
+                                        </p>
+                                    </td>
+                                    <td style="width:20%;">
+                                        <p class="cefa-row"><span class="cefa-label">Sexe : </span>
+                                            <t t-if="stag.sexe == 'm'">&#9745; M &#9744; F</t>
+                                            <t t-elif="stag.sexe == 'f'">&#9744; M &#9745; F</t>
+                                            <t t-else="">&#9744; M &#9744; F</t>
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+                            <table class="cef">
+                                <tr>
+                                    <td style="width:40%;">
+                                        <p class="cefa-row"><span class="cefa-label">Date de naissance : </span>
+                                            <span class="cefa-val">
+                                                <t t-if="stag.date_naissance"><t t-esc="stag.date_naissance.strftime('%d/%m/%Y')"/></t>
+                                            </span>
+                                        </p>
+                                    </td>
+                                    <td style="width:60%;">
+                                        <p class="cefa-row"><span class="cefa-label">Nationalité : </span>
+                                            <span class="cefa-val">
+                                                <t t-if="stag.nationalite_id"><t t-esc="stag.nationalite_id.name"/></t>
+                                            </span>
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+                            <p class="cefa-row"><span class="cefa-label">N° S.Sociale : </span>
+                                <span class="cefa-val"><t t-esc="stag.numero_secu or ''"/></span></p>
+                            <table class="cef">
+                                <tr>
+                                    <td style="width:60%;">
+                                        <p class="cefa-row"><span class="cefa-label">Lieu de naissance : </span>
+                                            <span class="cefa-val"><t t-esc="stag.lieu_naissance or ''"/></span></p>
+                                    </td>
+                                    <td style="width:40%;">
+                                        <p class="cefa-row"><span class="cefa-label">Dép. : </span>
+                                            <span class="cefa-val" style="min-width:60px;">&#160;</span></p>
+                                    </td>
+                                </tr>
+                            </table>
+                            <p class="cefa-row"><span class="cefa-label">Adresse : </span>
+                                <span class="cefa-val" style="min-width:300px;"><t t-esc="stag.street or ''"/></span></p>
+                            <table class="cef">
+                                <tr>
+                                    <td style="width:30%;">
+                                        <p class="cefa-row"><span class="cefa-label">CP : </span>
+                                            <span class="cefa-val"><t t-esc="stag.zip or ''"/></span></p>
+                                    </td>
+                                    <td style="width:70%;">
+                                        <p class="cefa-row"><span class="cefa-label">VILLE : </span>
+                                            <span class="cefa-val"><t t-esc="stag.city or ''"/></span></p>
+                                    </td>
+                                </tr>
+                            </table>
+                            <table class="cef">
+                                <tr>
+                                    <td style="width:40%;">
+                                        <p class="cefa-row"><span class="cefa-label">Tél : </span>
+                                            <span class="cefa-val"><t t-esc="stag.phone or ''"/></span></p>
+                                    </td>
+                                    <td style="width:60%;">
+                                        <p class="cefa-row"><span class="cefa-label">e-mail : </span>
+                                            <span class="cefa-val"><t t-esc="stag.email or ''"/></span></p>
+                                    </td>
+                                </tr>
+                            </table>
+                            <p class="cefa-row"><span class="cefa-label">Dernière classe fréquentée : </span>
+                                <span class="cefa-val" style="min-width:150px;">&#160;</span>
+                                &#160; <span class="cefa-label">Département du dernier établissement : </span>
+                                <span class="cefa-val" style="min-width:60px;">&#160;</span>
+                            </p>
+                            <p class="cefa-row"><span class="cefa-label">Diplôme le plus élevé obtenu : </span>
+                                <t t-if="insc and insc.niveau_etudes">
+                                    <span class="cefa-val"><t t-esc="dict(insc._fields['niveau_etudes'].selection).get(insc.niveau_etudes, '')"/></span>
+                                </t>
+                                <t t-else="">
+                                    <span class="cefa-val" style="min-width:200px;">&#160;</span>
+                                </t>
+                            </p>
+                            <p class="cefa-row"><span class="cefa-label">Situation avant l'entrée au CFA : </span>
+                                &#9744; Scolaire &#160; &#9744; Apprenti &#160; &#9744; Étudiant &#160;
+                                &#9744; Employé (CDD ou CDI) &#160; &#9744; Demandeur d'emploi &#160; &#9744; Autre</p>
+                        </div>
+
+                        <!-- LE CONTRAT -->
+                        <div class="cefa-section">
+                            <p class="cefa-section-title">Le Contrat :</p>
+                            <p class="cefa-row">&#9744; Contrat initial &#160; &#9744; Contrat faisant suite à la rupture d'un précédent contrat</p>
+                            <table class="cef">
+                                <tr>
+                                    <td style="width:50%;">
+                                        <p class="cefa-row"><span class="cefa-label">Début : </span>
+                                            <span class="cefa-val"><t t-esc="dd"/></span></p>
+                                    </td>
+                                    <td style="width:50%;">
+                                        <p class="cefa-row"><span class="cefa-label">Fin : </span>
+                                            <span class="cefa-val"><t t-esc="df"/></span></p>
+                                    </td>
+                                </tr>
+                            </table>
+                            <p class="cefa-row"><span class="cefa-label">Diplôme et mention préparés : </span>
+                                <span class="cefa-val"><t t-esc="o.formation_id.display_name or ''"/></span></p>
+                            <p class="cefa-row"><span class="cefa-label">Lieu de formation : </span>
+                                <span class="cefa-val">FRMJC Bretagne Pays de la Loire</span></p>
+
+                            <p class="bold" style="margin-top:10px; text-decoration:underline;">Pièces justificatives à transmettre :</p>
+                            <p class="cefa-row">&#9744; Copie recto verso d'une pièce d'identité à jour</p>
+                            <p class="cefa-row">&#9744; Copie du diplôme le plus élevé obtenu ou relevé de note</p>
+                            <p class="cefa-row">&#9744; Copie de la carte vitale ou attestation CPAM</p>
+                            <p class="bold underline" style="margin-top:6px;">Étranger non citoyen Européen :</p>
+                            <p class="cefa-row">&#9744; Titre de séjour sur le territoire Français autorisant à travailler sur le territoire en cours de validité</p>
+                        </div>
+
+                        <!-- Signatures -->
+                        <p class="fait-a">Date : <t t-esc="o.date_creation.strftime('%d/%m/%Y') if o.date_creation else '___/___/______'"/></p>
+                        <p class="mention-laa">(Signature précédée de la mention « Lu et Approuvé »)</p>
+
+                        <table class="sig-table">
+                            <tr>
+                                <td style="width:33%;">
+                                    <p class="sig-title">Signature de l'employeur et cachet</p>
+                                    <div style="min-height:80px;">&#160;</div>
+                                    <t t-if="rep"><p class="sig-name"><t t-esc="rep.name"/></p></t>
+                                </td>
+                                <td style="width:33%;">
+                                    <p class="sig-title">Signature de l'apprenti</p>
+                                    <div style="min-height:80px;">&#160;</div>
+                                    <p class="sig-name"><t t-esc="stag.name or '...'"/></p>
+                                </td>
+                                <td style="width:33%;">
+                                    <p class="sig-title">Signature du représentant légal (si mineur)</p>
+                                    <div style="min-height:80px;">&#160;</div>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <div class="frmjc-footer">
+                            FRMJC Bretagne · CFA Sport et Animation · 5 rue de Lorraine 35000 RENNES ·
+                            Mise à jour : <t t-esc="o.date_creation.strftime('%d/%m/%Y') if o.date_creation else ''"/>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

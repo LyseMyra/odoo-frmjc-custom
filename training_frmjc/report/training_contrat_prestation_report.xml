@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ── Action rapport ───────────────────────────────────────────── -->
+    <record id="action_report_contrat_prestation" model="ir.actions.report">
+        <field name="name">Convention de prestation</field>
+        <field name="model">training.depense.intervenant</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">training_frmjc.report_contrat_prestation</field>
+        <field name="report_file">training_frmjc.report_contrat_prestation</field>
+        <field name="binding_model_id" ref="model_training_depense_intervenant"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="training_frmjc.paperformat_frmjc_a4"/>
+    </record>
+
+    <!-- ── Template QWeb ────────────────────────────────────────────── -->
+    <template id="report_contrat_prestation">
+        <t t-call="web.html_container">
+            <t t-set="partners" t-value="docs.mapped('partner_id')"/>
+            <t t-foreach="partners" t-as="partner">
+                <t t-set="depenses_partner" t-value="docs.filtered(lambda d: d.partner_id == partner)"/>
+                <t t-set="session" t-value="depenses_partner[0].session_id"/>
+                <!-- Lignes du ruban pour cet intervenant dans cette session -->
+                <t t-set="week_lines" t-value="session.week_ids.week_line_ids.filtered(lambda l: l.intervenant_id == partner)"/>
+                <t t-set="modules_list" t-value="week_lines.mapped('module_id').filtered(lambda m: m)"/>
+                <t t-set="total_montant" t-value="sum(depenses_partner.mapped('montant_total'))"/>
+
+                <t t-call="web.external_layout">
+                    <style>
+                        .header { position: relative !important; top: auto !important; float: none !important; }
+                    </style>
+                    <div class="page" style="font-size: 11pt; line-height: 1.5;">
+
+                        <!-- ── Titre ───────────────────────────────────── -->
+                        <div class="row mb-4">
+                            <div class="col-12 text-center">
+                                <h3 style="border: 2px solid black; padding: 6px 20px; display: inline-block; font-size: 14pt;">
+                                    CONVENTION DE PRESTATION DE FORMATION
+                                </h3>
+                            </div>
+                        </div>
+
+                        <!-- ── Soussignés ──────────────────────────────── -->
+                        <p><strong>Entre les soussignés :</strong></p>
+
+                        <!-- Intervenant -->
+                        <div class="mb-3" style="padding-left: 16px;">
+                            <span t-field="partner.name"/>
+                            <t t-if="partner.parent_id">
+                                <br/><t t-esc="partner.parent_id.name"/>
+                            </t>
+                            <t t-if="partner.vat">
+                                <br/>Siret : <t t-esc="partner.vat"/>
+                            </t>
+                        </div>
+
+                        <p><strong>Et</strong></p>
+
+                        <!-- Organisme de formation -->
+                        <div class="mb-3" style="padding-left: 16px;">
+                            Le demandeur, <t t-esc="env.company.name"/>,<br/>
+                            <t t-if="env.company.vat">
+                                N° de SIRET <t t-esc="env.company.vat"/> – Code APE 9329Z<br/>
+                            </t>
+                            <t t-esc="env.company.street"/> à <t t-esc="env.company.city"/>,
+                            dont le siège social est sis représentée par
+                            <t t-esc="session.signataire_nom or ''"/> en sa qualité de
+                            <t t-esc="session.signataire_titre or 'représentant légal'"/> ;
+                        </div>
+
+                        <p>
+                            <strong>Il a été conclu la convention suivante, en application de l'article L 920-1 du Code du Travail.</strong>
+                        </p>
+
+                        <!-- ── Article 1 ───────────────────────────────── -->
+                        <p><u>Article 1 — OBJET</u></p>
+                        <p>
+                            La présente convention a pour objet la réalisation par le prestataire d'une action de formation
+                            dans le cadre du <strong><t t-esc="session.formation_id.intitule"/></strong>
+                            à destination des participant·es pour le compte de <t t-esc="env.company.name"/>
+                            par l'intervenant·e <span t-field="partner.name"/>.
+                        </p>
+
+                        <!-- ── Article 2 ───────────────────────────────── -->
+                        <p><u>Article 2 — CONTENU</u></p>
+                        <p>
+                            L'action de formation portera sur les modules décrits dans le dossier d'habilitation
+                            transmis par <t t-esc="env.company.name"/> à l'intervenant·e <span t-field="partner.name"/>
+                            et dont les contenus ont été définis lors des temps de préparation :
+                        </p>
+                        <t t-if="modules_list">
+                            <ul>
+                                <t t-foreach="modules_list" t-as="module">
+                                    <li><t t-esc="module.intitule"/></li>
+                                </t>
+                            </ul>
+                        </t>
+                        <p style="font-size: 10pt; margin-top: 6px;">
+                            Tous changements relatifs aux dates, horaires et lieux de déroulé de l'action de formation
+                            à l'initiative du demandeur devront être signalés par écrit au prestataire dans un délai
+                            minimum de prévenance de 8 jours et feront l'objet d'un avenant à la présente convention.
+                        </p>
+
+                        <!-- ── Article 3 ───────────────────────────────── -->
+                        <p><u>Article 3 — LIEU</u></p>
+                        <p>L'action de formation se déroulera <strong><t t-esc="session.lieu_formation or 'en itinérance'"/></strong>.</p>
+
+                        <!-- ── Article 4 ───────────────────────────────── -->
+                        <p><u>Article 4 — BÉNÉFICIAIRES</u></p>
+                        <p>
+                            L'action de formation sera réalisée auprès des
+                            <strong><t t-esc="session.nb_stagiaires_acceptes"/></strong>
+                            stagiaires de la promotion <strong><t t-esc="session.formation_id.intitule"/></strong>.
+                        </p>
+
+                        <!-- ── Article 5 ───────────────────────────────── -->
+                        <p><u>Article 5 — INTERVENANT</u></p>
+                        <p>
+                            L'action de formation sera conduite par <strong><span t-field="partner.name"/></strong>,
+                            formateur·rice pour les modules intitulés :
+                        </p>
+                        <t t-if="modules_list">
+                            <ul>
+                                <t t-foreach="modules_list" t-as="module">
+                                    <li><t t-esc="module.intitule"/></li>
+                                </t>
+                            </ul>
+                        </t>
+                        <p>
+                            L'organisme de formation s'engage à respecter les critères de qualité de la certification QUALIOPI
+                            intégrés à l'échange préparatoire à la formation. Le formateur s'engage à fournir dans ce cadre,
+                            un CV à jour et les différentes attestations de formations et compétences acquises récemment.
+                        </p>
+                        <p>
+                            L'incapacité pour l'intervenant·e d'accomplir toute ou partie de la prestation devra,
+                            sauf cas de force majeure, faire l'objet d'une information écrite au demandeur adressée
+                            au moins 8 jours avant la date de réalisation de l'action.
+                        </p>
+                        <p>
+                            Toutefois, l'intervenant·e s'engage à tout mettre en œuvre pour proposer un nouveau
+                            formateur de compétences équivalentes.
+                        </p>
+
+                        <!-- ── Article 6 ───────────────────────────────── -->
+                        <p><u>Article 6 — HONORAIRES ET FRAIS</u></p>
+                        <p>
+                            En contrepartie de l'action de formation, le demandeur s'engage à acquitter
+                            les honoraires et frais suivants :
+                        </p>
+                        <ul>
+                            <t t-foreach="depenses_partner" t-as="d">
+                                <li>
+                                    <t t-esc="d.description or d.product_id.name"/> :
+                                    <t t-esc="'%.2f' % d.prix_unitaire"/> €
+                                    <t t-if="d.quantite != 1.0">
+                                        × <t t-esc="'%.2f' % d.quantite"/>
+                                    </t>
+                                    = <strong><t t-esc="'%.2f' % d.montant_total"/> €</strong>
+                                </li>
+                            </t>
+                        </ul>
+                        <p>
+                            Prestation exonérée de TVA : Prestation formation et accessoires,
+                            Article 261-4-4 du Code Général des Impôts.
+                        </p>
+                        <p>
+                            Le règlement de la rémunération du prestataire sera effectué exclusivement par virement
+                            à réception des heures effectuées.
+                        </p>
+                        <p>
+                            Les frais de déplacement à la charge du demandeur seront remboursés exclusivement
+                            par virement à l'intervenant·e qui en aura fait l'avance, sur présentation des
+                            justificatifs au centime près.
+                        </p>
+
+                        <!-- ── Article 7 ───────────────────────────────── -->
+                        <p><u>Article 7 — DURÉE</u></p>
+                        <p>
+                            L'action de formation se déroulera sur
+                            <strong><t t-esc="'%.1f' % sum(depenses_partner.mapped('quantite'))"/></strong>
+                            jour(s).
+                        </p>
+                        <p>
+                            Les date(s) prévisionnelles de l'action se situent dans la période du
+                            <strong><t t-esc="session.date_debut.strftime('%d/%m/%Y') if session.date_debut else '?'"/></strong>
+                            au
+                            <strong><t t-esc="session.date_fin.strftime('%d/%m/%Y') if session.date_fin else '?'"/></strong>.
+                        </p>
+                        <p>
+                            Toute prolongation de la présente convention devra faire l'objet d'un avenant sous peine
+                            de nullité. Cette prolongation devra être notifiée par courrier dans les 8 jours précédents
+                            son entrée en application.
+                        </p>
+
+                        <!-- ── Article 8 ───────────────────────────────── -->
+                        <p><u>Article 8 — RÉSILIATION</u></p>
+                        <p>
+                            Une résolution amiable pourra intervenir sur accord commun des parties entériné par
+                            la signature d'un avenant à la présente.
+                        </p>
+                        <p>Le non-respect des articles de la présente entraînera la résiliation de la convention.</p>
+                        <p>Une pénalité pourra être exigée par l'une ou l'autre des parties dans les cas suivants :</p>
+                        <ul>
+                            <li>Non-respect des délais de prévenance relatifs aux articles 3, 5 et 7</li>
+                            <li>Arrêt unilatéral de la convention à l'initiative du demandeur</li>
+                        </ul>
+                        <p>
+                            Cette pénalité sera calculée proportionnellement aux nombres d'interventions concernées
+                            par l'annulation à raison de 40 % des sommes qui auraient dues être facturées si la
+                            prestation avait été réalisée. Un minimum de 500 € sera exigé si le calcul ci-dessus
+                            n'atteignait pas ce montant.
+                        </p>
+                        <p>
+                            Le demandeur n'aura la faculté de rompre la présente convention qu'en cas de faute grave
+                            avérée de l'intervenant, sans pour autant pouvoir prétendre au versement d'une quelconque
+                            indemnité par le prestataire.
+                        </p>
+
+                        <!-- ── Article 9 ───────────────────────────────── -->
+                        <p><u>Article 9 — CONTESTATIONS ET LITIGES</u></p>
+                        <p>
+                            Pour tout litige pouvant survenir dans l'interprétation ou l'application de la présente
+                            convention, les parties s'engagent à solliciter l'avis d'un tiers arbitre choisi d'un
+                            commun accord avant tout recours à la juridiction compétente.
+                        </p>
+                        <p>
+                            Le tribunal compétent pour le traitement de tout litige pouvant intervenir dans l'exécution
+                            de cette convention sera le tribunal de commerce de Romans.
+                        </p>
+
+                        <!-- ── Signatures ──────────────────────────────── -->
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <p>
+                                    Fait à <t t-esc="env.company.city or 'Rennes'"/>,
+                                    le <t t-esc="time.strftime('%d/%m/%Y')"/>, deux exemplaires,
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="row mt-3">
+                            <div class="col-6" style="border: 1px solid #333; padding: 12px; min-height: 120px;">
+                                <p style="text-align:center;">
+                                    <strong><t t-esc="env.company.name"/></strong><br/>
+                                    <t t-esc="env.company.street or ''"/>
+                                    <t t-if="env.company.zip or env.company.city">
+                                        <br/><t t-esc="(env.company.zip or '') + ' ' + (env.company.city or '')"/>
+                                    </t>
+                                </p>
+                                <br/><br/><br/>
+                                <p style="text-align:center;">
+                                    <t t-esc="session.signataire_nom or ''"/><br/>
+                                    <em><t t-esc="session.signataire_titre or ''"/></em>
+                                </p>
+                            </div>
+                            <div class="col-6" style="border: 1px solid #333; padding: 12px; min-height: 120px;">
+                                <p style="text-align:center;">
+                                    <span t-field="partner.name"/>
+                                    <t t-if="partner.parent_id">
+                                        <br/><t t-esc="partner.parent_id.name"/>
+                                    </t>
+                                    <br/>Nom, qualité et signature
+                                </p>
+                                <br/><br/><br/>
+                            </div>
+                        </div>
+
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

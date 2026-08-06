@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ═══════════════════════════════════════════════
+         Vue d'ensemble par session
+         Pivot + graph sur training.inscription
+    ═══════════════════════════════════════════════ -->
+
+    <record id="view_dashboard_inscription_pivot" model="ir.ui.view">
+        <field name="name">training.inscription.pivot.dashboard</field>
+        <field name="model">training.inscription</field>
+        <field name="arch" type="xml">
+            <pivot string="Taux de présence" display_quantity="true">
+                <field name="session_id" type="row"/>
+                <field name="partner_id" type="row"/>
+                <field name="heures_prevues" type="measure"/>
+                <field name="heures_presentes" type="measure"/>
+                <field name="taux_presence" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_dashboard_inscription_graph" model="ir.ui.view">
+        <field name="name">training.inscription.graph.dashboard</field>
+        <field name="model">training.inscription</field>
+        <field name="arch" type="xml">
+            <graph string="Taux de présence" type="bar" stacked="0">
+                <field name="session_id" type="row"/>
+                <field name="taux_presence" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_dashboard_presences" model="ir.actions.act_window">
+        <field name="name">Taux de présence</field>
+        <field name="res_model">training.inscription</field>
+        <field name="view_mode">pivot,graph,list</field>
+        <field name="domain">[('statut','=','accepte')]</field>
+        <field name="context">{'search_default_group_session': 1}</field>
+        <field name="view_ids" eval="[
+            (5, 0, 0),
+            (0, 0, {'view_mode': 'pivot',  'view_id': ref('view_dashboard_inscription_pivot')}),
+            (0, 0, {'view_mode': 'graph',  'view_id': ref('view_dashboard_inscription_graph')}),
+            (0, 0, {'view_mode': 'list'}),
+        ]"/>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════
+         Résultats par BC (certification)
+    ═══════════════════════════════════════════════ -->
+
+    <record id="view_dashboard_certification_graph" model="ir.ui.view">
+        <field name="name">training.certification.graph.dashboard</field>
+        <field name="model">training.certification</field>
+        <field name="arch" type="xml">
+            <graph string="Résultats par BC" type="bar" stacked="0">
+                <field name="bloc_id" type="row"/>
+                <field name="resultat" type="col"/>
+                <field name="id" type="measure" string="Nb candidats"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_dashboard_certification_pivot" model="ir.ui.view">
+        <field name="name">training.certification.pivot.dashboard</field>
+        <field name="model">training.certification</field>
+        <field name="arch" type="xml">
+            <pivot string="Résultats par BC">
+                <field name="session_id" type="row"/>
+                <field name="bloc_id" type="row"/>
+                <field name="resultat" type="col"/>
+                <field name="id" type="measure" string="Nb candidats"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="action_dashboard_resultats_bc" model="ir.actions.act_window">
+        <field name="name">Résultats par BC</field>
+        <field name="res_model">training.certification</field>
+        <field name="view_mode">graph,pivot,list</field>
+        <field name="domain">[('statut','in',('resultat_saisi','valide','transmis'))]</field>
+        <field name="context">{'search_default_group_session': 1}</field>
+        <field name="view_ids" eval="[
+            (5, 0, 0),
+            (0, 0, {'view_mode': 'graph', 'view_id': ref('view_dashboard_certification_graph')}),
+            (0, 0, {'view_mode': 'pivot', 'view_id': ref('view_dashboard_certification_pivot')}),
+            (0, 0, {'view_mode': 'list'}),
+        ]"/>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════
+         Vue d'ensemble par session
+         Pivot sur training.inscription groupé session
+    ═══════════════════════════════════════════════ -->
+
+    <record id="view_dashboard_session_pivot" model="ir.ui.view">
+        <field name="name">training.inscription.pivot.session</field>
+        <field name="model">training.inscription</field>
+        <field name="arch" type="xml">
+            <pivot string="Vue d'ensemble sessions">
+                <field name="session_id" type="row"/>
+                <field name="statut" type="col"/>
+                <field name="id" type="measure" string="Nb dossiers"/>
+                <field name="taux_presence" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_dashboard_session_graph" model="ir.ui.view">
+        <field name="name">training.inscription.graph.session</field>
+        <field name="model">training.inscription</field>
+        <field name="arch" type="xml">
+            <graph string="Vue d'ensemble sessions" type="bar" stacked="1">
+                <field name="session_id" type="row"/>
+                <field name="statut" type="col"/>
+                <field name="id" type="measure" string="Nb dossiers"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_dashboard_sessions" model="ir.actions.act_window">
+        <field name="name">Vue d'ensemble par session</field>
+        <field name="res_model">training.inscription</field>
+        <field name="view_mode">graph,pivot,list</field>
+        <field name="view_ids" eval="[
+            (5, 0, 0),
+            (0, 0, {'view_mode': 'graph', 'view_id': ref('view_dashboard_session_graph')}),
+            (0, 0, {'view_mode': 'pivot', 'view_id': ref('view_dashboard_session_pivot')}),
+            (0, 0, {'view_mode': 'list'}),
+        ]"/>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════
+         Recettes BPF — par mode et type de financement
+         Pivot + graph sur training.inscription
+    ═══════════════════════════════════════════════ -->
+
+    <record id="view_dashboard_bpf_pivot" model="ir.ui.view">
+        <field name="name">training.inscription.pivot.bpf</field>
+        <field name="model">training.inscription</field>
+        <field name="arch" type="xml">
+            <pivot string="Recettes BPF" display_quantity="true">
+                <field name="session_id" type="row"/>
+                <field name="mode_stagiaire" type="row"/>
+                <field name="type_financement" type="col"/>
+                <field name="montant_theorique" type="measure"/>
+                <field name="montant_reel" type="measure"/>
+                <field name="heures_facturables" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_dashboard_bpf_graph" model="ir.ui.view">
+        <field name="name">training.inscription.graph.bpf</field>
+        <field name="model">training.inscription</field>
+        <field name="arch" type="xml">
+            <graph string="Recettes BPF" type="bar" stacked="0">
+                <field name="mode_stagiaire" type="row"/>
+                <field name="type_financement" type="col"/>
+                <field name="montant_reel" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_dashboard_bpf" model="ir.actions.act_window">
+        <field name="name">Recettes BPF</field>
+        <field name="res_model">training.inscription</field>
+        <field name="view_mode">pivot,graph,list</field>
+        <field name="domain">[('statut','=','accepte')]</field>
+        <field name="view_ids" eval="[
+            (5, 0, 0),
+            (0, 0, {'view_mode': 'pivot', 'view_id': ref('view_dashboard_bpf_pivot')}),
+            (0, 0, {'view_mode': 'graph', 'view_id': ref('view_dashboard_bpf_graph')}),
+            (0, 0, {'view_mode': 'list'}),
+        ]"/>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════
+         Dépenses intervenants — par produit / session
+         Pivot + graph sur training.depense.intervenant
+    ═══════════════════════════════════════════════ -->
+
+    <record id="view_dashboard_depenses_pivot" model="ir.ui.view">
+        <field name="name">training.depense.intervenant.pivot.dashboard</field>
+        <field name="model">training.depense.intervenant</field>
+        <field name="arch" type="xml">
+            <pivot string="Dépenses intervenants" display_quantity="true">
+                <field name="session_id" type="row"/>
+                <field name="product_id" type="row"/>
+                <field name="partner_id" type="row"/>
+                <field name="statut" type="col"/>
+                <field name="montant_total" type="measure"/>
+                <field name="quantite" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_dashboard_depenses_graph" model="ir.ui.view">
+        <field name="name">training.depense.intervenant.graph.dashboard</field>
+        <field name="model">training.depense.intervenant</field>
+        <field name="arch" type="xml">
+            <graph string="Dépenses intervenants" type="bar" stacked="1">
+                <field name="session_id" type="row"/>
+                <field name="product_id" type="col"/>
+                <field name="montant_total" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_dashboard_depenses" model="ir.actions.act_window">
+        <field name="name">Dépenses intervenants</field>
+        <field name="res_model">training.depense.intervenant</field>
+        <field name="view_mode">pivot,graph,list</field>
+        <field name="view_ids" eval="[
+            (5, 0, 0),
+            (0, 0, {'view_mode': 'pivot', 'view_id': ref('view_dashboard_depenses_pivot')}),
+            (0, 0, {'view_mode': 'graph', 'view_id': ref('view_dashboard_depenses_graph')}),
+            (0, 0, {'view_mode': 'list'}),
+        ]"/>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════
+         Suivi financier sessions — marge, coût/stagiaire
+         Pivot + graph sur training.session
+    ═══════════════════════════════════════════════ -->
+
+    <record id="view_dashboard_financier_pivot" model="ir.ui.view">
+        <field name="name">training.session.pivot.financier</field>
+        <field name="model">training.session</field>
+        <field name="arch" type="xml">
+            <pivot string="Suivi financier" display_quantity="true">
+                <field name="formation_id" type="row"/>
+                <field name="name" type="row"/>
+                <field name="nb_stagiaires_acceptes" type="measure"/>
+                <field name="total_recettes_theoriques" type="measure"/>
+                <field name="total_recettes_reelles" type="measure"/>
+                <field name="total_depenses_commandees" type="measure"/>
+                <field name="marge_nette" type="measure"/>
+                <field name="cout_par_stagiaire" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_dashboard_financier_graph" model="ir.ui.view">
+        <field name="name">training.session.graph.financier</field>
+        <field name="model">training.session</field>
+        <field name="arch" type="xml">
+            <graph string="Suivi financier" type="bar" stacked="0">
+                <field name="formation_id" type="row"/>
+                <field name="marge_nette" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_dashboard_financier" model="ir.actions.act_window">
+        <field name="name">Suivi financier</field>
+        <field name="res_model">training.session</field>
+        <field name="view_mode">pivot,graph,list</field>
+        <field name="domain">[('statut','!=','annule')]</field>
+        <field name="view_ids" eval="[
+            (5, 0, 0),
+            (0, 0, {'view_mode': 'pivot', 'view_id': ref('view_dashboard_financier_pivot')}),
+            (0, 0, {'view_mode': 'graph', 'view_id': ref('view_dashboard_financier_graph')}),
+            (0, 0, {'view_mode': 'list'}),
+        ]"/>
+    </record>
+
+</odoo>

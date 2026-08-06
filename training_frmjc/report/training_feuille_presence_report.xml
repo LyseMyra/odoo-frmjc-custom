@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="report_feuille_presence_dj" model="ir.actions.report">
+        <field name="name">Feuille de présence</field>
+        <field name="model">training.formateur.demi_journee</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">training_frmjc.tmpl_feuille_presence_dj</field>
+        <field name="report_file">training_frmjc.tmpl_feuille_presence_dj</field>
+        <field name="binding_model_id" ref="model_training_formateur_demi_journee"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="training_frmjc.paperformat_frmjc_a4"/>
+    </record>
+
+    <template id="tmpl_feuille_presence_dj">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+
+                    <t t-set="semaine"    t-value="doc.semaine_id"/>
+                    <t t-set="session"   t-value="semaine.session_id"/>
+                    <t t-set="intervenant" t-value="semaine.intervenant_id"/>
+                    <t t-set="dj_label"  t-value="'Matin' if doc.demi_journee == 'matin' else 'Apres-midi'"/>
+                    <t t-set="attendances" t-value="doc.get_attendances()"/>
+
+                    <div style="font-size:10pt; padding:.5cm 1cm;">
+
+                        <!-- ── Titre ──────────────────────────────────── -->
+                        <div style="text-align:center; margin-bottom:.7cm;">
+                            <h2 style="font-size:13pt; font-weight:bold; color:#1a5276;
+                                       border-bottom:2px solid #1a5276;
+                                       padding-bottom:.3cm; margin:0 0 .2cm 0;">
+                                FEUILLE DE PRESENCE
+                            </h2>
+                        </div>
+
+                        <!-- ── En-tête session ────────────────────────── -->
+                        <table style="width:100%; font-size:9.5pt;
+                                      border:1px solid #1a5276; border-radius:4px;
+                                      margin-bottom:.6cm;">
+                            <tr style="background:#eaf0fb;">
+                                <td style="padding:.25cm .4cm; width:25%; color:#555;">Session :</td>
+                                <td style="padding:.25cm .4cm; font-weight:bold; width:40%;">
+                                    <t t-esc="session.name or '—'"/>
+                                </td>
+                                <td style="padding:.25cm .4cm; width:15%; color:#555;">Date :</td>
+                                <td style="padding:.25cm .4cm; font-weight:bold; width:20%;">
+                                    <t t-esc="doc.date.strftime('%d/%m/%Y') if doc.date else '—'"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding:.25cm .4cm; color:#555;">Intervenant :</td>
+                                <td style="padding:.25cm .4cm; font-weight:bold;">
+                                    <t t-esc="intervenant.name or '—'"/>
+                                </td>
+                                <td style="padding:.25cm .4cm; color:#555;">Demi-journee :</td>
+                                <td style="padding:.25cm .4cm; font-weight:bold;">
+                                    <t t-esc="dj_label"/>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- ── Tableau stagiaires ─────────────────────── -->
+                        <table style="width:100%; border-collapse:collapse;
+                                      font-size:9.5pt; margin-bottom:.6cm;">
+                            <thead>
+                                <tr style="background:#1a5276; color:#fff;">
+                                    <th style="padding:.3cm .4cm; text-align:left; width:38%;">
+                                        Stagiaire
+                                    </th>
+                                    <th style="padding:.3cm .4cm; text-align:left; width:17%;">
+                                        Statut
+                                    </th>
+                                    <th style="padding:.3cm .4cm; text-align:center; width:45%;">
+                                        Signature du stagiaire
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="attendances" t-as="att">
+                                    <tr t-attf-style="background:#{att_index % 2 == 0 and '#f8f9fa' or '#fff'}; height:2.5cm;">
+                                        <td style="padding:.25cm .4cm;
+                                                   border-bottom:1px solid #dee2e6;
+                                                   font-weight:500; vertical-align:middle;">
+                                            <t t-esc="att.partner_id.name or '—'"/>
+                                        </td>
+                                        <td style="padding:.25cm .4cm;
+                                                   border-bottom:1px solid #dee2e6;
+                                                   vertical-align:middle; font-size:9pt;">
+                                            <t t-if="att.statut == 'present'">Present(e)</t>
+                                            <t t-elif="att.statut == 'absent'">Absent(e)</t>
+                                            <t t-elif="att.statut == 'justifie'">Justifie(e)</t>
+                                            <t t-else="">En attente</t>
+                                        </td>
+                                        <td style="padding:.2cm .4cm;
+                                                   border-bottom:1px solid #dee2e6;
+                                                   text-align:center; vertical-align:middle;">
+                                            <t t-if="att.signature">
+                                                <img t-att-src="'/web/image/training.attendance/%d/signature' % att.id"
+                                                     style="max-height:2cm; max-width:9cm;"
+                                                     alt=""/>
+                                            </t>
+                                        </td>
+                                    </tr>
+                                </t>
+                                <t t-if="not attendances">
+                                    <tr>
+                                        <td colspan="3"
+                                            style="padding:.5cm; text-align:center;
+                                                   color:#888; font-style:italic;">
+                                            Aucun stagiaire pour cette demi-journee.
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+
+                        <!-- ── Signatures ─────────────────────────────── -->
+                        <table style="width:100%; margin-top:.5cm;">
+                            <tr>
+                                <td style="width:50%; padding-right:.5cm; vertical-align:top;">
+                                    <div style="border:1px solid #333; padding:.4cm; min-height:3.5cm;">
+                                        <p style="font-weight:bold; text-align:center;
+                                                  margin:0 0 .2cm 0; font-size:9.5pt;">
+                                            Signature de l'organisme de formation
+                                        </p>
+                                        <p style="font-size:8.5pt; color:#555; margin:0 0 .3cm 0;">
+                                            <t t-esc="env.company.name"/>
+                                        </p>
+                                        <p style="font-size:8.5pt; margin:0;">Date :</p>
+                                        <div style="height:2cm;"></div>
+                                    </div>
+                                </td>
+                                <td style="width:50%; padding-left:.5cm; vertical-align:top;">
+                                    <div style="border:1px solid #333; padding:.4cm; min-height:3.5cm;">
+                                        <p style="font-weight:bold; text-align:center;
+                                                  margin:0 0 .2cm 0; font-size:9.5pt;">
+                                            Signature de l'intervenant
+                                        </p>
+                                        <p style="font-size:8.5pt; color:#555; margin:0 0 .2cm 0;">
+                                            <t t-esc="intervenant.name or ''"/>
+                                        </p>
+                                        <t t-if="doc.statut == 'signe' and doc.signature">
+                                            <div style="text-align:center; margin-top:.2cm;">
+                                                <img t-att-src="'/web/image/training.formateur.demi_journee/%d/signature' % doc.id"
+                                                     style="max-height:2.2cm; max-width:9cm;"
+                                                     alt="Signature intervenant"/>
+                                            </div>
+                                            <p style="font-size:7.5pt; color:#888;
+                                                      text-align:center; margin:.1cm 0 0 0;">
+                                                Signe le
+                                                <t t-esc="doc.signe_le.strftime('%d/%m/%Y a %H:%M') if doc.signe_le else '—'"/>
+                                            </p>
+                                        </t>
+                                        <t t-else="">
+                                            <div style="height:2.2cm;"></div>
+                                        </t>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+
+                    </div>
+
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

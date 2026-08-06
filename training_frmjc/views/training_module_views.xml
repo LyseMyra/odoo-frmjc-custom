@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ── Vue liste ────────────────────────────────────────────────── -->
+    <record id="view_training_module_list" model="ir.ui.view">
+        <field name="name">training.module.list</field>
+        <field name="model">training.module</field>
+        <field name="arch" type="xml">
+            <list string="Modules pédagogiques">
+                <field name="sequence" optional="hide"/>
+                <field name="code" optional="hide"/>
+                <field name="intitule"/>
+                <field name="objectifs" optional="show"/>
+                <field name="bloc_id"/>
+                <field name="formation_id" optional="show"/>
+                <field name="intervenant_default_id" optional="show"/>
+                <field name="volume_of" string="Vol OF (h)"/>
+                <field name="volume_entreprise" string="Vol ENT (h)"/>
+                <field name="volume_total" string="Total (h)" readonly="1"/>
+                <field name="semaine_debut" string="S° début" readonly="1" optional="show"/>
+                <field name="semaine_fin" string="S° fin" readonly="1" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ── Vue formulaire ───────────────────────────────────────────── -->
+    <record id="view_training_module_form" model="ir.ui.view">
+        <field name="name">training.module.form</field>
+        <field name="model">training.module</field>
+        <field name="arch" type="xml">
+            <form string="Module pédagogique">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="intitule" string="Module"/>
+                        <h1>
+                            <field name="intitule" placeholder="Intitulé du module"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Classification">
+                            <field name="bloc_id"/>
+                            <field name="formation_id" readonly="1"/>
+                            <field name="type_bloc" readonly="1"/>
+                            <field name="code" invisible="not code"/>
+                            <field name="sequence" invisible="1"/>
+                        </group>
+                        <group string="Volumes horaires">
+                            <field name="volume_of" string="Vol. en centre (h)"/>
+                            <field name="volume_entreprise" string="Vol. en entreprise (h)"/>
+                            <field name="volume_total" readonly="1" string="Total (h)"/>
+                            <field name="intervenant_default_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Répartition hebdomadaire">
+                            <field name="repartition_ids">
+                                <list editable="bottom" string="Répartition (semaine / jour / heures)">
+                                    <field name="semaine" string="N° semaine"/>
+                                    <field name="jour"/>
+                                    <field name="heures" string="Heures"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Contenu pédagogique">
+                            <group>
+                                <field name="objectifs"/>
+                                <field name="contenus"/>
+                                <field name="modalites_peda"/>
+                            </group>
+                        </page>
+                        <page string="Entreprise / Alternance">
+                            <group>
+                                <field name="activites_entreprise"
+                                       placeholder="Ce que le/la stagiaire réalise en situation de travail…"/>
+                                <field name="commandes_tuteur"
+                                       placeholder="Instructions adressées au maître d'apprentissage / tuteur…"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ── Vue recherche ────────────────────────────────────────────── -->
+    <record id="view_training_module_search" model="ir.ui.view">
+        <field name="name">training.module.search</field>
+        <field name="model">training.module</field>
+        <field name="arch" type="xml">
+            <search string="Modules">
+                <field name="code"/>
+                <field name="intitule"/>
+                <field name="bloc_id"/>
+                <field name="formation_id"/>
+                <separator/>
+                <filter name="group_by_bloc" string="Par bloc"
+                        context="{'group_by': 'bloc_id'}"/>
+                <filter name="group_by_formation" string="Par formation"
+                        context="{'group_by': 'formation_id'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- ── Action fenêtre ───────────────────────────────────────────── -->
+    <record id="action_training_module" model="ir.actions.act_window">
+        <field name="name">Modules pédagogiques</field>
+        <field name="res_model">training.module</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_training_module_search"/>
+        <field name="context">{'search_default_group_by_bloc': 1}</field>
+    </record>
+
+</odoo>

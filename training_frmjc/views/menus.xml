@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ── Racine ──────────────────────────────────────────────────── -->
+    <menuitem id="menu_training_root"
+        name="Formations"
+        sequence="50"
+        web_icon="training_frmjc,static/description/icon.png" />
+
+    <!-- ── 1. Sessions ─────────────────────────────────────────────── -->
+    <menuitem id="menu_training_main"
+        name="Sessions"
+        parent="menu_training_root"
+        sequence="10" />
+
+    <menuitem id="menu_training_session"
+        name="Sessions de formation"
+        parent="menu_training_main"
+        action="action_training_session"
+        sequence="10" />
+
+    <menuitem id="menu_training_week"
+        name="Semaines / Ruban"
+        parent="menu_training_main"
+        action="action_training_week"
+        sequence="20" />
+
+    <menuitem id="menu_training_depense_intervenant"
+        name="Dépenses intervenants"
+        parent="menu_training_main"
+        action="action_training_depense_intervenant"
+        sequence="27" />
+
+    <menuitem id="menu_training_dashboard_sessions"
+        name="Vue d'ensemble"
+        parent="menu_training_main"
+        action="action_dashboard_sessions"
+        sequence="30" />
+
+    <menuitem id="menu_training_dashboard_presences"
+        name="Taux de présence"
+        parent="menu_training_main"
+        action="action_dashboard_presences"
+        sequence="40" />
+
+    <menuitem id="menu_training_dashboard_resultats"
+        name="Résultats par BC"
+        parent="menu_training_main"
+        action="action_dashboard_resultats_bc"
+        sequence="50" />
+
+    <!-- ── 2. Candidats ────────────────────────────────────────────── -->
+    <menuitem id="menu_training_candidats_root"
+        name="Candidats"
+        parent="menu_training_root"
+        sequence="20" />
+
+    <menuitem id="menu_training_inscription"
+        name="Dossiers d'inscription"
+        parent="menu_training_candidats_root"
+        action="action_training_inscription"
+        sequence="10" />
+
+    <menuitem id="menu_training_dropout"
+        name="Abandons"
+        parent="menu_training_candidats_root"
+        action="action_training_dropout"
+        sequence="20" />
+
+    <menuitem id="menu_training_conventions"
+        name="Conventions"
+        parent="menu_training_candidats_root"
+        action="action_training_convention"
+        sequence="30" />
+
+    <menuitem id="menu_training_alternance"
+        name="Dossiers d'alternance"
+        parent="menu_training_candidats_root"
+        action="action_training_alternance"
+        sequence="40" />
+
+    <!-- ── 3. Présences ────────────────────────────────────────────── -->
+    <menuitem id="menu_training_presences_root"
+        name="Présences"
+        parent="menu_training_root"
+        sequence="30" />
+
+    <menuitem id="menu_training_attendance"
+        name="Suivi des présences"
+        parent="menu_training_presences_root"
+        action="action_training_attendance"
+        sequence="10" />
+
+    <menuitem id="menu_training_attendance_absences"
+        name="Absences à traiter"
+        parent="menu_training_presences_root"
+        action="action_training_attendance_absences"
+        sequence="20" />
+
+    <menuitem id="menu_training_formateur_semaine"
+        name="Listes de présence intervenants"
+        parent="menu_training_presences_root"
+        action="action_formateur_semaine"
+        sequence="25" />
+
+    <menuitem id="menu_training_monthly_report"
+        name="Rapports mensuels"
+        parent="menu_training_presences_root"
+        action="action_training_monthly_report"
+        sequence="30" />
+
+    <!-- ── 4. Certification ────────────────────────────────────────── -->
+    <menuitem id="menu_training_certification_root"
+        name="Certification"
+        parent="menu_training_root"
+        sequence="40" />
+
+    <menuitem id="menu_training_certification_all"
+        name="Certifications"
+        parent="menu_training_certification_root"
+        action="action_training_certification"
+        sequence="10" />
+
+    <menuitem id="menu_training_jury_session"
+        name="Sessions jury"
+        parent="menu_training_certification_root"
+        action="action_training_jury_session"
+        sequence="20" />
+
+    <!-- ── 5. Analytique ─────────────────────────────────────────── -->
+    <menuitem id="menu_training_analytique"
+        name="Analytique"
+        parent="menu_training_root"
+        sequence="50" />
+
+    <menuitem id="menu_training_dashboard_financier"
+        name="Suivi financier sessions"
+        parent="menu_training_analytique"
+        action="action_dashboard_financier"
+        sequence="10" />
+
+    <menuitem id="menu_training_dashboard_bpf"
+        name="Recettes BPF"
+        parent="menu_training_analytique"
+        action="action_dashboard_bpf"
+        sequence="20" />
+
+    <menuitem id="menu_training_dashboard_depenses_analytique"
+        name="Dépenses intervenants"
+        parent="menu_training_analytique"
+        action="action_dashboard_depenses"
+        sequence="30" />
+
+    <menuitem id="menu_training_dashboard_presences_analytique"
+        name="Taux de présence"
+        parent="menu_training_analytique"
+        action="action_dashboard_presences"
+        sequence="40" />
+
+    <menuitem id="menu_training_dashboard_resultats_bc_analytique"
+        name="Résultats par BC"
+        parent="menu_training_analytique"
+        action="action_dashboard_resultats_bc"
+        sequence="50" />
+
+    <!-- ── 6. Configuration ────────────────────────────────────────── -->
+    <menuitem id="menu_training_config"
+        name="Configuration"
+        parent="menu_training_root"
+        sequence="100" />
+
+    <menuitem id="menu_training_habilitation"
+        name="Habilitations DRAJES"
+        parent="menu_training_config"
+        action="action_training_habilitation"
+        sequence="10" />
+
+    <menuitem id="menu_training_formation"
+        name="Formations"
+        parent="menu_training_config"
+        action="action_training_formation"
+        sequence="20" />
+
+    <menuitem id="menu_training_bloc"
+        name="Blocs / Modules (BC &amp; BAT)"
+        parent="menu_training_config"
+        action="action_training_bloc"
+        sequence="30" />
+
+    <menuitem id="menu_training_structures_accueil"
+        name="Structures d'accueil"
+        parent="menu_training_config"
+        action="action_training_structures_accueil"
+        sequence="40" />
+
+    <menuitem id="menu_training_survey"
+        name="Enquêtes"
+        parent="menu_training_config"
+        action="action_training_survey"
+        sequence="50" />
+
+</odoo>

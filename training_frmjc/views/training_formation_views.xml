@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_training_formation_list" model="ir.ui.view">
+        <field name="name">training.formation.list</field>
+        <field name="model">training.formation</field>
+        <field name="arch" type="xml">
+            <list string="Formations">
+                <field name="intitule"/>
+                <field name="type_formation"/>
+                <field name="specialite"/>
+                <field name="mention"/>
+                <field name="volume_centre"/>
+                <field name="volume_entreprise"/>
+                <field name="nb_stagiaires_max"/>
+                <field name="nb_modules"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_training_formation_form" model="ir.ui.view">
+        <field name="name">training.formation.form</field>
+        <field name="model">training.formation</field>
+        <field name="arch" type="xml">
+            <form string="Formation">
+                <header>
+                    <button string="Exporter le ruban (Excel)"
+                            type="object"
+                            name="action_exporter_ruban_excel"
+                            class="btn-primary"/>
+                    <button string="Importer le ruban (Excel)"
+                            type="object"
+                            name="action_ouvrir_import_ruban"
+                            class="btn-secondary"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group string="Identification">
+                            <field name="intitule"/>
+                            <field name="type_formation"/>
+                            <field name="specialite"/>
+                            <field name="mention"/>
+                            <field name="reference_arrete"/>
+                        </group>
+                        <group string="Volumes et capacité">
+                            <field name="volume_centre"/>
+                            <field name="volume_entreprise"/>
+                            <field name="nb_stagiaires_max"/>
+                            <field name="tarif_horaire" string="Tarif horaire (€/h)"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Blocs pédagogiques (BC / BAT)">
+                            <field name="bloc_ids">
+                                <list string="Blocs">
+                                    <field name="name" string="Code"/>
+                                    <field name="type_bloc"/>
+                                    <field name="intitule"/>
+                                    <field name="nb_modules" string="Nb modules"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_training_formation_search" model="ir.ui.view">
+        <field name="name">training.formation.search</field>
+        <field name="model">training.formation</field>
+        <field name="arch" type="xml">
+            <search string="Formations">
+                <field name="intitule"/>
+                <field name="type_formation"/>
+                <separator/>
+                <filter name="group_type" string="Grouper par Type"
+                    context="{'group_by': 'type_formation'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_training_formation" model="ir.actions.act_window">
+        <field name="name">Formations</field>
+        <field name="res_model">training.formation</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+</odoo>

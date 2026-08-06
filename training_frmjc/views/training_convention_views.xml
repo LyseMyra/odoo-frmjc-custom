@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ── Vue formulaire convention ─────────────────────────────── -->
+    <record id="view_training_convention_form" model="ir.ui.view">
+        <field name="name">training.convention.form</field>
+        <field name="model">training.convention</field>
+        <field name="arch" type="xml">
+            <form string="Convention">
+                <header>
+                    <!-- Génération PDF -->
+                    <button name="action_generer_pdf" string="Générer le PDF"
+                            type="object" class="btn-primary"
+                            invisible="statut not in ('brouillon','generee')"/>
+                    <!-- Marquer à signer -->
+                    <button name="action_marquer_a_signer" string="Prête à signer"
+                            type="object"
+                            invisible="statut != 'generee'"/>
+                    <!-- Envoyer pour signature Odoo Sign -->
+                    <button name="action_envoyer_signature"
+                            string="Envoyer pour signature"
+                            type="object" class="btn-primary"
+                            invisible="statut not in ('generee','a_signer')"/>
+                    <!-- Sync statut signature -->
+                    <button name="action_synchroniser_signature"
+                            string="Synchroniser signature"
+                            type="object"
+                            invisible="not sign_request_id"/>
+                    <!-- Voir demande Sign -->
+                    <button name="action_voir_sign_request"
+                            string="Voir dans Odoo Sign"
+                            type="object" class="btn-secondary"
+                            invisible="not sign_request_id"/>
+                    <!-- Archiver -->
+                    <button name="action_archiver" string="Archiver"
+                            type="object"
+                            invisible="statut in ('brouillon','archivee')"/>
+                    <!-- Imprimer -->
+                    <button name="action_imprimer" string="Imprimer"
+                            type="object" class="btn-secondary"
+                            invisible="not document_pdf"/>
+
+                    <field name="statut" widget="statusbar"
+                           statusbar_visible="brouillon,generee,a_signer,en_cours_signature,signee"/>
+                </header>
+
+                <sheet>
+                    <!-- Smart buttons -->
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_voir_sign_request" type="object"
+                                class="oe_stat_button" icon="fa-pencil-square-o"
+                                invisible="sign_request_id == 0">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Sign</span>
+                                <span class="o_stat_value">
+                                    <field name="sign_request_state"/>
+                                </span>
+                            </div>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <h1><field name="numero" readonly="1"/></h1>
+                    </div>
+
+                    <group>
+                        <group string="Convention">
+                            <field name="type_convention"/>
+                            <field name="inscription_id"
+                                   domain="[('statut','=','accepte')]"/>
+                            <field name="partner_id" readonly="1"/>
+                            <field name="session_id" readonly="1"/>
+                            <field name="formation_id" readonly="1"/>
+                        </group>
+                        <group string="Dates">
+                            <field name="date_creation"/>
+                            <field name="date_debut"/>
+                            <field name="date_fin"/>
+                            <field name="date_signature" readonly="1"
+                                   invisible="not date_signature"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <group string="Parties">
+                            <field name="structure_accueil_id"
+                                   invisible="type_convention == 'formation_continue'"/>
+                            <field name="tuteur_id"
+                                   invisible="type_convention == 'formation_continue'"/>
+                            <field name="representant_frmjc_id"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+
+                        <!-- Tableau de financement -->
+                        <page string="Financement">
+                            <group>
+                                <field name="cout_total"/>
+                                <field name="total_finance" readonly="1"/>
+                                <field name="ecart_financement" readonly="1" widget="float"/>
+                            </group>
+                            <field name="financement_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="source"/>
+                                    <field name="organisme"/>
+                                    <field name="montant"/>
+                                    <field name="pourcentage" readonly="1"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <!-- Documents -->
+                        <page string="Documents">
+                            <group>
+                                <group string="PDF de la convention">
+                                    <field name="document_pdf" widget="binary"
+                                           filename="document_pdf_filename"/>
+                                    <field name="document_pdf_filename" invisible="1"/>
+                                </group>
+                                <group string="PDF signé">
+                                    <field name="document_signe_pdf" widget="binary"
+                                           filename="document_signe_filename"/>
+                                    <field name="document_signe_filename" invisible="1"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <!-- Signature -->
+                        <page string="Signature électronique">
+                            <group>
+                                <field name="sign_request_id" readonly="1"/>
+                                <field name="sign_request_state" readonly="1"
+                                       invisible="not sign_request_id"/>
+                                <field name="date_signature" readonly="1"
+                                       invisible="not date_signature"/>
+                            </group>
+                            <div class="alert alert-info" role="status"
+                                 invisible="sign_request_id == 0">
+                                Demande de signature Odoo Sign en cours.
+                                Cliquez sur "Synchroniser signature" pour mettre à jour le statut,
+                                ou "Voir dans Odoo Sign" pour les détails.
+                            </div>
+                        </page>
+
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ── Vue liste ──────────────────────────────────────────────── -->
+    <record id="view_training_convention_list" model="ir.ui.view">
+        <field name="name">training.convention.list</field>
+        <field name="model">training.convention</field>
+        <field name="arch" type="xml">
+            <list string="Conventions"
+                  decoration-success="statut == 'signee'"
+                  decoration-warning="statut in ('a_signer','en_cours_signature')"
+                  decoration-muted="statut == 'archivee'">
+                <field name="numero"/>
+                <field name="type_convention"/>
+                <field name="partner_id" string="Stagiaire"/>
+                <field name="session_id"/>
+                <field name="structure_accueil_id"/>
+                <field name="date_creation"/>
+                <field name="cout_total"/>
+                <field name="statut" widget="badge"
+                       decoration-success="statut == 'signee'"
+                       decoration-warning="statut in ('a_signer','en_cours_signature')"
+                       decoration-info="statut == 'generee'"
+                       decoration-muted="statut in ('brouillon','archivee')"/>
+                <field name="ecart_financement" optional="show"
+                       decoration-danger="ecart_financement > 0.01 or ecart_financement &lt; -0.01"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ── Vue recherche ──────────────────────────────────────────── -->
+    <record id="view_training_convention_search" model="ir.ui.view">
+        <field name="name">training.convention.search</field>
+        <field name="model">training.convention</field>
+        <field name="arch" type="xml">
+            <search string="Conventions">
+                <field name="numero"/>
+                <field name="partner_id"/>
+                <field name="session_id"/>
+                <field name="structure_accueil_id"/>
+                <separator/>
+                <filter name="a_signer" string="À signer"
+                        domain="[('statut','in',('a_signer','en_cours_signature'))]"/>
+                <filter name="signees" string="Signées"
+                        domain="[('statut','=','signee')]"/>
+                <filter name="alternance" string="Alternance"
+                        domain="[('type_convention','=','alternance')]"/>
+                <filter name="cefa" string="CEFA"
+                        domain="[('type_convention','=','cefa')]"/>
+                <separator/>
+                <filter name="ecart" string="Écart financement"
+                        domain="[('ecart_financement','!=',0)]"/>
+                <separator/>
+                <filter name="group_statut" string="Par statut"
+                        context="{'group_by': 'statut'}"/>
+                <filter name="group_session" string="Par session"
+                        context="{'group_by': 'session_id'}"/>
+                <filter name="group_type" string="Par type"
+                        context="{'group_by': 'type_convention'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- ── Action window ─────────────────────────────────────────── -->
+    <record id="action_training_convention" model="ir.actions.act_window">
+        <field name="name">Conventions</field>
+        <field name="res_model">training.convention</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_training_convention_search"/>
+    </record>
+
+    <!-- ── Vue structure d'accueil (res.partner étendu) ─────────── -->
+    <record id="view_res_partner_structure_form" model="ir.ui.view">
+        <field name="name">res.partner.structure.form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <notebook position="inside">
+                <page string="FRMJC — Structure d'accueil"
+                      invisible="not is_structure_accueil">
+                    <group>
+                        <field name="is_structure_accueil"/>
+                        <field name="siret"/>
+                        <field name="code_naf"/>
+                        <field name="convention_collective"/>
+                    </group>
+                    <separator string="Conventions d'accueil"/>
+                    <field name="convention_accueil_ids" readonly="1">
+                        <list>
+                            <field name="numero"/>
+                            <field name="type_convention"/>
+                            <field name="partner_id"/>
+                            <field name="session_id"/>
+                            <field name="statut" widget="badge"/>
+                        </list>
+                    </field>
+                </page>
+                <page string="FRMJC — Stagiaire"
+                      invisible="not is_stagiaire_frmjc">
+                    <group>
+                        <group>
+                            <field name="is_stagiaire_frmjc"/>
+                            <field name="date_naissance"/>
+                            <field name="lieu_naissance"/>
+                            <field name="nationalite_id"/>
+                        </group>
+                        <group>
+                            <field name="sexe"/>
+                            <field name="situation_familiale"/>
+                            <field name="nombre_enfants"/>
+                            <field name="numero_secu"/>
+                        </group>
+                    </group>
+                    <separator string="Dossiers d'inscription"/>
+                    <field name="inscription_ids" readonly="1">
+                        <list>
+                            <field name="reference"/>
+                            <field name="session_id"/>
+                            <field name="statut" widget="badge"/>
+                            <field name="date_inscription"/>
+                        </list>
+                    </field>
+                </page>
+            </notebook>
+            <!-- Checkbox is_structure_accueil dans le header du form -->
+            <field name="company_type" position="after">
+                <field name="is_structure_accueil" widget="boolean_toggle"
+                       string="Structure d'accueil FRMJC"/>
+            </field>
+        </field>
+    </record>
+
+    <!-- ── Action structures d'accueil ───────────────────────────── -->
+    <record id="action_training_structures_accueil" model="ir.actions.act_window">
+        <field name="name">Structures d'accueil</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('is_structure_accueil', '=', True)]</field>
+        <field name="context">{'default_is_structure_accueil': True}</field>
+    </record>
+
+</odoo>

@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="report_training_convocation" model="ir.actions.report">
+        <field name="name">Convocation mensuelle</field>
+        <field name="model">training.monthly.report</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">training_frmjc.tmpl_convocation</field>
+        <field name="report_file">training_frmjc.tmpl_convocation</field>
+        <field name="binding_model_id" ref="model_training_monthly_report"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="training_frmjc.paperformat_frmjc_a4"/>
+    </record>
+
+    <template id="tmpl_convocation">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+
+                        <!-- Dictionnaires FR -->
+                        <t t-set="mois_fr" t-value="{1:'janvier',2:'février',3:'mars',4:'avril',5:'mai',6:'juin',7:'juillet',8:'août',9:'septembre',10:'octobre',11:'novembre',12:'décembre'}"/>
+                        <t t-set="jours_fr" t-value="{0:'Lundi',1:'Mardi',2:'Mercredi',3:'Jeudi',4:'Vendredi',5:'Samedi',6:'Dimanche'}"/>
+
+                        <!-- Semaines de formation du mois -->
+                        <t t-set="periode" t-value="'%d-%02d' % (doc.annee, doc.mois)"/>
+                        <t t-set="periode_ym" t-value="'%04d-%02d' % (doc.annee, doc.mois)"/>
+                        <t t-set="weeks" t-value="doc.session_id.week_ids.filtered(lambda w: w.type_semaine == 'formation' and w.date_debut and w.date_debut.strftime('%Y-%m') == periode_ym).sorted('date_debut')"/>
+
+                        <!-- Date d'émission (en-tête droit) -->
+                        <t t-set="today" t-value="context_timestamp(datetime.datetime.now())"/>
+                        <p style="text-align:right; margin-bottom:1.2rem;">
+                            Rennes, le
+                            <t t-esc="today.day"/>
+                            <t t-esc="mois_fr.get(today.month, '')"/>
+                            <t t-esc="today.year"/>
+                        </p>
+
+                        <!-- Encadré formation + BCs -->
+                        <t t-set="hab" t-value="doc.session_id.habilitation_id"/>
+                        <t t-set="all_blocs" t-value="weeks.mapped('week_line_ids.module_id.bloc_id').filtered(lambda b: b.type_bloc == 'bc')"/>
+                        <div style="border:1.5px solid #222; padding:.8rem 1rem; margin-bottom:1.5rem; text-align:center;">
+                            <p style="font-weight:bold; margin:0 0 .2rem 0;">
+                                <t t-esc="(hab.type_formation or '').upper()"/>
+                                <t t-if="hab.specialite"> <t t-esc="hab.specialite"/></t>
+                            </p>
+                            <t t-if="hab.mention">
+                                <p style="margin:0 0 .5rem 0; font-size:.9rem;">
+                                    Mention : <t t-esc="hab.mention"/>
+                                </p>
+                            </t>
+                            <t t-foreach="all_blocs" t-as="bloc">
+                                <p style="font-weight:bold; font-size:.85rem; text-transform:uppercase; margin:.2rem 0 0 0; text-align:left;">
+                                    <t t-esc="bloc.name"/>
+                                </p>
+                            </t>
+                        </div>
+
+                        <!-- Pour chaque semaine du mois -->
+                        <t t-foreach="weeks" t-as="week">
+
+                            <!-- Titre de période -->
+                            <t t-if="week.date_debut and week.date_fin">
+                                <h3 style="text-align:center; font-size:1.1rem; margin-bottom:1.2rem;">
+                                    Du <t t-esc="jours_fr.get(week.date_debut.weekday(), '')"/>
+                                    <t t-esc="week.date_debut.day"/>
+                                    au <t t-esc="jours_fr.get(week.date_fin.weekday(), '')"/>
+                                    <t t-esc="week.date_fin.day"/>
+                                    <t t-esc="mois_fr.get(week.date_fin.month, '')"/>
+                                    <t t-esc="week.date_fin.year"/>
+                                </h3>
+                            </t>
+
+                            <!-- Appel et lieu -->
+                            <p>Bonjour <t t-esc="doc.partner_id.name"/>,</p>
+                            <p style="margin-bottom:1.2rem;">
+                                Vous êtes invité(e) à participer à la session de formation
+                                <t t-esc="doc.session_id.name"/>
+                                <t t-if="week.lieu">
+                                    qui se déroulera à <strong><t t-esc="week.lieu"/></strong>
+                                </t>.
+                            </p>
+
+                            <!-- Programme jour par jour -->
+                            <t t-foreach="['lundi','mardi','mercredi','jeudi','vendredi']" t-as="jour">
+                                <t t-set="lignes" t-value="week.week_line_ids.filtered(lambda l: l.jour == jour)"/>
+                                <t t-if="lignes">
+                                    <!-- En-tête du jour -->
+                                    <t t-set="premiere_ligne" t-value="lignes[0]"/>
+                                    <t t-set="date_j" t-value="premiere_ligne.date_jour"/>
+                                    <p style="font-weight:bold; margin:.9rem 0 .3rem 0;">
+                                        <t t-if="date_j">
+                                            <t t-esc="jours_fr.get(date_j.weekday(), jour.capitalize())"/>
+                                            <t t-esc="date_j.day"/>
+                                            <t t-esc="mois_fr.get(date_j.month, '')"/>
+                                            <t t-esc="date_j.year"/>
+                                        </t>
+                                        <t t-else="">
+                                            <t t-esc="jour.capitalize()"/>
+                                        </t>
+                                    </p>
+
+                                    <!-- Modules du jour -->
+                                    <t t-set="heure_courante" t-value="lignes[0].heure_debut if lignes[0].heure_debut else 0.0"/>
+                                    <t t-foreach="lignes" t-as="ligne">
+                                        <t t-set="h_deb" t-value="ligne.heure_debut if ligne.heure_debut else heure_courante"/>
+                                        <t t-set="h_fin" t-value="h_deb + ligne.heures"/>
+                                        <t t-set="heure_courante" t-value="h_fin"/>
+                                        <div style="margin-left:.5rem; margin-bottom:.15rem;">
+                                            <span style="margin-right:.4rem;">•</span>
+                                            <t t-if="ligne.heure_debut">
+                                                <strong>
+                                                    <t t-esc="'%dh%02d' % (int(h_deb), int(round((h_deb % 1) * 60)))"/>
+                                                    –
+                                                    <t t-esc="'%dh%02d' % (int(h_fin), int(round((h_fin % 1) * 60)))"/>
+                                                </strong>
+                                                :
+                                            </t>
+                                            <t t-esc="ligne.module_id.intitule or ligne.module_id.code or '—'"/>
+                                        </div>
+                                        <t t-if="ligne.intervenant_id">
+                                            <div style="margin-left:1.8rem; font-size:.88rem; color:#333; margin-bottom:.1rem;">
+                                                ▪ Intervenant : <t t-esc="ligne.intervenant_id.name"/>
+                                                <t t-if="ligne.intervenant_id.company_name">
+                                                    - <t t-esc="ligne.intervenant_id.company_name"/>
+                                                </t>
+                                            </div>
+                                        </t>
+                                    </t>
+                                </t>
+                            </t>
+
+                            <!-- Séparateur entre semaines -->
+                            <t t-if="not week_last">
+                                <hr style="margin:1.5rem 0; border:none; border-top:1px solid #ccc;"/>
+                            </t>
+
+                        </t>
+
+                        <!-- Mentions finales -->
+                        <p style="font-style:italic; margin-top:1.5rem;">
+                            Les horaires et pauses sont à préciser collectivement comme d'habitude
+                        </p>
+                        <p>Merci de prévenir de vos absences.</p>
+
+                        <!-- Signature -->
+                        <div style="text-align:right; margin-top:2rem;">
+                            <p style="margin:0; font-weight:normal;">
+                                <t t-esc="doc.session_id.responsable_id.name"/>
+                            </p>
+                            <p style="margin:0; font-size:.9rem; color:#555;">
+                                Coordinateur(trice) de la formation
+                            </p>
+                        </div>
+
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_training_monthly_report_list" model="ir.ui.view">
+        <field name="name">training.monthly.report.list</field>
+        <field name="model">training.monthly.report</field>
+        <field name="arch" type="xml">
+            <list string="Rapports mensuels de présence"
+                  decoration-success="statut in ('signe','transmis')"
+                  decoration-info="statut == 'attestation_generee'"
+                  decoration-muted="statut == 'brouillon'">
+                <field name="partner_id" string="Stagiaire"/>
+                <field name="session_id" string="Session"/>
+                <field name="periode"/>
+                <field name="heures_centre" string="H. centre"/>
+                <field name="heures_entreprise" string="H. entreprise"/>
+                <field name="heures_total" string="Total"/>
+                <field name="jours_presents" string="J. présents"/>
+                <field name="jours_absents" string="J. absents"/>
+                <field name="statut" widget="badge"/>
+                <button name="action_envoyer_convocation" string="Envoyer convocation"
+                        type="object" class="btn-sm btn-outline-primary"
+                        invisible="statut != 'brouillon'"/>
+                <button name="action_generer_attestation" string="Générer attestation"
+                        type="object" class="btn-sm btn-success"
+                        invisible="statut not in ('brouillon','convocation_envoyee')"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_training_monthly_report_form" model="ir.ui.view">
+        <field name="name">training.monthly.report.form</field>
+        <field name="model">training.monthly.report</field>
+        <field name="arch" type="xml">
+            <form string="Rapport mensuel de présence">
+                <header>
+                    <button name="action_envoyer_convocation" string="Envoyer la convocation"
+                            type="object" class="btn-primary"
+                            invisible="convocation_envoyee_le"/>
+                    <button name="action_generer_attestation" string="Générer l'attestation"
+                            type="object" class="btn-success"
+                            invisible="statut not in ('brouillon','convocation_envoyee')"/>
+                    <field name="statut" widget="statusbar"
+                           statusbar_visible="brouillon,convocation_envoyee,attestation_generee,signe"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group string="Inscription">
+                            <field name="inscription_id"/>
+                            <field name="partner_id" readonly="1"/>
+                            <field name="session_id" readonly="1"/>
+                            <field name="formation_id" readonly="1"/>
+                        </group>
+                        <group string="Période">
+                            <field name="annee"/>
+                            <field name="mois"/>
+                            <field name="periode" readonly="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Heures">
+                            <field name="heures_centre" readonly="1"/>
+                            <field name="heures_entreprise" readonly="1"/>
+                            <field name="heures_total" readonly="1"/>
+                            <field name="jours_presents" readonly="1"/>
+                            <field name="jours_absents" readonly="1"/>
+                        </group>
+                        <group string="Convocation">
+                            <field name="convocation_envoyee_le" readonly="1"/>
+                            <field name="convocation_pdf" widget="binary" filename="convocation_pdf_filename"/>
+                            <field name="convocation_pdf_filename"/>
+                        </group>
+                    </group>
+                    <group string="Attestation">
+                        <field name="attestation_pdf" widget="binary" filename="attestation_pdf_filename"/>
+                        <field name="attestation_pdf_filename"/>
+                        <field name="certificat_financeur_pdf" widget="binary"
+                               filename="certificat_financeur_pdf_filename"/>
+                        <field name="certificat_financeur_pdf_filename"/>
+                    </group>
+                    <group string="Notes">
+                        <field name="notes" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_training_monthly_report_search" model="ir.ui.view">
+        <field name="name">training.monthly.report.search</field>
+        <field name="model">training.monthly.report</field>
+        <field name="arch" type="xml">
+            <search string="Rapports mensuels">
+                <field name="partner_id" string="Stagiaire"/>
+                <field name="session_id"/>
+                <field name="periode"/>
+                <filter name="brouillon" string="Brouillons"
+                        domain="[('statut','=','brouillon')]"/>
+                <filter name="a_envoyer" string="Convocations à envoyer"
+                        domain="[('statut','=','brouillon'),('convocation_envoyee_le','=',False)]"/>
+                <filter name="attestation_a_generer" string="Attestations à générer"
+                        domain="[('statut','=','convocation_envoyee')]"/>
+                <separator/>
+                <filter name="group_session" string="Par session"
+                        context="{'group_by': 'session_id'}"/>
+                <filter name="group_periode" string="Par période"
+                        context="{'group_by': 'periode'}"/>
+                <filter name="group_stagiaire" string="Par stagiaire"
+                        context="{'group_by': 'partner_id'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_training_monthly_report" model="ir.actions.act_window">
+        <field name="name">Rapports mensuels</field>
+        <field name="res_model">training.monthly.report</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_training_monthly_report_search"/>
+    </record>
+
+</odoo>

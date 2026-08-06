@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="report_training_attestation_entree" model="ir.actions.report">
+        <field name="name">Attestation d'entrée en formation</field>
+        <field name="model">training.inscription</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">training_frmjc.tmpl_attestation_entree</field>
+        <field name="report_file">training_frmjc.tmpl_attestation_entree</field>
+        <field name="binding_model_id" ref="model_training_inscription"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="training_frmjc.paperformat_frmjc_a4"/>
+    </record>
+
+    <template id="tmpl_attestation_entree">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+
+                        <!-- Calculs préalables -->
+                        <t t-set="mois_fr" t-value="{1:'janvier',2:'février',3:'mars',4:'avril',5:'mai',6:'juin',7:'juillet',8:'août',9:'septembre',10:'octobre',11:'novembre',12:'décembre'}"/>
+                        <t t-set="session" t-value="doc.session_id"/>
+                        <t t-set="hab" t-value="session.habilitation_id"/>
+                        <t t-set="semaines_formation" t-value="session.week_ids.filtered(lambda w: w.type_semaine == 'formation')"/>
+                        <t t-set="total_h" t-value="session.volume_heures_prevues or sum(w.volume_horaire_calcule for w in semaines_formation)"/>
+                        <t t-set="year1" t-value="session.date_debut.year if session.date_debut else 0"/>
+                        <t t-set="year2" t-value="year1 + 1 if year1 else 0"/>
+                        <t t-set="h_an1" t-value="sum(w.volume_horaire_calcule for w in semaines_formation if w.date_debut and w.date_debut.year == year1)"/>
+                        <t t-set="h_an2" t-value="sum(w.volume_horaire_calcule for w in semaines_formation if w.date_debut and w.date_debut.year == year2)"/>
+                        <t t-set="structure" t-value="doc.structure_accueil_id.name if doc.structure_accueil_id else (doc.structure_accueil or '—')"/>
+                        <t t-set="signataire" t-value="session.signataire_nom or session.responsable_id.name or '…'"/>
+                        <t t-set="titre_sign" t-value="session.signataire_titre or 'Directrice / Directeur'"/>
+
+                        <!-- Titre dans encadré -->
+                        <div style="border:1.5px solid #222; padding:1rem 1.5rem; margin-bottom:1.8rem; text-align:center;">
+                            <h2 style="margin:0; font-size:1.3rem; letter-spacing:1px; text-transform:uppercase;">
+                                Attestation d'entrée en formation
+                            </h2>
+                        </div>
+
+                        <!-- Corps principal -->
+                        <p style="text-align:center; margin-bottom:1.2rem;">
+                            Je soussigné(e) <strong><t t-esc="signataire"/></strong>,
+                            <t t-esc="titre_sign"/>, représentante légale de l'organisme de
+                            formation <strong>FRMJC Bretagne - Pays de la Loire</strong>,
+                            certifie que <strong><t t-esc="doc.partner_id.name"/></strong>
+                            suit actuellement l'action de formation intitulée :
+                        </p>
+
+                        <!-- Encadré formation -->
+                        <div style="border:1px solid #555; padding:1rem 1.5rem; margin-bottom:1.5rem; text-align:center;">
+                            <p style="font-size:1.2rem; font-weight:bold; margin:0 0 .4rem 0;">
+                                <t t-esc="(hab.type_formation or '').upper()"/>
+                            </p>
+                            <t t-if="hab.specialite">
+                                <p style="font-size:.9rem; font-variant:small-caps; margin:0 0 .2rem 0;">
+                                    Spécialité <t t-esc="hab.specialite"/>
+                                </p>
+                            </t>
+                            <t t-if="hab.mention">
+                                <p style="font-size:.9rem; font-variant:small-caps; margin:0;">
+                                    Mention <t t-esc="hab.mention"/>
+                                </p>
+                            </t>
+                        </div>
+
+                        <!-- Tableau des informations clés -->
+                        <table style="width:100%; border-collapse:collapse; margin-bottom:1.5rem;">
+                            <t t-if="session.date_debut and session.date_fin">
+                                <tr>
+                                    <td style="padding:.35rem 0; font-weight:bold; width:55%;">Dates de la formation :</td>
+                                    <td style="padding:.35rem 0;">
+                                        du <t t-esc="session.date_debut.strftime('%d-%m-%Y')"/>
+                                        au <t t-esc="session.date_fin.strftime('%d-%m-%Y')"/>
+                                    </td>
+                                </tr>
+                            </t>
+                            <t t-if="total_h">
+                                <tr>
+                                    <td style="padding:.35rem 0; font-weight:bold;">Volume d'heures de formation prévu :</td>
+                                    <td style="padding:.35rem 0;"><t t-esc="int(total_h)"/></td>
+                                </tr>
+                                <t t-if="year1 and year2">
+                                    <tr>
+                                        <td style="padding:.2rem 0 .2rem 1.5rem; font-weight:bold;">
+                                            1ère année (<t t-esc="year1"/>-<t t-esc="year2"/>) :
+                                        </td>
+                                        <td style="padding:.2rem 0;"><t t-esc="int(h_an1)"/></td>
+                                    </tr>
+                                    <t t-if="session.date_fin and session.date_fin.year > year2">
+                                        <t t-set="year3" t-value="year2 + 1"/>
+                                        <t t-set="h_an3" t-value="sum(w.volume_horaire_calcule for w in semaines_formation if w.date_debut and w.date_debut.year == year3)"/>
+                                        <tr>
+                                            <td style="padding:.2rem 0 .2rem 1.5rem; font-weight:bold;">
+                                                2ème année (<t t-esc="year2"/>-<t t-esc="year3"/>) :
+                                            </td>
+                                            <td style="padding:.2rem 0;"><t t-esc="int(h_an2)"/></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding:.2rem 0 .2rem 1.5rem; font-weight:bold;">
+                                                3ème année (<t t-esc="year3"/>-...) :
+                                            </td>
+                                            <td style="padding:.2rem 0;"><t t-esc="int(h_an3)"/></td>
+                                        </tr>
+                                    </t>
+                                    <t t-else="">
+                                        <tr>
+                                            <td style="padding:.2rem 0 .2rem 1.5rem; font-weight:bold;">
+                                                2ème année (<t t-esc="year2"/>-<t t-esc="year2 + 1"/>) :
+                                            </td>
+                                            <td style="padding:.2rem 0;"><t t-esc="int(h_an2)"/></td>
+                                        </tr>
+                                    </t>
+                                </t>
+                            </t>
+                            <tr>
+                                <td style="padding:.35rem 0; font-weight:bold;">Lieu de la formation :</td>
+                                <td style="padding:.35rem 0;"><t t-esc="session.lieu_formation or '—'"/></td>
+                            </tr>
+                            <t t-if="structure and structure != '—'">
+                                <tr>
+                                    <td style="padding:.35rem 0; font-weight:bold;">Structure d'accueil durant la période d'alternance :</td>
+                                    <td style="padding:.35rem 0;"><t t-esc="structure"/></td>
+                                </tr>
+                            </t>
+                            <t t-if="session.nature_action">
+                                <tr>
+                                    <td style="padding:.35rem 0; font-weight:bold;">Nature de l'action de formation :</td>
+                                    <td style="padding:.35rem 0;"><t t-esc="session.nature_action"/></td>
+                                </tr>
+                            </t>
+                        </table>
+
+                        <!-- Texte légal -->
+                        <p style="text-align:justify; margin-bottom:1rem;">
+                            Les documents et éléments ayant servi à l'établissement du présent certificat sont les suivants :
+                            feuilles d'émargements mensuelles, attestations mensuelles et nominatives signées.
+                            Ils sont tenus à disposition des services de contrôle et de gestion.
+                        </p>
+                        <p style="text-align:justify; margin-bottom:2rem;">
+                            Sans préjudice des délais imposés par les règles fiscales, comptables ou commerciales, je
+                            m'engage à conserver l'ensemble des pièces justificatives qui ont permis d'établir le présent
+                            certificat pendant une durée de 3 ans à compter de la fin de l'année du dernier paiement. En cas
+                            de cofinancement par des fonds européens la durée de conservation est étendue conformément
+                            aux obligations conventionnelles spécifiques.
+                        </p>
+
+                        <!-- Signature -->
+                        <t t-set="today" t-value="context_timestamp(datetime.datetime.now())"/>
+                        <p>
+                            Fait à Rennes, le
+                            <t t-esc="today.day"/>
+                            <t t-esc="mois_fr.get(today.month, '')"/>
+                            <t t-esc="today.year"/>
+                        </p>
+
+                        <div style="text-align:right; margin-top:1.5rem;">
+                            <p style="margin:0;"><t t-esc="signataire"/></p>
+                        </div>
+
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ── Vue formulaire ── -->
+    <record id="view_training_survey_form" model="ir.ui.view">
+        <field name="name">training.survey.form</field>
+        <field name="model">training.survey</field>
+        <field name="arch" type="xml">
+            <form string="Enquête">
+                <header>
+                    <button name="action_envoyer" string="Envoyer aux stagiaires"
+                            type="object" class="btn-primary"
+                            invisible="statut != 'brouillon'"
+                            confirm="Cela enverra l'enquête à tous les stagiaires acceptés avec un email. Continuer ?"/>
+                    <button name="action_clore" string="Clôturer"
+                            type="object"
+                            invisible="statut != 'envoye'"
+                            confirm="Clôturer cette enquête ? Les réponses ne seront plus acceptées."/>
+                    <button name="action_remettre_brouillon" string="Remettre en brouillon"
+                            type="object"
+                            invisible="statut == 'clos'"/>
+                    <field name="statut" widget="statusbar"
+                           statusbar_visible="brouillon,envoye,clos"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_ouvrir_questionnaire" type="object"
+                                class="oe_stat_button" icon="fa-question-circle">
+                            <span class="o_stat_text">Questionnaire</span>
+                        </button>
+                        <button name="action_voir_resultats" type="object"
+                                class="oe_stat_button" icon="fa-bar-chart"
+                                invisible="statut == 'brouillon'">
+                            <field name="nb_reponses" widget="statinfo" string="Réponses"/>
+                        </button>
+                    </div>
+                    <group>
+                        <group string="Identification">
+                            <field name="session_id"/>
+                            <field name="survey_id"/>
+                            <field name="type_enquete"/>
+                            <field name="bloc_id"
+                                   invisible="type_enquete != 'fin_bc'"/>
+                        </group>
+                        <group string="Statistiques" invisible="statut == 'brouillon'">
+                            <field name="date_envoi" readonly="1"/>
+                            <field name="date_cloture"/>
+                            <field name="nb_invitations" readonly="1"/>
+                            <field name="nb_reponses" readonly="1"/>
+                            <field name="taux_reponse" readonly="1" string="Taux de réponse (%)" digits="[4,1]"/>
+                        </group>
+                    </group>
+                    <group string="Notes">
+                        <field name="notes" nolabel="1" placeholder="Notes internes…"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ── Vue liste ── -->
+    <record id="view_training_survey_list" model="ir.ui.view">
+        <field name="name">training.survey.list</field>
+        <field name="model">training.survey</field>
+        <field name="arch" type="xml">
+            <list string="Enquêtes"
+                  decoration-success="statut == 'envoye'"
+                  decoration-muted="statut == 'clos'">
+                <field name="session_id"/>
+                <field name="type_enquete"/>
+                <field name="bloc_id" optional="show"/>
+                <field name="survey_id"/>
+                <field name="statut" widget="badge"
+                       decoration-success="statut == 'envoye'"
+                       decoration-muted="statut == 'brouillon'"/>
+                <field name="date_envoi" optional="show"/>
+                <field name="nb_invitations" optional="show"/>
+                <field name="nb_reponses" optional="show"/>
+                <field name="taux_reponse" optional="show" string="Taux (%)"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ── Vue recherche ── -->
+    <record id="view_training_survey_search" model="ir.ui.view">
+        <field name="name">training.survey.search</field>
+        <field name="model">training.survey</field>
+        <field name="arch" type="xml">
+            <search string="Enquêtes">
+                <field name="session_id"/>
+                <field name="survey_id"/>
+                <separator/>
+                <filter name="brouillon" string="Brouillon"
+                        domain="[('statut','=','brouillon')]"/>
+                <filter name="envoye" string="Envoyées"
+                        domain="[('statut','=','envoye')]"/>
+                <filter name="clos" string="Clôturées"
+                        domain="[('statut','=','clos')]"/>
+                <separator/>
+                <filter name="fin_bc" string="Fin de BC"
+                        domain="[('type_enquete','=','fin_bc')]"/>
+                <filter name="post_6mois" string="Post-formation 6 mois"
+                        domain="[('type_enquete','=','post_6mois')]"/>
+                <separator/>
+                <filter name="group_session" string="Par session"
+                        context="{'group_by': 'session_id'}"/>
+                <filter name="group_type" string="Par type"
+                        context="{'group_by': 'type_enquete'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- ── Action ── -->
+    <record id="action_training_survey" model="ir.actions.act_window">
+        <field name="name">Enquêtes</field>
+        <field name="res_model">training.survey</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_training_survey_search"/>
+        <field name="context">{'search_default_group_session': 1}</field>
+    </record>
+
+</odoo>

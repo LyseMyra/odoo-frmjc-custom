@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_training_dropout_form" model="ir.ui.view">
+        <field name="name">training.dropout.form</field>
+        <field name="model">training.dropout</field>
+        <field name="arch" type="xml">
+            <form string="Fiche abandon">
+                <header>
+                    <button name="action_telecharger_attestation"
+                            string="Télécharger l'attestation"
+                            type="object"
+                            class="btn-secondary"/>
+                    <button name="action_envoyer_attestation"
+                            string="Envoyer l'attestation au stagiaire"
+                            type="object"
+                            class="btn-secondary"
+                            confirm="Envoyer l'attestation d'abandon par email au stagiaire ?"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group string="Dossier concerné">
+                            <field name="inscription_id"/>
+                            <field name="partner_id" readonly="1"/>
+                            <field name="session_id" readonly="1"/>
+                        </group>
+                        <group string="Abandon">
+                            <field name="date_abandon"/>
+                            <field name="motif"/>
+                            <field name="semaine_abandon_id"/>
+                        </group>
+                    </group>
+                    <group string="Détails">
+                        <field name="description" nolabel="1"
+                               placeholder="Description / commentaires sur l'abandon…"/>
+                    </group>
+                    <group string="Remboursement">
+                        <field name="remboursement_applicable"/>
+                        <field name="montant_remboursement"
+                               invisible="not remboursement_applicable"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_training_dropout_list" model="ir.ui.view">
+        <field name="name">training.dropout.list</field>
+        <field name="model">training.dropout</field>
+        <field name="arch" type="xml">
+            <list string="Abandons">
+                <field name="partner_id" string="Candidat"/>
+                <field name="session_id"/>
+                <field name="date_abandon"/>
+                <field name="motif"/>
+                <field name="semaine_abandon_id" optional="show"/>
+                <field name="remboursement_applicable" optional="show"/>
+                <field name="montant_remboursement" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_training_dropout" model="ir.actions.act_window">
+        <field name="name">Abandons</field>
+        <field name="res_model">training.dropout</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+</odoo>

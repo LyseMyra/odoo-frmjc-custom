@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Convocation adressée AU CERTIFICATEUR (Circuit A) -->
+    <record id="report_certification_convocation_a" model="ir.actions.report">
+        <field name="name">Convocation certificateur — Circuit A</field>
+        <field name="model">training.certification</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">training_frmjc.tmpl_convocation_a</field>
+        <field name="report_file">training_frmjc.tmpl_convocation_a</field>
+        <field name="binding_model_id" ref="model_training_certification"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="training_frmjc.paperformat_frmjc_a4"/>
+    </record>
+
+    <template id="tmpl_convocation_a">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+
+                        <t t-set="mois_fr" t-value="{1:'janvier',2:'février',3:'mars',4:'avril',5:'mai',6:'juin',7:'juillet',8:'août',9:'septembre',10:'octobre',11:'novembre',12:'décembre'}"/>
+                        <t t-set="hab" t-value="doc.session_id.habilitation_id"/>
+                        <t t-set="today" t-value="context_timestamp(datetime.datetime.now())"/>
+                        <t t-set="responsable" t-value="doc.session_id.responsable_id"/>
+                        <t t-set="cert" t-value="doc.certificateur_id"/>
+                        <t t-set="h_deb" t-value="doc.heure_debut_a"/>
+                        <t t-set="h_fmt" t-value="'%dh%02d' % (int(h_deb), int(round((h_deb % 1) * 60))) if h_deb else 'à définir'"/>
+
+                        <!-- En-tête titre -->
+                        <h3 style="text-align:center; margin-bottom:.2rem;">
+                            Commission de certification
+                            <t t-esc="doc.bloc_id.name"/>
+                        </h3>
+                        <h4 style="text-align:center; margin:0 0 .2rem 0;">
+                            <t t-esc="(hab.type_formation or '').upper()"/>
+                            <t t-if="hab.specialite"> <t t-esc="hab.specialite"/></t>
+                        </h4>
+                        <p style="text-align:center; font-style:italic; margin:0 0 1.5rem 0;">
+                            <t t-if="hab.mention">Mention : <t t-esc="hab.mention"/></t>
+                        </p>
+
+                        <!-- Date alignée à droite -->
+                        <p style="text-align:right; margin-bottom:1.5rem;">
+                            À Rennes, le
+                            <t t-esc="today.day"/>
+                            <t t-esc="mois_fr.get(today.month, '')"/>
+                            <t t-esc="today.year"/>
+                        </p>
+
+                        <p>Bonjour,</p>
+
+                        <p style="text-align:justify; margin-bottom:1rem;">
+                            Nous vous confirmons que vous composez la commission de certification du
+                            <strong><t t-esc="doc.bloc_id.name"/></strong>
+                            du <t t-esc="(hab.type_formation or '').upper()"/>,
+                            <t t-if="hab.specialite"><t t-esc="hab.specialite"/>, </t>
+                            <t t-if="hab.mention">mention <t t-esc="hab.mention"/></t>
+                            comme suit :
+                        </p>
+
+                        <!-- Liste des membres de la commission -->
+                        <t t-if="cert">
+                            <ul style="margin-bottom:1.2rem;">
+                                <li>
+                                    <strong><t t-esc="cert.name"/></strong>
+                                    <t t-if="cert.email"> (<t t-esc="cert.email"/></t>
+                                    <t t-if="cert.phone">, <t t-esc="cert.phone"/></t>
+                                    <t t-if="cert.email or cert.phone">)</t>
+                                </li>
+                            </ul>
+                        </t>
+
+                        <p>
+                            La certification de
+                            <strong>
+                                <t t-esc="doc.partner_id.name"/>
+                                <t t-if="doc.partner_id.phone">
+                                    (<t t-esc="doc.partner_id.phone"/>)
+                                </t>
+                            </strong>
+                            aura lieu :
+                        </p>
+
+                        <!-- Encadré date / heure / lieu -->
+                        <div style="border:1.5px solid #333; padding:.8rem 1.2rem; margin:1rem 2rem; text-align:center;">
+                            <t t-if="doc.date_certification_a">
+                                <p style="font-weight:bold; margin:0 0 .3rem 0;">
+                                    le <t t-esc="doc.date_certification_a.strftime('%A %d %B %Y')"/>
+                                </p>
+                            </t>
+                            <p style="font-weight:bold; margin:0 0 .3rem 0;">
+                                à <t t-esc="h_fmt"/>,
+                            </p>
+                            <t t-if="doc.lieu_certification_a">
+                                <p style="font-weight:bold; margin:0; text-transform:uppercase;">
+                                    Lieu : <t t-esc="doc.lieu_certification_a"/>
+                                </p>
+                            </t>
+                        </div>
+
+                        <p style="text-align:justify; margin:1.2rem 0;">
+                            En vue de préparer cette certification, un échange entre les experts de la
+                            commission est préconisé en amont et il conviendrait de vous donner
+                            <strong><u>rendez-vous 15 minutes avant la passation</u></strong>.
+                        </p>
+
+                        <p style="margin-bottom:.5rem;">
+                            Vous trouverez en pièces jointes les éléments relatifs à la certification :
+                        </p>
+                        <ul style="margin-bottom:1.2rem;">
+                            <li>Les modalités régionales d'évaluation certificative pour le <t t-esc="doc.bloc_id.name"/></li>
+                            <li>Les grilles de certification de chacune des UC</li>
+                            <li>Les dossiers du candidat</li>
+                            <li>Une fiche de frais de déplacement</li>
+                        </ul>
+
+                        <p style="text-align:justify; margin-bottom:1.5rem;">
+                            Je me tiens à votre disposition pour répondre aux questions que vous
+                            susciterait la lecture de ces documents.
+                        </p>
+
+                        <p>Cordialement,</p>
+
+                        <div style="text-align:right; margin-top:1rem;">
+                            <p style="margin:0;"><strong><t t-esc="responsable.name or ''"/></strong></p>
+                            <t t-if="responsable.email">
+                                <p style="margin:0; font-size:.9rem;"><t t-esc="responsable.email"/></p>
+                            </t>
+                            <t t-if="responsable.phone">
+                                <p style="margin:0; font-size:.9rem;"><t t-esc="responsable.phone"/></p>
+                            </t>
+                        </div>
+
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

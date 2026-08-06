@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ── Vue formulaire intervenant ───────────────────────────────── -->
+    <record id="view_training_trainer_form" model="ir.ui.view">
+        <field name="name">training.trainer.form</field>
+        <field name="model">training.trainer</field>
+        <field name="arch" type="xml">
+            <form string="Intervenant de session">
+                <header>
+                    <button name="action_creer_bon_de_commande"
+                            string="Créer bon de commande"
+                            type="object"
+                            class="btn-primary"
+                            invisible="not depense_ids or type_intervenant != 'externe'"
+                            confirm="Cela créera un bon de commande pour toutes les dépenses validées de cet intervenant. Continuer ?"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_voir_depenses" type="object"
+                                class="oe_stat_button" icon="fa-eur"
+                                invisible="nb_depenses == 0">
+                            <div class="o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="total_depenses" widget="float" digits="[10,2]"/>
+                                </span>
+                                <span class="o_stat_text">€ dépenses</span>
+                            </div>
+                        </button>
+                        <button name="action_voir_bon_de_commande" type="object"
+                                class="oe_stat_button" icon="fa-shopping-cart"
+                                invisible="not purchase_order_id">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Bon de commande</span>
+                            </div>
+                        </button>
+                    </div>
+
+                    <group>
+                        <group string="Identification">
+                            <field name="contact_id"/>
+                            <field name="session_id"/>
+                            <field name="type_intervenant"/>
+                            <field name="employee_id"
+                                   invisible="type_intervenant != 'interne'"/>
+                        </group>
+                        <group string="Convention de prestation"
+                               invisible="type_intervenant != 'externe'">
+                            <field name="statut_convention"/>
+                            <field name="convention_prestation_id"/>
+                        </group>
+                    </group>
+
+                    <group string="Jours d'intervention">
+                        <field name="week_line_ids" nolabel="1"
+                               domain="[('session_id', '=', session_id)]">
+                            <list>
+                                <field name="date_jour" string="Date"/>
+                                <field name="jour"/>
+                                <field name="module_id" string="Module"/>
+                                <field name="heures"/>
+                            </list>
+                        </field>
+                        <field name="nb_jours_intervention" readonly="1"/>
+                    </group>
+
+                    <notebook invisible="type_intervenant != 'externe'">
+                        <page string="Dépenses">
+                            <field name="depense_ids">
+                                <list editable="bottom"
+                                      decoration-success="statut == 'bc_cree'"
+                                      decoration-warning="statut == 'valide'"
+                                      decoration-muted="statut == 'brouillon'">
+                                    <field name="date_depense"/>
+                                    <field name="product_id"
+                                           domain="[('name', 'ilike', 'DEJEPS')]"/>
+                                    <field name="description"/>
+                                    <field name="quantite"/>
+                                    <field name="prix_unitaire"/>
+                                    <field name="montant_total" readonly="1"/>
+                                    <field name="statut" widget="badge"/>
+                                    <field name="justificatif" widget="binary" optional="hide"/>
+                                    <button name="action_valider" string="Valider"
+                                            type="object" class="btn-sm btn-success"
+                                            invisible="statut != 'brouillon'"/>
+                                    <button name="action_remettre_brouillon" string="Brouillon"
+                                            type="object" class="btn-sm btn-secondary"
+                                            invisible="statut != 'valide'"/>
+                                </list>
+                            </field>
+                            <group>
+                                <field name="total_depenses" readonly="1"
+                                       string="Total dépenses (€)"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ── Vue liste intervenants ────────────────────────────────────── -->
+    <record id="view_training_trainer_list" model="ir.ui.view">
+        <field name="name">training.trainer.list</field>
+        <field name="model">training.trainer</field>
+        <field name="arch" type="xml">
+            <list string="Intervenants"
+                  decoration-info="type_intervenant == 'interne'">
+                <field name="contact_id" string="Intervenant"/>
+                <field name="session_id" string="Session"/>
+                <field name="type_intervenant" widget="badge"/>
+                <field name="nb_jours_intervention" string="Nb jours"/>
+                <field name="statut_convention" widget="badge"
+                       invisible="type_intervenant != 'externe'"/>
+                <field name="nb_depenses" string="Dépenses"
+                       optional="show"/>
+                <field name="total_depenses" string="Total (€)"
+                       optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ── Vue recherche ─────────────────────────────────────────────── -->
+    <record id="view_training_trainer_search" model="ir.ui.view">
+        <field name="name">training.trainer.search</field>
+        <field name="model">training.trainer</field>
+        <field name="arch" type="xml">
+            <search string="Intervenants">
+                <field name="contact_id"/>
+                <field name="session_id"/>
+                <separator/>
+                <filter name="externe" string="Prestataires externes"
+                        domain="[('type_intervenant', '=', 'externe')]"/>
+                <filter name="interne" string="Intervenants internes"
+                        domain="[('type_intervenant', '=', 'interne')]"/>
+                <filter name="avec_depenses" string="Avec dépenses"
+                        domain="[('nb_depenses', '&gt;', 0)]"/>
+                <separator/>
+                <filter name="group_session" string="Grouper par session"
+                        context="{'group_by': 'session_id'}"/>
+                <filter name="group_type" string="Grouper par type"
+                        context="{'group_by': 'type_intervenant'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- ── Action fenêtre ────────────────────────────────────────────── -->
+    <record id="action_training_trainer" model="ir.actions.act_window">
+        <field name="name">Intervenants</field>
+        <field name="res_model">training.trainer</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_training_trainer_search"/>
+    </record>
+
+</odoo>

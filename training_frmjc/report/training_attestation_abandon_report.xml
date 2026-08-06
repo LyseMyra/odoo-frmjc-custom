@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="report_training_attestation_abandon" model="ir.actions.report">
+        <field name="name">Attestation d'abandon</field>
+        <field name="model">training.dropout</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">training_frmjc.tmpl_attestation_abandon</field>
+        <field name="report_file">training_frmjc.tmpl_attestation_abandon</field>
+        <field name="binding_model_id" ref="model_training_dropout"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="training_frmjc.paperformat_frmjc_a4"/>
+    </record>
+
+    <template id="tmpl_attestation_abandon">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+
+                    <t t-set="stagiaire" t-value="doc.partner_id"/>
+                    <t t-set="insc"      t-value="doc.inscription_id"/>
+                    <t t-set="session"   t-value="doc.session_id"/>
+                    <t t-set="motif_labels" t-value="{
+                        'personnel':     'Raison personnelle',
+                        'professionnel': 'Raison professionnelle',
+                        'medical':       'Raison médicale',
+                        'pedagogique':   'Difficulté pédagogique',
+                        'financier':     'Difficulté financière',
+                        'reorientation': 'Réorientation de projet',
+                        'autre':         'Autre',
+                    }"/>
+
+                    <div style="font-size:10pt; padding:.5cm 1cm;">
+
+                        <!-- ── Titre ───────────────────────────────── -->
+                        <div style="text-align:center; margin-bottom:.8cm;">
+                            <h2 style="font-size:13pt; font-weight:bold; letter-spacing:.04em;
+                                       border-bottom:2px solid #1a5276; padding-bottom:.3cm;
+                                       color:#1a5276; margin:0 0 .2cm 0;">
+                                ATTESTATION D'ABANDON DE FORMATION
+                            </h2>
+                            <p style="font-size:9pt; color:#666; margin:0;">
+                                Etablie le
+                                <t t-esc="doc.date_abandon.strftime('%d/%m/%Y') if doc.date_abandon else time.strftime('%d/%m/%Y')"/>
+                            </p>
+                        </div>
+
+                        <!-- ── Section Stagiaire ───────────────────── -->
+                        <div style="border:1px solid #1a5276; border-radius:4px;
+                                    padding:.4cm .6cm; margin-bottom:.5cm;">
+                            <p style="font-weight:bold; color:#1a5276; margin:0 0 .25cm 0;
+                                      font-size:10pt; border-bottom:1px solid #dee2e6;
+                                      padding-bottom:.15cm;">
+                                STAGIAIRE
+                            </p>
+                            <table style="width:100%; font-size:9.5pt;">
+                                <tr>
+                                    <td style="width:38%; color:#555; padding:.08cm 0;">Nom / Prénom :</td>
+                                    <td style="font-weight:bold;"><t t-esc="stagiaire.name or '—'"/></td>
+                                </tr>
+                                <t t-if="stagiaire.street or stagiaire.city">
+                                    <tr>
+                                        <td style="color:#555; padding:.08cm 0;">Adresse :</td>
+                                        <td>
+                                            <t t-esc="stagiaire.street or ''"/>
+                                            <t t-if="stagiaire.zip or stagiaire.city">
+                                                <t t-esc="', ' + ((stagiaire.zip or '') + ' ' + (stagiaire.city or '')).strip()"/>
+                                            </t>
+                                        </td>
+                                    </tr>
+                                </t>
+                                <t t-if="stagiaire.email">
+                                    <tr>
+                                        <td style="color:#555; padding:.08cm 0;">Email :</td>
+                                        <td><t t-esc="stagiaire.email"/></td>
+                                    </tr>
+                                </t>
+                                <t t-if="stagiaire.phone">
+                                    <tr>
+                                        <td style="color:#555; padding:.08cm 0;">Telephone :</td>
+                                        <td><t t-esc="stagiaire.phone"/></td>
+                                    </tr>
+                                </t>
+                            </table>
+                        </div>
+
+                        <!-- ── Section Formation ───────────────────── -->
+                        <div style="border:1px solid #1a5276; border-radius:4px;
+                                    padding:.4cm .6cm; margin-bottom:.5cm;">
+                            <p style="font-weight:bold; color:#1a5276; margin:0 0 .25cm 0;
+                                      font-size:10pt; border-bottom:1px solid #dee2e6;
+                                      padding-bottom:.15cm;">
+                                FORMATION CONCERNEE
+                            </p>
+                            <table style="width:100%; font-size:9.5pt;">
+                                <tr>
+                                    <td style="width:38%; color:#555; padding:.08cm 0;">Intitule :</td>
+                                    <td style="font-weight:bold;">
+                                        <t t-esc="insc.formation_id.intitule if insc.formation_id else '—'"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="color:#555; padding:.08cm 0;">Session :</td>
+                                    <td><t t-esc="session.name if session else '—'"/></td>
+                                </tr>
+                                <t t-if="session and (session.date_debut or session.date_fin)">
+                                    <tr>
+                                        <td style="color:#555; padding:.08cm 0;">Periode :</td>
+                                        <td>
+                                            Du <t t-esc="session.date_debut.strftime('%d/%m/%Y') if session.date_debut else '?'"/>
+                                            au <t t-esc="session.date_fin.strftime('%d/%m/%Y') if session.date_fin else '?'"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                                <t t-if="insc.reference">
+                                    <tr>
+                                        <td style="color:#555; padding:.08cm 0;">N° dossier :</td>
+                                        <td><t t-esc="insc.reference"/></td>
+                                    </tr>
+                                </t>
+                            </table>
+                        </div>
+
+                        <!-- ── Section Abandon ─────────────────────── -->
+                        <div style="border:1px solid #c0392b; border-radius:4px;
+                                    padding:.4cm .6cm; margin-bottom:.5cm; background:#fff8f8;">
+                            <p style="font-weight:bold; color:#c0392b; margin:0 0 .25cm 0;
+                                      font-size:10pt; border-bottom:1px solid #f5c6cb;
+                                      padding-bottom:.15cm;">
+                                CONSTAT D'ABANDON
+                            </p>
+                            <table style="width:100%; font-size:9.5pt;">
+                                <tr>
+                                    <td style="width:38%; color:#555; padding:.08cm 0;">Date d'abandon :</td>
+                                    <td style="font-weight:bold;">
+                                        <t t-esc="doc.date_abandon.strftime('%d/%m/%Y') if doc.date_abandon else '—'"/>
+                                    </td>
+                                </tr>
+                                <t t-if="doc.semaine_abandon_id">
+                                    <tr>
+                                        <td style="color:#555; padding:.08cm 0;">Semaine d'abandon :</td>
+                                        <td><t t-esc="doc.semaine_abandon_id.name or '—'"/></td>
+                                    </tr>
+                                </t>
+                                <tr>
+                                    <td style="color:#555; padding:.08cm 0;">Motif :</td>
+                                    <td style="font-weight:bold;">
+                                        <t t-esc="motif_labels.get(doc.motif, doc.motif or '—')"/>
+                                    </td>
+                                </tr>
+                                <t t-if="doc.description">
+                                    <tr>
+                                        <td style="color:#555; padding:.08cm 0; vertical-align:top;">
+                                            Commentaires :
+                                        </td>
+                                        <td style="font-style:italic;">
+                                            <t t-esc="doc.description"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </table>
+                        </div>
+
+                        <!-- ── Section Remboursement ───────────────── -->
+                        <t t-if="doc.remboursement_applicable">
+                            <div style="border:1px solid #d68910; border-radius:4px;
+                                        padding:.4cm .6cm; margin-bottom:.5cm; background:#fffbf2;">
+                                <p style="font-weight:bold; color:#d68910; margin:0 0 .25cm 0;
+                                          font-size:10pt; border-bottom:1px solid #fce5a0;
+                                          padding-bottom:.15cm;">
+                                    REMBOURSEMENT
+                                </p>
+                                <table style="width:100%; font-size:9.5pt;">
+                                    <tr>
+                                        <td style="width:38%; color:#555; padding:.08cm 0;">
+                                            Remboursement applicable :
+                                        </td>
+                                        <td style="font-weight:bold;">Oui</td>
+                                    </tr>
+                                    <t t-if="doc.montant_remboursement">
+                                        <tr>
+                                            <td style="color:#555; padding:.08cm 0;">Montant :</td>
+                                            <td style="font-weight:bold;">
+                                                <t t-esc="'%.2f EUR' % doc.montant_remboursement"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </table>
+                            </div>
+                        </t>
+
+                        <!-- ── Mentions ────────────────────────────── -->
+                        <p style="font-size:8.5pt; color:#666; margin:.6cm 0; line-height:1.5;">
+                            La presente attestation est etablie sur la base des informations
+                            disponibles dans le dossier de formation. Elle atteste de
+                            l'interruption de la participation a la formation a la date
+                            indiquee. Ce document peut etre transmis a l'organisme financeur
+                            dans le cadre d'une regularisation financiere.
+                        </p>
+
+                        <!-- ── Signatures ──────────────────────────── -->
+                        <table style="width:100%; margin-top:.8cm;">
+                            <tr>
+                                <td style="width:48%; border:1px solid #333;
+                                           padding:.4cm; vertical-align:top;">
+                                    <p style="font-weight:bold; text-align:center;
+                                              margin:0 0 .4cm 0;">
+                                        L'Organisme de formation
+                                    </p>
+                                    <p style="font-size:9pt; color:#555; margin:0 0 .25cm 0;">
+                                        <t t-esc="env.company.name"/>
+                                    </p>
+                                    <p style="margin:0 0 .25cm 0; font-size:9pt;">Date :</p>
+                                    <p style="margin:0 0 .6cm 0; font-size:9pt;">
+                                        Signature et cachet :
+                                    </p>
+                                    <div style="height:2.2cm;"></div>
+                                </td>
+                                <td style="width:4%;"></td>
+                                <td style="width:48%; border:1px solid #333;
+                                           padding:.4cm; vertical-align:top;">
+                                    <p style="font-weight:bold; text-align:center;
+                                              margin:0 0 .4cm 0;">
+                                        Le(la) Stagiaire
+                                    </p>
+                                    <p style="font-size:9pt; color:#555; margin:0 0 .25cm 0;">
+                                        <t t-esc="stagiaire.name or ''"/>
+                                    </p>
+                                    <p style="margin:0 0 .25cm 0; font-size:9pt;">Date :</p>
+                                    <p style="margin:0 0 .6cm 0; font-size:9pt;">Signature :</p>
+                                    <div style="height:2.2cm;"></div>
+                                </td>
+                            </tr>
+                        </table>
+
+                    </div>
+
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

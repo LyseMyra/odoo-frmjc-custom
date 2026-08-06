@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Génération hebdomadaire des présences (lundi matin, 7h UTC) -->
+    <record id="cron_generer_presences" model="ir.cron">
+        <field name="name">Formation : Génération des présences</field>
+        <field name="model_id" ref="model_training_session"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_generer_presences()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">weeks</field>
+        <field name="nextcall" eval="(DateTime.now() + timedelta(days=1)).strftime('%Y-%m-%d 07:00:00')"/>
+        <field name="active">True</field>
+    </record>
+
+    <!-- Marquage automatique des absences (2×/jour : 8h et 13h UTC) -->
+    <record id="cron_marquer_absences_matin" model="ir.cron">
+        <field name="name">Formation : Marquage absences matin</field>
+        <field name="model_id" ref="model_training_attendance"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_marquer_absences()</field>
+        <field name="interval_number">12</field>
+        <field name="interval_type">hours</field>
+        <field name="nextcall" eval="(DateTime.now() + timedelta(hours=1)).strftime('%Y-%m-%d %H:00:00')"/>
+        <field name="active">True</field>
+    </record>
+
+    <!-- Relances absences non justifiées (quotidien, 9h UTC) -->
+    <record id="cron_relancer_absences" model="ir.cron">
+        <field name="name">Formation : Relances absences non justifiées</field>
+        <field name="model_id" ref="model_training_attendance"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_relancer_absences()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="nextcall" eval="(DateTime.now() + timedelta(days=1)).strftime('%Y-%m-%d 09:00:00')"/>
+        <field name="active">True</field>
+    </record>
+
+    <!-- Envoi des listes de présence aux intervenants (chaque matin, 7h UTC) -->
+    <record id="cron_envoyer_listes_formateurs" model="ir.cron">
+        <field name="name">Formation : Envoi listes présence aux intervenants</field>
+        <field name="model_id" ref="model_training_formateur_jour"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_envoyer_listes_jour()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="nextcall" eval="(DateTime.now() + timedelta(days=1)).strftime('%Y-%m-%d 07:00:00')"/>
+        <field name="active">True</field>
+    </record>
+
+    <!-- Génération des rapports mensuels (1er du mois, 6h UTC) -->
+    <record id="cron_generer_rapports_mensuels" model="ir.cron">
+        <field name="name">Formation : Génération rapports mensuels</field>
+        <field name="model_id" ref="model_training_monthly_report"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_generer_rapports_mensuels()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">months</field>
+        <field name="nextcall" eval="(DateTime.now() + timedelta(days=32)).replace(day=1).strftime('%Y-%m-%d 06:00:00')"/>
+        <field name="active">True</field>
+    </record>
+
+</odoo>

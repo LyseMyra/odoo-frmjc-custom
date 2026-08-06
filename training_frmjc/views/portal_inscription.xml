@@ -1,0 +1,1218 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+     Page d'accueil — liste des sessions ouvertes
+═══════════════════════════════════════════════════════════════════ -->
+    <template id="portal_inscription_index" name="Inscription — Sessions disponibles">
+        <t t-call="website.layout">
+            <div class="container py-5">
+                <h1 class="mb-2">Candidater à une formation FRMJC</h1>
+                <p class="text-muted mb-4">
+                    Sélectionnez la session pour laquelle vous souhaitez déposer un dossier.
+                </p>
+
+                <t t-if="not sessions">
+                    <div class="alert alert-info">
+                        Aucune session n'est actuellement ouverte aux inscriptions.
+                    </div>
+                </t>
+
+                <div class="row g-4">
+                    <t t-foreach="sessions" t-as="session">
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        <t t-esc="session.formation_id.display_name" />
+                                    </h5>
+                                    <p class="text-muted small mb-2">
+                                        <t t-if="session.date_debut"> Du <t
+                                                t-esc="session.date_debut.strftime('%d/%m/%Y')" />
+                                        <t
+                                                t-if="session.date_fin"> au <t
+                                                    t-esc="session.date_fin.strftime('%d/%m/%Y')" />
+                                            </t>
+                                        </t>
+                                    </p>
+                                    <t t-if="session.habilitation_id">
+                                        <p class="small mb-3"> Habilitation : <t
+                                                t-esc="session.habilitation_id.display_name" />
+                                        </p>
+                                    </t>
+                                    <t t-if="inscriptions.get(session.id)">
+                                        <t t-set="insc" t-value="inscriptions[session.id]"/>
+
+                                        <!-- Badge selon statut -->
+                                        <t t-if="insc.statut in ('brouillon', 'en_cours')">
+                                            <span class="badge bg-secondary mb-2">En cours de saisie</span>
+                                        </t>
+                                        <t t-elif="insc.statut == 'soumis'">
+                                            <span class="badge bg-primary mb-2">Dossier soumis ✓</span>
+                                        </t>
+                                        <t t-elif="insc.statut == 'en_attente_pieces'">
+                                            <span class="badge bg-warning text-dark mb-2">⚠ Pièces manquantes</span>
+                                        </t>
+                                        <t t-elif="insc.statut == 'complet'">
+                                            <span class="badge bg-info mb-2">Dossier complet</span>
+                                        </t>
+                                        <t t-elif="insc.statut == 'accepte'">
+                                            <span class="badge bg-success mb-2">✓ Accepté</span>
+                                        </t>
+                                        <t t-elif="insc.statut == 'refuse'">
+                                            <span class="badge bg-danger mb-2">Refusé</span>
+                                        </t>
+                                        <t t-elif="insc.statut == 'abandon'">
+                                            <span class="badge bg-secondary mb-2">Abandon</span>
+                                        </t>
+
+                                        <!-- Bouton selon statut -->
+                                        <t t-if="insc.statut in ('brouillon', 'en_cours')">
+                                            <a t-att-href="'/formation/dossier/' + insc.portal_token"
+                                               class="btn btn-primary btn-sm d-block">
+                                                Reprendre mon dossier →
+                                            </a>
+                                        </t>
+                                        <t t-elif="insc.statut == 'en_attente_pieces'">
+                                            <a t-att-href="'/formation/dossier/' + insc.portal_token"
+                                               class="btn btn-warning btn-sm d-block text-dark">
+                                                Compléter mon dossier →
+                                            </a>
+                                        </t>
+                                        <t t-elif="insc.statut == 'accepte'">
+                                            <a t-att-href="'/espace-stagiaire/' + insc.portal_token"
+                                               class="btn btn-success btn-sm d-block fw-bold">
+                                                🎓 Mon espace stagiaire →
+                                            </a>
+                                        </t>
+                                        <t t-else="">
+                                            <a t-att-href="'/formation/dossier/' + insc.portal_token + '/confirme'"
+                                               class="btn btn-outline-secondary btn-sm d-block">
+                                                Voir mon dossier
+                                            </a>
+                                        </t>
+                                    </t>
+                                    <t t-else="">
+                                        <a t-att-href="'/formation/inscription/' + str(session.id)"
+                                            class="btn btn-primary btn-sm d-block">
+                                            Déposer ma candidature
+                                        </a>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+
+                <t t-if="partner">
+                    <p class="mt-4 text-muted small"> Connecté en tant que <strong>
+                            <t t-esc="partner.email" />
+                        </strong> — <a
+                            href="/formation/deconnexion">Se déconnecter</a>
+                    </p>
+                </t>
+            </div>
+        </t>
+    </template>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+     Authentification — saisie de l'email
+═══════════════════════════════════════════════════════════════════ -->
+    <template id="portal_auth_form" name="Connexion portail candidat">
+        <t t-call="website.layout">
+            <div class="container py-5">
+                <div class="row justify-content-center">
+                    <div class="col-md-6 col-lg-5">
+                        <div class="card shadow">
+                            <div class="card-body p-4">
+                                <h2 class="card-title mb-1">Espace candidat</h2>
+                                <p class="text-muted mb-4">
+                                    Saisissez votre adresse email pour recevoir un code de
+                                    connexion.
+                                </p>
+
+                                <t t-if="error == 'email_invalide'">
+                                    <div class="alert alert-danger">Adresse email invalide.</div>
+                                </t>
+                                <t t-if="error == 'email_inconnu'">
+                                    <div class="alert alert-warning">
+                                        <strong>Accès non autorisé.</strong><br/>
+                                        Cette adresse email ne correspond à aucun dossier
+                                        d'inscription ni à un compte stagiaire FRMJC.
+                                        Si vous souhaitez vous inscrire à une formation,
+                                        rendez-vous sur la
+                                        <a href="/formation/inscription">page des sessions</a>.
+                                    </div>
+                                </t>
+                                <t t-if="error == 'envoi_echoue'">
+                                    <div class="alert alert-danger">
+                                        L'envoi du code a échoué. Veuillez réessayer.
+                                    </div>
+                                </t>
+
+                                <form method="POST" action="/formation/auth/envoyer">
+                                    <input type="hidden" name="csrf_token"
+                                        t-att-value="request.csrf_token()" />
+                                    <t t-if="session_id">
+                                        <input type="hidden" name="session_id"
+                                            t-att-value="session_id" />
+                                    </t>
+                                    <t t-if="next_url">
+                                        <input type="hidden" name="next_url"
+                                            t-att-value="next_url" />
+                                    </t>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">
+                                            Adresse email
+                                        </label>
+                                        <input type="email" name="email"
+                                            class="form-control form-control-lg"
+                                            placeholder="votre@email.fr" required="required"
+                                            autocomplete="email" />
+                                    </div>
+                                    <button type="submit" class="btn btn-primary w-100">
+                                        Recevoir mon code par email
+                                    </button>
+                                </form>
+
+                                <t t-if="session">
+                                    <hr />
+                                    <p class="small text-muted mb-0"> Formation : <strong>
+                                            <t t-esc="session.formation_id.display_name" />
+                                        </strong>
+                                    </p>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+     Authentification — saisie du code OTP
+═══════════════════════════════════════════════════════════════════ -->
+    <template id="portal_auth_verify" name="Vérification code OTP">
+        <t t-call="website.layout">
+            <div class="container py-5">
+                <div class="row justify-content-center">
+                    <div class="col-md-6 col-lg-5">
+                        <div class="card shadow">
+                            <div class="card-body p-4">
+                                <h2 class="card-title mb-1">Code de connexion</h2>
+                                <p class="text-muted mb-4"> Un code à 6 chiffres a été envoyé à <strong>
+                                        <t t-esc="email" />
+                                    </strong>.
+                                    Ce code est valable <strong>15 minutes</strong>. </p>
+
+                                <t t-if="error">
+                                    <div class="alert alert-danger">
+                                        <t t-esc="error" />
+                                    </div>
+                                </t>
+
+                                <form method="POST" action="/formation/auth/verifier">
+                                    <input type="hidden" name="csrf_token"
+                                        t-att-value="request.csrf_token()" />
+                                    <input type="hidden" name="otp_id" t-att-value="otp_id" />
+                                    <t t-if="session_id">
+                                        <input type="hidden" name="session_id"
+                                            t-att-value="session_id" />
+                                    </t>
+                                    <t t-if="next_url">
+                                        <input type="hidden" name="next_url"
+                                            t-att-value="next_url" />
+                                    </t>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">
+                                            Code à 6 chiffres
+                                        </label>
+                                        <input type="text" name="code"
+                                            class="form-control form-control-lg text-center"
+                                            placeholder="_ _ _ _ _ _"
+                                            maxlength="6" pattern="\d{6}"
+                                            inputmode="numeric" autofocus="autofocus"
+                                            required="required"
+                                            style="letter-spacing:0.5em;font-size:1.8em;" />
+                                    </div>
+                                    <button type="submit" class="btn btn-primary w-100">
+                                        Valider
+                                    </button>
+                                </form>
+                                <div class="text-center mt-3">
+                                    <a
+                                        t-att-href="'/formation/auth' + ('?session_id=' + str(session_id) if session_id else '')"
+                                        class="small text-muted">
+                                        Renvoyer un code / Changer d'adresse
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+     Formulaire d'inscription — 10 étapes (template unique)
+═══════════════════════════════════════════════════════════════════ -->
+    <template id="portal_inscription_form" name="Dossier d'inscription — formulaire">
+        <t t-call="website.layout">
+            <div class="container py-4">
+
+                <!-- En-tête -->
+                <div class="mb-3">
+                    <h1 class="h3 mb-0">
+                        <t t-esc="insc.session_id.formation_id.display_name" />
+                    </h1>
+                    <p class="text-muted small"> Dossier <strong>
+                            <t t-esc="insc.reference" />
+                        </strong> — <t
+                            t-esc="insc.partner_id.email" />
+                    <span class="ms-3">
+                            <a href="/formation/deconnexion" class="text-muted small">
+                                Se déconnecter
+                            </a>
+                        </span>
+                    </p>
+                </div>
+
+                <!-- Barre de progression -->
+                <div class="mb-4">
+                    <div class="d-flex justify-content-between small text-muted mb-1">
+                        <span>Étape <t t-esc="etape" /> / 10</span>
+                        <span><t t-esc="etape * 10" />%</span>
+                    </div>
+                    <div class="progress" style="height:8px;">
+                        <div class="progress-bar bg-primary"
+                            t-att-style="'width:' + str(etape * 10) + '%'"></div>
+                    </div>
+                    <!-- Noms des étapes cliquables -->
+                    <div class="d-none d-md-flex justify-content-between mt-2"
+                        style="font-size:0.72em;">
+                        <t t-foreach="[
+                            (1,'Identité'),(2,'Coordonnées'),(3,'Emploi'),
+                            (4,'Formation'),(5,'Expériences'),(6,'Motivations'),
+                            (7,'Projet'),(8,'Documents'),(9,'Déclaration'),(10,'Récap')
+                        ]" t-as="step">
+                            <!-- Étape courante -->
+                            <t t-if="etape == step[0]">
+                                <span class="fw-bold text-primary border-bottom border-primary pb-1">
+                                    <t t-esc="step[1]"/>
+                                </span>
+                            </t>
+                            <!-- Étape déjà visitée → lien cliquable -->
+                            <t t-elif="step[0] &lt; etape or step[0] &lt;= insc.etape_portal">
+                                <a t-att-href="'/formation/dossier/' + token + '/etape/' + str(step[0])"
+                                   class="text-success text-decoration-none"
+                                   t-att-title="'Revenir à : ' + step[1]">
+                                    <t t-esc="step[1]"/>
+                                </a>
+                            </t>
+                            <!-- Étape non encore atteinte → grisée -->
+                            <t t-else="">
+                                <span class="text-muted" style="opacity:0.45;">
+                                    <t t-esc="step[1]"/>
+                                </span>
+                            </t>
+                        </t>
+                    </div>
+                </div>
+
+                <!-- Erreur globale -->
+                <t t-if="errors.get('global')">
+                    <div class="alert alert-danger">
+                        <t t-esc="errors['global']" />
+                    </div>
+                </t>
+
+                <!-- ── Formulaire ── -->
+                <form method="POST"
+                    t-att-action="'/formation/dossier/' + token + '/etape/' + str(etape)"
+                    t-att-enctype="'multipart/form-data' if etape == 8 else 'application/x-www-form-urlencoded'">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
+
+                    <div class="card shadow-sm">
+                        <div class="card-body p-4">
+
+                            <!-- ── ÉTAPE 1 : Identité ───────────────────────────────────────── -->
+                            <t t-if="etape == 1">
+                                <h4 class="card-title mb-4">1. État civil</h4>
+                                <!-- _rname = nom réel uniquement si ce n'est pas l'email placeholder -->
+                                <t t-set="_rname" t-value="'' if ('@' in (partner.name or '')) else (partner.name or '')"/>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Prénom *</label>
+                                        <input type="text" name="prenom" class="form-control"
+                                            required="required"
+                                            t-att-value="_rname.split(' ')[0] if _rname else ''" />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Nom de famille *</label>
+                                        <input type="text" name="nom" class="form-control"
+                                            required="required"
+                                            t-att-value="' '.join(_rname.split(' ')[1:]) if _rname else ''" />
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Sexe</label>
+                                        <select name="sexe" class="form-select">
+                                            <option value="">— Choisir —</option>
+                                            <option value="m" t-att-selected="partner.sexe == 'm'">
+                                                Homme</option>
+                                            <option value="f" t-att-selected="partner.sexe == 'f'">
+                                                Femme</option>
+                                            <option value="autre"
+                                                t-att-selected="partner.sexe == 'autre'">Non précisé</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Date de naissance</label>
+                                        <input type="date" name="date_naissance"
+                                            class="form-control"
+                                            t-att-value="str(partner.date_naissance) if partner.date_naissance else ''" />
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Lieu de naissance</label>
+                                        <input type="text" name="lieu_naissance"
+                                            class="form-control"
+                                            t-att-value="partner.lieu_naissance or ''" />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Nationalité</label>
+                                        <select name="nationalite_id" class="form-select">
+                                            <option value="">— Choisir —</option>
+                                            <t t-foreach="pays_list" t-as="pays">
+                                                <option t-att-value="pays.id"
+                                                    t-att-selected="partner.nationalite_id.id == pays.id">
+                                                    <t t-esc="pays.name" />
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+                                </div>
+                            </t>
+
+                            <!-- ── ÉTAPE 2 : Coordonnées ────────────────────────────────────── -->
+                            <t t-if="etape == 2">
+                                <h4 class="card-title mb-4">2. Coordonnées</h4>
+                                <div class="row g-3">
+                                    <div class="col-12">
+                                        <label class="form-label">Adresse</label>
+                                        <input type="text" name="street" class="form-control"
+                                            t-att-value="partner.street or ''" />
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label">Code postal</label>
+                                        <input type="text" name="zip" class="form-control"
+                                            t-att-value="partner.zip or ''" />
+                                    </div>
+                                    <div class="col-md-9">
+                                        <label class="form-label">Ville</label>
+                                        <input type="text" name="city" class="form-control"
+                                            t-att-value="partner.city or ''" />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Téléphone</label>
+                                        <input type="tel" name="phone" class="form-control"
+                                            t-att-value="partner.phone or ''" />
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label">Email</label>
+                                        <input type="email" class="form-control" readonly="readonly"
+                                            t-att-value="partner.email or ''" />
+                                        <div class="form-text">L'email ne peut pas être modifié ici.</div>
+                                    </div>
+                                </div>
+                            </t>
+
+                            <!-- ── ÉTAPE 3 : Situation professionnelle ──────────────────────── -->
+                            <t t-if="etape == 3">
+                                <h4 class="card-title mb-4">3. Situation professionnelle</h4>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Statut d'emploi actuel</label>
+                                        <select name="statut_emploi" class="form-select">
+                                            <option value="">— Choisir —</option>
+                                            <t
+                                                t-foreach="[
+                    ('salarie_cdi','Salarié CDI'),('salarie_cdd','Salarié CDD'),
+                    ('independant','Travailleur indépendant'),
+                    ('demandeur_emploi','Demandeur d\'emploi'),
+                    ('etudiant','Étudiant'),('benevole','Bénévole'),('autre','Autre')
+                ]"
+                                                t-as="opt">
+                                                <option t-att-value="opt[0]"
+                                                    t-att-selected="insc.statut_emploi == opt[0]">
+                                                    <t t-esc="opt[1]" />
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Type de contrat</label>
+                                        <select name="type_contrat" class="form-select">
+                                            <option value="">— Choisir —</option>
+                                            <t
+                                                t-foreach="[
+                    ('cdi','CDI'),('cdd','CDD'),('interim','Intérim'),
+                    ('independant','Indépendant'),('benevole','Bénévole'),('autre','Autre')
+                ]"
+                                                t-as="opt">
+                                                <option t-att-value="opt[0]"
+                                                    t-att-selected="insc.type_contrat == opt[0]">
+                                                    <t t-esc="opt[1]" />
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Employeur</label>
+                                        <input type="text" name="employeur_nom" class="form-control"
+                                            t-att-value="insc.employeur_nom or ''" />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Adresse de l'employeur</label>
+                                        <input type="text" name="employeur_adresse"
+                                            class="form-control"
+                                            t-att-value="insc.employeur_adresse or ''" />
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Rémunération brute mensuelle (€)</label>
+                                        <input type="number" name="remuneration_mensuelle"
+                                            class="form-control"
+                                            step="0.01" min="0"
+                                            t-att-value="insc.remuneration_mensuelle or ''" />
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Volume horaire / semaine (h)</label>
+                                        <input type="number" name="volume_horaire_semaine"
+                                            class="form-control"
+                                            step="0.5" min="0"
+                                            t-att-value="insc.volume_horaire_semaine or ''" />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Type de stagiaire</label>
+                                        <select name="mode_stagiaire" class="form-select">
+                                            <option value="">— Sélectionner —</option>
+                                            <t t-foreach="[
+                                                ('a', 'Salarié(e) d\'un employeur privé (hors apprenti)'),
+                                                ('b', 'Apprenti(e)'),
+                                                ('c', 'Personne en recherche d\'emploi'),
+                                                ('d', 'Particulier à mes propres frais'),
+                                                ('e', 'Autre'),
+                                            ]" t-as="opt">
+                                                <option t-att-value="opt[0]"
+                                                        t-att-selected="insc.mode_stagiaire == opt[0]">
+                                                    <t t-esc="opt[1]"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Type de financement</label>
+                                        <select name="type_financement" class="form-select">
+                                            <option value="">— Sélectionner —</option>
+                                            <t t-foreach="[
+                                                ('1',  'Mon employeur finance ma formation'),
+                                                ('2',  'Organisme paritaire (OPCO, CPF, apprentissage…)'),
+                                                ('3',  'Pouvoir public — agents publics'),
+                                                ('4',  'Instance européenne'),
+                                                ('5',  'État'),
+                                                ('6',  'Conseil régional'),
+                                                ('7',  'France Travail (ex Pôle emploi)'),
+                                                ('8',  'Autre ressource publique'),
+                                                ('9',  'Contrat individuel — à mes propres frais'),
+                                                ('10', 'Autre organisme de formation / CFA'),
+                                                ('11', 'Autre'),
+                                            ]" t-as="opt">
+                                                <option t-att-value="opt[0]"
+                                                        t-att-selected="insc.type_financement == opt[0]">
+                                                    <t t-esc="opt[1]"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label">Précision (si organisme paritaire)</label>
+                                        <select name="sous_type_financement" class="form-select">
+                                            <option value="">— Si applicable —</option>
+                                            <t t-foreach="[
+                                                ('a', 'Contrat d\'apprentissage'),
+                                                ('b', 'Contrat de professionnalisation'),
+                                                ('c', 'Promotion / reconversion par alternance (Pro-A)'),
+                                                ('d', 'Projet de transition professionnelle (PTP)'),
+                                                ('e', 'Compte personnel de formation (CPF)'),
+                                                ('f', 'Dispositif pour demandeurs d\'emploi'),
+                                                ('g', 'Dispositif pour travailleurs non-salariés'),
+                                                ('h', 'Plan de développement des compétences / autre'),
+                                            ]" t-as="opt">
+                                                <option t-att-value="opt[0]"
+                                                        t-att-selected="insc.sous_type_financement == opt[0]">
+                                                    <t t-esc="opt[1]"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+                                </div>
+                            </t>
+
+                            <!-- ── ÉTAPE 4 : Formation initiale ─────────────────────────────── -->
+                            <t t-if="etape == 4">
+                                <h4 class="card-title mb-4">4. Formation initiale</h4>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Niveau d'études</label>
+                                        <select name="niveau_etudes" class="form-select">
+                                            <option value="">— Choisir —</option>
+                                            <t
+                                                t-foreach="[
+                    ('v','Niveau 3 (CAP/BEP)'),('iv','Niveau 4 (Bac)'),
+                    ('iii','Niveau 5 (Bac+2)'),('ii','Niveau 6 (Bac+3/4)'),
+                    ('i','Niveau 7/8 (Bac+5 et +)')
+                ]"
+                                                t-as="opt">
+                                                <option t-att-value="opt[0]"
+                                                    t-att-selected="insc.niveau_etudes == opt[0]">
+                                                    <t t-esc="opt[1]" />
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Dernier diplôme obtenu</label>
+                                        <input type="text" name="dernier_diplome"
+                                            class="form-control"
+                                            t-att-value="insc.dernier_diplome or ''" />
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Année d'obtention</label>
+                                        <input type="number" name="annee_obtention"
+                                            class="form-control"
+                                            min="1950" max="2030"
+                                            t-att-value="insc.annee_obtention or ''" />
+                                    </div>
+                                    <div class="col-md-8">
+                                        <label class="form-label">Établissement</label>
+                                        <input type="text" name="etablissement_formation"
+                                            class="form-control"
+                                            t-att-value="insc.etablissement_formation or ''" />
+                                    </div>
+                                </div>
+                            </t>
+
+                            <!-- ── ÉTAPE 5 : Expériences ────────────────────────────────────── -->
+                            <t t-if="etape == 5">
+                                <h4 class="card-title mb-4">5. Expériences professionnelles et
+                                    bénévoles</h4>
+                                <div class="row g-3">
+                                    <div class="col-12">
+                                        <label class="form-label">
+                                            Décrivez vos expériences (dates, structures, fonctions,
+                                            publics)
+                                        </label>
+                                        <textarea name="experiences_pro" class="form-control"
+                                            rows="8"
+                                            placeholder="Ex : 2018–2022 — Animateur BPJEPS à la MJC de Rennes...">
+                                            <t t-esc="insc.experiences_pro or ''" />
+                                        </textarea>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Années d'expérience en animation /
+                                            sport</label>
+                                        <input type="number" name="experience_animation"
+                                            class="form-control"
+                                            step="0.5" min="0"
+                                            t-att-value="insc.experience_animation or ''" />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Années d'expérience en encadrement
+                                            / management</label>
+                                        <input type="number" name="experience_encadrement"
+                                            class="form-control"
+                                            step="0.5" min="0"
+                                            t-att-value="insc.experience_encadrement or ''" />
+                                    </div>
+                                </div>
+                            </t>
+
+                            <!-- ── ÉTAPE 6 : Motivations ────────────────────────────────────── -->
+                            <t t-if="etape == 6">
+                                <h4 class="card-title mb-4">6. Motivations</h4>
+                                <p class="text-muted mb-3">
+                                    Expliquez pourquoi vous souhaitez suivre cette formation et ce
+                                    qui vous a
+                                    amené à candidater au DEJEPS / DESJEPS de la FRMJC.
+                                </p>
+                                <textarea name="motivations" class="form-control" rows="12"
+                                    placeholder="Décrivez vos motivations...">
+                                    <t t-esc="insc.motivations or ''" />
+                                </textarea>
+                            </t>
+
+                            <!-- ── ÉTAPE 7 : Projet professionnel ───────────────────────────── -->
+                            <t t-if="etape == 7">
+                                <h4 class="card-title mb-4">7. Projet professionnel</h4>
+                                <div class="row g-3">
+                                    <div class="col-12">
+                                        <label class="form-label">
+                                            Décrivez votre projet professionnel à l'issue de la
+                                            formation
+                                        </label>
+                                        <textarea name="projet_professionnel" class="form-control"
+                                            rows="8"
+                                            placeholder="Quelles fonctions souhaitez-vous exercer ?...">
+                                            <t t-esc="insc.projet_professionnel or ''" />
+                                        </textarea>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Structure d'accueil en alternance</label>
+                                        <input type="text" name="structure_accueil"
+                                            class="form-control"
+                                            t-att-value="insc.structure_accueil or ''"
+                                            placeholder="Nom de la structure" />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Fonction visée</label>
+                                        <input type="text" name="fonction_visee"
+                                            class="form-control"
+                                            t-att-value="insc.fonction_visee or ''"
+                                            placeholder="Ex : Directeur adjoint MJC" />
+                                    </div>
+                                </div>
+                            </t>
+
+                            <!-- ── ÉTAPE 8 : Documents ──────────────────────────────────────── -->
+                            <t t-if="etape == 8">
+                                <h4 class="card-title mb-4">8. Pièces justificatives</h4>
+                                <p class="text-muted mb-3">
+                                    Formats acceptés : PDF, DOCX, JPG, PNG. Taille max : 5 Mo par
+                                    fichier.
+                                </p>
+                                <div class="row g-3">
+                                    <t
+                                        t-foreach="[
+            ('cv', 'CV (obligatoire)', True, insc.cv_filename),
+            ('lettre_motivation_doc', 'Lettre de motivation', False, insc.lettre_motivation_filename),
+            ('diplome_doc', 'Copie du diplôme / attestation de niveau', False, insc.diplome_filename),
+            ('justificatif_emploi', 'Justificatif de situation professionnelle', False, insc.justificatif_emploi_filename),
+            ('autre_document', 'Autre document', False, insc.autre_document_filename),
+        ]"
+                                        t-as="doc">
+                                        <div class="col-12">
+                                            <label class="form-label">
+                                                <t t-esc="doc[1]" />
+                                                <t t-if="doc[2]">
+                                                    <span class="text-danger">*</span>
+                                                </t>
+                                            </label>
+                                            <div class="d-flex align-items-center gap-2">
+                                                <input type="file" t-att-name="doc[0]"
+                                                    class="form-control"
+                                                    t-att-accept="'application/pdf,application/msword,image/*'" />
+                                                <t t-if="doc[3]">
+                                                    <span class="badge bg-success text-nowrap"> ✓ <t
+                                                            t-esc="doc[3]" />
+                                                    </span>
+                                                </t>
+                                            </div>
+                                        </div>
+                                    </t>
+                                </div>
+                            </t>
+
+                            <!-- ── ÉTAPE 9 : Renseignements complémentaires + Déclaration ───── -->
+                            <t t-if="etape == 9">
+                                <h4 class="card-title mb-4">9. Renseignements complémentaires</h4>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">
+                                            N° de sécurité sociale <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="text" name="numero_secu" class="form-control"
+                                            maxlength="15" placeholder="1 XX XX XX XXX XXX XX"
+                                            required="required"
+                                            t-att-value="partner.numero_secu or ''" />
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label">Situation familiale</label>
+                                        <select name="situation_familiale" class="form-select">
+                                            <option value="">—</option>
+                                            <t
+                                                t-foreach="[
+                    ('celibataire','Célibataire'),('marie','Marié(e)/Pacsé(e)'),
+                    ('divorce','Divorcé(e)'),('veuf','Veuf/Veuve')
+                ]"
+                                                t-as="opt">
+                                                <option t-att-value="opt[0]"
+                                                    t-att-selected="partner.situation_familiale == opt[0]">
+                                                    <t t-esc="opt[1]" />
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label">Enfants à charge</label>
+                                        <input type="number" name="nombre_enfants"
+                                            class="form-control"
+                                            min="0" t-att-value="partner.nombre_enfants or 0" />
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label">Informations complémentaires</label>
+                                        <textarea name="notes_candidat" class="form-control"
+                                            rows="4"
+                                            placeholder="Toute information utile pour l'étude de votre dossier...">
+                                            <t t-esc="insc.notes_candidat or ''" />
+                                        </textarea>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="alert alert-light border mt-2">
+                                            <div class="form-check">
+                                                <input type="checkbox" name="conditions_acceptees"
+                                                    id="conditions"
+                                                    class="form-check-input" value="on"
+                                                    t-att-checked="insc.conditions_acceptees" />
+                                                <label class="form-check-label fw-semibold"
+                                                    for="conditions">
+                                                    Je certifie sur l'honneur l'exactitude des
+                                                    informations fournies
+                                                    et m'engage à fournir les originaux sur demande.
+                                                    J'ai pris connaissance des conditions de la
+                                                    formation et j'accepte
+                                                    que mes données soient utilisées dans le cadre
+                                                    de mon inscription.
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </t>
+
+                            <!-- ── ÉTAPE 10 : Récapitulatif ─────────────────────────────────── -->
+                            <t t-if="etape == 10">
+                                <h4 class="card-title mb-4">10. Récapitulatif — Vérification avant
+                                    soumission</h4>
+
+                                <t t-set="sections"
+                                    t-value="[
+        ('Identité', [
+            ('Nom', partner.name),
+            ('Date de naissance', str(partner.date_naissance) if partner.date_naissance else '—'),
+            ('Lieu de naissance', partner.lieu_naissance or '—'),
+            ('Nationalité', partner.nationalite_id.name if partner.nationalite_id else '—'),
+        ]),
+        ('Coordonnées', [
+            ('Adresse', (partner.street or '') + ' ' + (partner.zip or '') + ' ' + (partner.city or '')),
+            ('Téléphone', partner.phone or '—'),
+            ('Email', partner.email or '—'),
+        ]),
+        ('Situation professionnelle', [
+            ('Statut', dict(insc._fields['statut_emploi'].selection or []).get(insc.statut_emploi, '—')),
+            ('Employeur', insc.employeur_nom or '—'),
+            ('Type de stagiaire', dict(insc._fields['mode_stagiaire'].selection or []).get(insc.mode_stagiaire, '—')),
+            ('Financement', dict(insc._fields['type_financement'].selection or []).get(insc.type_financement, '—')),
+        ]),
+        ('Formation', [
+            ('Niveau', dict(insc._fields['niveau_etudes'].selection or []).get(insc.niveau_etudes, '—')),
+            ('Diplôme', insc.dernier_diplome or '—'),
+            ('Établissement', insc.etablissement_formation or '—'),
+        ]),
+        ('Documents', [
+            ('CV', '✓ ' + (insc.cv_filename or '') if insc.cv else '⚠ Non fourni'),
+            ('Lettre motivation', '✓ ' + (insc.lettre_motivation_filename or '') if insc.lettre_motivation_doc else 'Non fourni'),
+            ('Diplôme', '✓ ' + (insc.diplome_filename or '') if insc.diplome_doc else 'Non fourni'),
+        ]),
+    ]">
+                                </t>
+
+                                <div class="accordion mb-4" id="recap">
+                                    <t t-foreach="sections" t-as="sec">
+                                        <div class="accordion-item">
+                                            <h2 class="accordion-header">
+                                                <button class="accordion-button collapsed"
+                                                    type="button"
+                                                    data-bs-toggle="collapse"
+                                                    t-att-data-bs-target="'#sec' + str(sec_index)">
+                                                    <t t-esc="sec[0]" />
+                                                </button>
+                                            </h2>
+                                            <div t-att-id="'sec' + str(sec_index)"
+                                                class="accordion-collapse collapse">
+                                                <div class="accordion-body">
+                                                    <dl class="row mb-0">
+                                                        <t t-foreach="sec[1]" t-as="item">
+                                                            <dt class="col-sm-4">
+                                                                <t t-esc="item[0]" />
+                                                            </dt>
+                                                            <dd class="col-sm-8">
+                                                                <t t-esc="item[1]" />
+                                                            </dd>
+                                                        </t>
+                                                    </dl>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </t>
+                                </div>
+
+                                <t t-if="not insc.conditions_acceptees">
+                                    <div class="alert alert-warning"> ⚠ Vous n'avez pas encore
+                                        accepté les conditions à l'étape 9. <a
+                                            t-att-href="'/formation/dossier/' + token + '/etape/9'">
+                                        Retourner à l'étape 9
+                                        </a>
+                                    </div>
+                                </t>
+                                <t t-else="">
+                                    <div class="alert alert-success"> ✓ Déclaration sur l'honneur
+                                        acceptée le <t
+                                            t-esc="str(insc.date_declaration) if insc.date_declaration else '?'" />
+                                    </div>
+                                </t>
+
+                                <input type="hidden" name="action" value="soumettre" />
+                            </t>
+
+                        </div><!--
+                        /.card-body -->
+                    </div><!--
+                    /.card -->
+
+                    <!-- Navigation -->
+                    <div class="d-flex justify-content-between mt-3">
+                        <t t-if="etape &gt; 1">
+                            <a
+                                t-att-href="'/formation/dossier/' + token + '/etape/' + str(etape - 1)"
+                                class="btn btn-outline-secondary">
+                                ← Précédent
+                            </a>
+                        </t>
+                        <t t-else="">
+                            <span />
+                        </t>
+
+                        <t t-if="etape &lt; 10">
+                            <button type="submit" class="btn btn-primary">
+                                Enregistrer et continuer →
+                            </button>
+                        </t>
+                        <t t-else="">
+                            <button type="submit" class="btn btn-success btn-lg"
+                                t-att-disabled="not insc.conditions_acceptees">
+                                ✉ Soumettre mon dossier
+                            </button>
+                        </t>
+                    </div>
+
+                </form>
+            </div><!--
+            /.container -->
+        </t>
+    </template>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+     Page de confirmation après soumission
+═══════════════════════════════════════════════════════════════════ -->
+    <template id="portal_inscription_confirme" name="Mon dossier — statut et récapitulatif">
+        <t t-call="website.layout">
+            <div class="container py-4">
+
+                <!-- ── Bandeau statut ── -->
+                <div class="row justify-content-center mb-4">
+                    <div class="col-lg-8 text-center">
+
+                        <t t-if="insc.statut == 'soumis'">
+                            <div class="mb-3" style="font-size:3em;">📬</div>
+                            <h1 class="h3 mb-1">Dossier soumis</h1>
+                            <p class="text-muted">
+                                Votre dossier <strong><t t-esc="insc.reference"/></strong>
+                                a bien été reçu. Notre équipe reviendra vers vous dans les plus brefs délais.
+                            </p>
+                        </t>
+                        <t t-elif="insc.statut == 'en_attente_pieces'">
+                            <div class="mb-3" style="font-size:3em;">📎</div>
+                            <h1 class="h3 mb-1 text-warning">Pièces manquantes</h1>
+                            <p class="text-muted">
+                                Votre dossier <strong><t t-esc="insc.reference"/></strong>
+                                est incomplet. Vous avez reçu un email précisant les pièces à fournir.
+                            </p>
+                            <a t-att-href="'/formation/dossier/' + token + '/etape/8'"
+                               class="btn btn-warning btn-sm mb-3">
+                                Déposer les pièces manquantes →
+                            </a>
+                        </t>
+                        <t t-elif="insc.statut == 'complet'">
+                            <div class="mb-3" style="font-size:3em;">✅</div>
+                            <h1 class="h3 mb-1 text-success">Dossier complet</h1>
+                            <p class="text-muted">
+                                Votre dossier est complet. Une décision vous sera communiquée prochainement.
+                            </p>
+                        </t>
+                        <t t-elif="insc.statut == 'accepte'">
+                            <div class="mb-3" style="font-size:3em;">🎉</div>
+                            <h1 class="h3 mb-1 text-success">Félicitations — Candidature acceptée !</h1>
+                            <p class="text-muted">
+                                Votre candidature pour
+                                <strong><t t-esc="insc.formation_id.display_name"/></strong>
+                                a été acceptée. Accédez à votre espace stagiaire pour consulter
+                                vos conventions et documents de formation.
+                            </p>
+                            <a t-att-href="'/espace-stagiaire/' + token"
+                               class="btn btn-success btn-lg mb-3 fw-bold">
+                                🎓 Accéder à mon espace stagiaire →
+                            </a>
+                        </t>
+                        <t t-elif="insc.statut == 'refuse'">
+                            <div class="mb-3" style="font-size:3em;">📩</div>
+                            <h1 class="h3 mb-1">Candidature non retenue</h1>
+                            <p class="text-muted">
+                                Nous avons étudié votre dossier
+                                <strong><t t-esc="insc.reference"/></strong>
+                                avec attention. Malheureusement, nous ne sommes pas en mesure
+                                de donner une suite favorable à votre candidature.
+                            </p>
+                        </t>
+                        <t t-else="">
+                            <h1 class="h3 mb-1">Mon dossier</h1>
+                        </t>
+
+                        <!-- Fiche synthèse -->
+                        <div class="card mb-3 text-start mx-auto" style="max-width:420px;">
+                            <div class="card-body py-2">
+                                <dl class="row mb-0 small">
+                                    <dt class="col-5">Référence</dt>
+                                    <dd class="col-7 mb-1"><t t-esc="insc.reference"/></dd>
+                                    <dt class="col-5">Formation</dt>
+                                    <dd class="col-7 mb-1"><t t-esc="insc.formation_id.display_name"/></dd>
+                                    <dt class="col-5">Candidat</dt>
+                                    <dd class="col-7 mb-1"><t t-esc="insc.partner_id.name"/></dd>
+                                    <dt class="col-5">Statut</dt>
+                                    <dd class="col-7 mb-0">
+                                        <t t-if="insc.statut == 'soumis'"><span class="badge bg-primary">Soumis</span></t>
+                                        <t t-elif="insc.statut == 'en_attente_pieces'"><span class="badge bg-warning text-dark">Pièces manquantes</span></t>
+                                        <t t-elif="insc.statut == 'complet'"><span class="badge bg-info">Complet</span></t>
+                                        <t t-elif="insc.statut == 'accepte'"><span class="badge bg-success">Accepté</span></t>
+                                        <t t-elif="insc.statut == 'refuse'"><span class="badge bg-danger">Non retenu</span></t>
+                                        <t t-else=""><span class="badge bg-secondary"><t t-esc="insc.statut"/></span></t>
+                                    </dd>
+                                </dl>
+                            </div>
+                        </div>
+
+                        <a href="/formation/inscription" class="btn btn-outline-secondary btn-sm">
+                            ← Retour à l'accueil
+                        </a>
+                    </div>
+                </div>
+
+                <!-- ── Récapitulatif du dossier ── -->
+                <div class="row justify-content-center">
+                    <div class="col-lg-9">
+                        <h5 class="mb-3 text-muted border-bottom pb-2">Récapitulatif de votre dossier</h5>
+
+                        <div class="accordion" id="accordionDossier">
+
+                            <!-- Identité -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button" type="button"
+                                            data-bs-toggle="collapse" data-bs-target="#sec-identite">
+                                        1. Identité
+                                    </button>
+                                </h2>
+                                <div id="sec-identite" class="accordion-collapse collapse show">
+                                    <div class="accordion-body">
+                                        <dl class="row mb-0">
+                                            <dt class="col-sm-4">Nom complet</dt>
+                                            <dd class="col-sm-8"><t t-esc="insc.partner_id.name or '—'"/></dd>
+                                            <dt class="col-sm-4">Date de naissance</dt>
+                                            <dd class="col-sm-8"><t t-esc="str(insc.partner_id.date_naissance) if insc.partner_id.date_naissance else '—'"/></dd>
+                                            <dt class="col-sm-4">Lieu de naissance</dt>
+                                            <dd class="col-sm-8"><t t-esc="insc.partner_id.lieu_naissance or '—'"/></dd>
+                                            <dt class="col-sm-4">Nationalité</dt>
+                                            <dd class="col-sm-8"><t t-esc="insc.partner_id.nationalite_id.name if insc.partner_id.nationalite_id else '—'"/></dd>
+                                        </dl>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Coordonnées -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button"
+                                            data-bs-toggle="collapse" data-bs-target="#sec-coords">
+                                        2. Coordonnées
+                                    </button>
+                                </h2>
+                                <div id="sec-coords" class="accordion-collapse collapse">
+                                    <div class="accordion-body">
+                                        <dl class="row mb-0">
+                                            <dt class="col-sm-4">Adresse</dt>
+                                            <dd class="col-sm-8">
+                                                <t t-esc="insc.partner_id.street or ''"/>
+                                                <t t-if="insc.partner_id.zip or insc.partner_id.city">
+                                                    <br/><t t-esc="(insc.partner_id.zip or '') + ' ' + (insc.partner_id.city or '')"/>
+                                                </t>
+                                            </dd>
+                                            <dt class="col-sm-4">Téléphone</dt>
+                                            <dd class="col-sm-8"><t t-esc="insc.partner_id.phone or '—'"/></dd>
+                                            <dt class="col-sm-4">Email</dt>
+                                            <dd class="col-sm-8"><t t-esc="insc.partner_id.email or '—'"/></dd>
+                                        </dl>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Situation professionnelle -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button"
+                                            data-bs-toggle="collapse" data-bs-target="#sec-emploi">
+                                        3. Situation professionnelle
+                                    </button>
+                                </h2>
+                                <div id="sec-emploi" class="accordion-collapse collapse">
+                                    <div class="accordion-body">
+                                        <dl class="row mb-0">
+                                            <dt class="col-sm-4">Statut</dt>
+                                            <dd class="col-sm-8"><t t-esc="insc.statut_emploi or '—'"/></dd>
+                                            <dt class="col-sm-4">Employeur</dt>
+                                            <dd class="col-sm-8"><t t-esc="insc.employeur_nom or '—'"/></dd>
+                                            <dt class="col-sm-4">Type de contrat</dt>
+                                            <dd class="col-sm-8"><t t-esc="insc.type_contrat or '—'"/></dd>
+                                            <dt class="col-sm-4">Type de stagiaire</dt>
+                                            <dd class="col-sm-8"><t t-esc="dict(insc._fields['mode_stagiaire'].selection or []).get(insc.mode_stagiaire, '—')"/></dd>
+                                            <dt class="col-sm-4">Financement</dt>
+                                            <dd class="col-sm-8"><t t-esc="dict(insc._fields['type_financement'].selection or []).get(insc.type_financement, '—')"/></dd>
+                                        </dl>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Formation initiale -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button"
+                                            data-bs-toggle="collapse" data-bs-target="#sec-formation">
+                                        4. Formation initiale
+                                    </button>
+                                </h2>
+                                <div id="sec-formation" class="accordion-collapse collapse">
+                                    <div class="accordion-body">
+                                        <dl class="row mb-0">
+                                            <dt class="col-sm-4">Niveau d'études</dt>
+                                            <dd class="col-sm-8"><t t-esc="insc.niveau_etudes or '—'"/></dd>
+                                            <dt class="col-sm-4">Diplôme</dt>
+                                            <dd class="col-sm-8"><t t-esc="insc.dernier_diplome or '—'"/></dd>
+                                            <dt class="col-sm-4">Établissement</dt>
+                                            <dd class="col-sm-8"><t t-esc="insc.etablissement_formation or '—'"/></dd>
+                                        </dl>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Expériences -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button"
+                                            data-bs-toggle="collapse" data-bs-target="#sec-exp">
+                                        5. Expériences
+                                    </button>
+                                </h2>
+                                <div id="sec-exp" class="accordion-collapse collapse">
+                                    <div class="accordion-body">
+                                        <t t-if="insc.experiences_pro">
+                                            <p style="white-space:pre-line;"><t t-esc="insc.experiences_pro"/></p>
+                                        </t>
+                                        <t t-else=""><p class="text-muted">—</p></t>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Motivations -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button"
+                                            data-bs-toggle="collapse" data-bs-target="#sec-motiv">
+                                        6. Motivations
+                                    </button>
+                                </h2>
+                                <div id="sec-motiv" class="accordion-collapse collapse">
+                                    <div class="accordion-body">
+                                        <t t-if="insc.motivations">
+                                            <p style="white-space:pre-line;"><t t-esc="insc.motivations"/></p>
+                                        </t>
+                                        <t t-else=""><p class="text-muted">—</p></t>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Projet professionnel -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button"
+                                            data-bs-toggle="collapse" data-bs-target="#sec-projet">
+                                        7. Projet professionnel
+                                    </button>
+                                </h2>
+                                <div id="sec-projet" class="accordion-collapse collapse">
+                                    <div class="accordion-body">
+                                        <dl class="row mb-2">
+                                            <dt class="col-sm-4">Structure d'accueil</dt>
+                                            <dd class="col-sm-8"><t t-esc="insc.structure_accueil or '—'"/></dd>
+                                            <dt class="col-sm-4">Fonction visée</dt>
+                                            <dd class="col-sm-8"><t t-esc="insc.fonction_visee or '—'"/></dd>
+                                        </dl>
+                                        <t t-if="insc.projet_professionnel">
+                                            <p style="white-space:pre-line;"><t t-esc="insc.projet_professionnel"/></p>
+                                        </t>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Documents -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button"
+                                            data-bs-toggle="collapse" data-bs-target="#sec-docs">
+                                        8. Documents fournis
+                                    </button>
+                                </h2>
+                                <div id="sec-docs" class="accordion-collapse collapse">
+                                    <div class="accordion-body">
+                                        <ul class="list-unstyled mb-0">
+                                            <t t-foreach="[
+                                                ('CV', insc.cv, insc.cv_filename),
+                                                ('Lettre de motivation', insc.lettre_motivation_doc, insc.lettre_motivation_filename),
+                                                ('Diplôme', insc.diplome_doc, insc.diplome_filename),
+                                                ('Justificatif emploi', insc.justificatif_emploi, insc.justificatif_emploi_filename),
+                                                ('Autre', insc.autre_document, insc.autre_document_filename),
+                                            ]" t-as="doc">
+                                                <li class="mb-1">
+                                                    <t t-if="doc[1]">
+                                                        <span class="text-success me-1">✓</span>
+                                                        <strong><t t-esc="doc[0]"/></strong>
+                                                        <span class="text-muted small ms-1">(<t t-esc="doc[2] or 'fichier'"/>)</span>
+                                                    </t>
+                                                    <t t-else="">
+                                                        <span class="text-muted me-1">–</span>
+                                                        <t t-esc="doc[0]"/>
+                                                        <span class="text-muted small ms-1">non fourni</span>
+                                                    </t>
+                                                </li>
+                                            </t>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div><!-- /.accordion -->
+                    </div>
+                </div>
+
+            </div>
+        </t>
+    </template>
+
+</odoo>

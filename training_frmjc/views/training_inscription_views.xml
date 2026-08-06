@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ── Vue formulaire ─────────────────────────────────────────── -->
+    <record id="view_training_inscription_form" model="ir.ui.view">
+        <field name="name">training.inscription.form</field>
+        <field name="model">training.inscription</field>
+        <field name="arch" type="xml">
+            <form string="Dossier d'inscription">
+                <header>
+                    <button name="action_soumettre" string="Marquer soumis"
+                            type="object" class="btn-primary"
+                            invisible="statut not in ('brouillon','en_cours')"/>
+                    <button name="action_attendre_pieces" string="En attente de pièces"
+                            type="object"
+                            invisible="statut != 'soumis'"/>
+                    <button name="action_marquer_complet" string="Dossier complet"
+                            type="object" class="btn-primary"
+                            invisible="statut not in ('soumis','en_attente_pieces')"/>
+                    <button name="action_accepter" string="Accepter"
+                            type="object" class="btn-success"
+                            invisible="statut != 'complet'"/>
+                    <button name="action_refuser" string="Refuser"
+                            type="object" class="btn-danger"
+                            invisible="statut in ('accepte','refuse','abandon')"/>
+                    <button name="action_ouvrir_portail" string="Lien portail candidat"
+                            type="object" class="btn-secondary"/>
+                    <button name="action_imprimer_certificat_realisation"
+                            string="Certificat de réalisation"
+                            type="object" class="btn-secondary"
+                            invisible="statut != 'accepte'"/>
+                    <field name="statut" widget="statusbar"
+                           statusbar_visible="brouillon,en_cours,soumis,complet,accepte"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_conventions" type="object"
+                                class="oe_stat_button" icon="fa-file-text-o"
+                                invisible="nb_conventions == 0">
+                            <field name="nb_conventions" widget="statinfo" string="Conventions"/>
+                        </button>
+                        <button name="action_voir_alternances" type="object"
+                                class="oe_stat_button" icon="fa-building-o"
+                                invisible="nb_alternances == 0">
+                            <field name="nb_alternances" widget="statinfo" string="Structures d'accueil"/>
+                        </button>
+                        <button type="object" name="action_voir_presences"
+                                class="oe_stat_button" icon="fa-calendar-check-o"
+                                invisible="statut != 'accepte'">
+                            <div class="o_stat_info">
+                                <field name="heures_presentes" widget="float_time" class="o_stat_value"/>
+                                <span class="o_stat_text">h présent /
+                                    <field name="heures_prevues" widget="float_time"/>h
+                                </span>
+                            </div>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="reference" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="Candidature">
+                            <field name="partner_id"/>
+                            <field name="session_id"/>
+                            <field name="formation_id" readonly="1"/>
+                            <field name="date_inscription"/>
+                            <field name="etape_portal" string="Étape portail" readonly="1"/>
+                        </group>
+                        <group string="Décision">
+                            <field name="date_entretien"/>
+                            <field name="date_decision"/>
+                            <field name="motif_refus" invisible="statut != 'refuse'"
+                                   placeholder="Motif de refus…"/>
+                            <field name="date_derniere_relance" readonly="1"/>
+                            <field name="nb_relances" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Coordonnées du candidat">
+                        <group>
+                            <field name="partner_email" widget="email"/>
+                            <field name="partner_phone" widget="phone"/>
+                        </group>
+                        <group>
+                            <field name="partner_street"/>
+                            <field name="partner_zip"/>
+                            <field name="partner_city"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Situation professionnelle">
+                            <group>
+                                <group>
+                                    <field name="statut_emploi"/>
+                                    <field name="type_contrat"/>
+                                </group>
+                                <group>
+                                    <field name="employeur_nom"/>
+                                    <field name="employeur_adresse"/>
+                                    <field name="remuneration_mensuelle"/>
+                                    <field name="volume_horaire_semaine"/>
+                                </group>
+                            </group>
+                            <separator string="Classification BPF (Bilan Pédagogique et Financier)"/>
+                            <group>
+                                <group>
+                                    <field name="mode_stagiaire"/>
+                                    <field name="type_financement"/>
+                                    <field name="sous_type_financement"
+                                           invisible="type_financement != '2'"/>
+                                </group>
+                            </group>
+                            <separator string="Recettes estimées" invisible="statut != 'accepte'"/>
+                            <group invisible="statut != 'accepte'">
+                                <group>
+                                    <field name="montant_theorique" string="Recette théorique (€)"
+                                           readonly="1"/>
+                                    <field name="montant_reel" string="Recette réelle (€)"
+                                           readonly="1"/>
+                                    <field name="ecart_montant" string="Écart absences injustifiées (€)"
+                                           readonly="1"/>
+                                </group>
+                                <group>
+                                    <field name="heures_prevues" string="Heures prévues" readonly="1"/>
+                                    <field name="heures_facturables" string="Heures facturables" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Formation &amp; Expériences">
+                            <group>
+                                <group string="Formation initiale">
+                                    <field name="niveau_etudes"/>
+                                    <field name="dernier_diplome"/>
+                                    <field name="annee_obtention"/>
+                                    <field name="etablissement_formation"/>
+                                </group>
+                                <group string="Expériences">
+                                    <field name="experience_animation"/>
+                                    <field name="experience_encadrement"/>
+                                </group>
+                            </group>
+                            <group string="Détail des expériences">
+                                <field name="experiences_pro" nolabel="1"/>
+                            </group>
+                        </page>
+                        <page string="Projet">
+                            <group>
+                                <field name="motivations" nolabel="1"
+                                       placeholder="Motivations du candidat…"/>
+                            </group>
+                            <separator string="Projet professionnel"/>
+                            <group>
+                                <group>
+                                    <field name="structure_accueil"/>
+                                    <field name="structure_accueil_id"/>
+                                    <field name="fonction_visee"/>
+                                </group>
+                            </group>
+                            <group>
+                                <field name="projet_professionnel" nolabel="1"
+                                       placeholder="Projet professionnel du candidat…"/>
+                            </group>
+                        </page>
+                        <page string="Documents">
+                            <group>
+                                <group string="CV">
+                                    <field name="cv" filename="cv_filename" widget="binary"/>
+                                    <field name="cv_filename" invisible="1"/>
+                                </group>
+                                <group string="Lettre de motivation">
+                                    <field name="lettre_motivation_doc"
+                                           filename="lettre_motivation_filename"
+                                           widget="binary"/>
+                                    <field name="lettre_motivation_filename" invisible="1"/>
+                                </group>
+                                <group string="Diplôme">
+                                    <field name="diplome_doc"
+                                           filename="diplome_filename" widget="binary"/>
+                                    <field name="diplome_filename" invisible="1"/>
+                                </group>
+                                <group string="Justificatif emploi">
+                                    <field name="justificatif_emploi"
+                                           filename="justificatif_emploi_filename"
+                                           widget="binary"/>
+                                    <field name="justificatif_emploi_filename" invisible="1"/>
+                                </group>
+                                <group string="Autre">
+                                    <field name="autre_document"
+                                           filename="autre_document_filename"
+                                           widget="binary"/>
+                                    <field name="autre_document_filename" invisible="1"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Déclaration">
+                            <group>
+                                <field name="conditions_acceptees"/>
+                                <field name="date_declaration"/>
+                                <field name="notes_candidat"/>
+                            </group>
+                        </page>
+                        <page string="Secrétariat">
+                            <group>
+                                <field name="notes_secretariat"
+                                       placeholder="Notes internes secrétariat…"/>
+                            </group>
+                        </page>
+                        <page string="Alternance / Structures d'accueil"
+                              invisible="not alternance_ids">
+                            <field name="alternance_ids">
+                                <list>
+                                    <field name="structure_id" string="Structure d'accueil"/>
+                                    <field name="responsable_id" string="Responsable"/>
+                                    <field name="tuteur_id" string="Tuteur / MA"/>
+                                    <field name="intitule_poste"/>
+                                    <field name="date_debut"/>
+                                    <field name="date_fin"/>
+                                    <field name="statut" widget="badge"/>
+                                    <field name="est_complet" string="Complet"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Abandons"
+                              invisible="not dropout_ids">
+                            <field name="dropout_ids">
+                                <list>
+                                    <field name="date_abandon"/>
+                                    <field name="motif"/>
+                                    <field name="description"/>
+                                    <field name="remboursement_applicable"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ── Vue liste ──────────────────────────────────────────────── -->
+    <record id="view_training_inscription_list" model="ir.ui.view">
+        <field name="name">training.inscription.list</field>
+        <field name="model">training.inscription</field>
+        <field name="arch" type="xml">
+            <list string="Dossiers d'inscription"
+                  decoration-success="statut == 'accepte'"
+                  decoration-danger="statut == 'refuse'"
+                  decoration-warning="statut in ('en_attente_pieces','abandon')"
+                  decoration-info="statut == 'complet'">
+                <field name="reference"/>
+                <field name="partner_id" string="Candidat"/>
+                <field name="session_id"/>
+                <field name="formation_id"/>
+                <field name="date_inscription"/>
+                <field name="statut" widget="badge"
+                       decoration-success="statut == 'accepte'"
+                       decoration-danger="statut == 'refuse'"
+                       decoration-warning="statut in ('en_attente_pieces','abandon')"
+                       decoration-info="statut == 'complet'"
+                       decoration-muted="statut in ('brouillon','en_cours')"/>
+                <field name="etape_portal" string="Étape" optional="show"/>
+                <field name="nb_relances" optional="show"/>
+                <field name="date_derniere_relance" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ── Vue Kanban ─────────────────────────────────────────────── -->
+    <record id="view_training_inscription_kanban" model="ir.ui.view">
+        <field name="name">training.inscription.kanban</field>
+        <field name="model">training.inscription</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="statut"
+                    group_create="false"
+                    quick_create="false"
+                    class="o_kanban_small_column">
+                <field name="statut"/>
+                <field name="reference"/>
+                <field name="partner_id"/>
+                <field name="session_id"/>
+                <field name="formation_id"/>
+                <field name="etape_portal"/>
+                <field name="date_inscription"/>
+                <field name="portal_token"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_content">
+                            <div class="o_kanban_record_title fw-bold">
+                                <field name="partner_id"/>
+                            </div>
+                            <div class="text-muted small">
+                                <field name="session_id"/>
+                            </div>
+                            <div class="mt-1">
+                                <span class="badge bg-secondary">
+                                    <t t-esc="record.reference.value"/>
+                                </span>
+                                <t t-if="record.statut.raw_value == 'en_cours'">
+                                    <span class="ms-1 text-muted small">
+                                        Étape <t t-esc="record.etape_portal.value"/>/10
+                                    </span>
+                                </t>
+                            </div>
+                            <div class="text-muted small mt-1">
+                                <t t-esc="record.date_inscription.value"/>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- ── Vue recherche ──────────────────────────────────────────── -->
+    <record id="view_training_inscription_search" model="ir.ui.view">
+        <field name="name">training.inscription.search</field>
+        <field name="model">training.inscription</field>
+        <field name="arch" type="xml">
+            <search string="Dossiers">
+                <field name="reference"/>
+                <field name="partner_id"/>
+                <field name="session_id"/>
+                <field name="formation_id"/>
+                <separator/>
+                <filter name="brouillon" string="Brouillon"
+                        domain="[('statut','=','brouillon')]"/>
+                <filter name="en_cours" string="En cours de saisie"
+                        domain="[('statut','=','en_cours')]"/>
+                <filter name="soumis" string="Soumis"
+                        domain="[('statut','=','soumis')]"/>
+                <filter name="en_attente" string="En attente de pièces"
+                        domain="[('statut','=','en_attente_pieces')]"/>
+                <filter name="complet" string="Complet"
+                        domain="[('statut','=','complet')]"/>
+                <filter name="accepte" string="Accepté"
+                        domain="[('statut','=','accepte')]"/>
+                <filter name="refuse" string="Refusé"
+                        domain="[('statut','=','refuse')]"/>
+                <separator/>
+                <filter name="a_relancer" string="À relancer (7j+)"
+                        domain="[('statut','in',('en_cours','soumis','en_attente_pieces')),
+                                 '|',('date_derniere_relance','=',False),
+                                 ('date_derniere_relance','&lt;',(context_today() - relativedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                <separator/>
+                <filter name="group_statut" string="Par statut"
+                        context="{'group_by': 'statut'}"/>
+                <filter name="group_session" string="Par session"
+                        context="{'group_by': 'session_id'}"/>
+                <filter name="group_formation" string="Par formation"
+                        context="{'group_by': 'formation_id'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- ── Action ─────────────────────────────────────────────────── -->
+    <record id="action_training_inscription" model="ir.actions.act_window">
+        <field name="name">Dossiers d'inscription</field>
+        <field name="res_model">training.inscription</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="search_view_id" ref="view_training_inscription_search"/>
+        <field name="context">{'search_default_group_statut': 1}</field>
+    </record>
+
+</odoo>

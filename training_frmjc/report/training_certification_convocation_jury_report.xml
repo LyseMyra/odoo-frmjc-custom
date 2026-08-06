@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <!-- PDF 2 : Convocation JURY (adressée aux membres du jury)         -->
+    <!-- Modèle : training.jury.session                                  -->
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <record id="report_certification_convocation_jury" model="ir.actions.report">
+        <field name="name">Convocation Jury — Circuit B</field>
+        <field name="model">training.jury.session</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">training_frmjc.tmpl_convocation_jury</field>
+        <field name="report_file">training_frmjc.tmpl_convocation_jury</field>
+        <field name="binding_model_id" ref="model_training_jury_session"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="training_frmjc.paperformat_frmjc_a4"/>
+    </record>
+
+    <template id="tmpl_convocation_jury">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+
+                        <t t-set="hab" t-value="doc.session_id.habilitation_id"/>
+                        <t t-set="company" t-value="doc.env.company"/>
+                        <t t-set="commissions" t-value="doc.get_commissions()"/>
+                        <t t-set="jours_fr" t-value="{0:'lundi',1:'mardi',2:'mercredi',3:'jeudi',4:'vendredi',5:'samedi',6:'dimanche'}"/>
+                        <t t-set="mois_fr" t-value="{1:'janvier',2:'février',3:'mars',4:'avril',5:'mai',6:'juin',7:'juillet',8:'août',9:'septembre',10:'octobre',11:'novembre',12:'décembre'}"/>
+
+                        <!-- Titre underliné -->
+                        <h2 style="text-align:center; text-decoration:underline; margin-bottom:1.5rem;">
+                            CONVOCATION JURY – Certification
+                            <t t-esc="doc.bloc_id.name"/>
+                        </h2>
+
+                        <!-- Tableau d'information (clé : valeur) -->
+                        <table style="width:100%; border-collapse:collapse; margin-bottom:1.5rem; font-size:9.5pt;">
+                            <tr>
+                                <td style="padding:.3rem .8rem; color:#555; width:35%; text-align:right; vertical-align:top;">Diplôme préparé :</td>
+                                <td style="padding:.3rem .8rem; font-weight:bold;">
+                                    <t t-esc="(hab.type_formation or '').upper()"/>
+                                    <t t-if="hab.specialite"> <t t-esc="hab.specialite"/></t>
+                                    <t t-if="hab.mention">
+                                        <br/>Mention : <t t-esc="hab.mention"/>
+                                    </t>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding:.3rem .8rem; color:#555; text-align:right; vertical-align:top;">Organisme de<br/>formation :</td>
+                                <td style="padding:.3rem .8rem; font-weight:bold;">
+                                    <t t-esc="company.name"/>
+                                    <t t-if="company.street">
+                                        (<t t-esc="company.street"/>
+                                        <t t-if="company.zip"> <t t-esc="company.zip"/></t>
+                                        <t t-if="company.city"> <t t-esc="company.city"/></t>
+                                        <t t-if="company.phone"> – <t t-esc="company.phone"/></t>)
+                                    </t>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding:.3rem .8rem; color:#555; text-align:right;">Date :</td>
+                                <td style="padding:.3rem .8rem; background:#e8e8e8; font-weight:bold;">
+                                    <t t-if="doc.date">
+                                        <t t-esc="jours_fr.get(doc.date.weekday(), '')"/>
+                                        <t t-esc="doc.date.day"/>
+                                        <t t-esc="mois_fr.get(doc.date.month, '')"/>
+                                        <t t-esc="doc.date.year"/>
+                                    </t>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding:.3rem .8rem; color:#555; text-align:right;">UC évaluées :</td>
+                                <td style="padding:.3rem .8rem; font-weight:bold;"><t t-esc="doc.bloc_id.name"/></td>
+                            </tr>
+                            <tr>
+                                <td style="padding:.3rem .8rem; color:#555; text-align:right;">Nombre de candidats :</td>
+                                <td style="padding:.3rem .8rem; font-weight:bold;"><t t-esc="doc.nb_candidats"/></td>
+                            </tr>
+                            <tr>
+                                <td style="padding:.3rem .8rem; color:#555; text-align:right;">Nombre de commissions :</td>
+                                <td style="padding:.3rem .8rem; font-weight:bold;"><t t-esc="len(commissions)"/></td>
+                            </tr>
+                            <tr>
+                                <td style="padding:.3rem .8rem; color:#555; text-align:right; vertical-align:top;">Composition des<br/>commissions</td>
+                                <td style="padding:.3rem .8rem;">
+                                    <t t-foreach="commissions" t-as="comm">
+                                        <div style="border:1px solid #ccc; padding:.4rem .7rem; margin-bottom:.4rem;">
+                                            <p style="color:#555; margin:0 0 .2rem 0; font-size:8.5pt;">Commission <t t-esc="comm['num']"/> :</p>
+                                            <t t-foreach="comm['membres']" t-as="m">
+                                                <p style="font-weight:bold; margin:0;"><t t-esc="m.name"/></p>
+                                            </t>
+                                        </div>
+                                    </t>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- Déroulement si notes disponibles -->
+                        <t t-if="doc.notes">
+                            <p style="color:#555; margin:.3rem 0 .2rem 0;">Déroulement de la journée :</p>
+                            <p style="white-space:pre-line; margin-bottom:1rem; font-size:9pt;"><t t-esc="doc.notes"/></p>
+                        </t>
+                        <t t-else="">
+                            <!-- Déroulement standard de l'épreuve -->
+                            <p style="color:#555; margin:.5rem 0 .2rem 0;">Déroulement de l'épreuve :</p>
+                            <p style="margin-bottom:1rem; font-size:9pt;">
+                                20' de présentation par le candidat<br/>
+                                40' d'échanges candidat-examinateurs<br/>
+                                15' de délibération en commissions
+                            </p>
+                        </t>
+
+                        <!-- Lieu -->
+                        <t t-if="doc.lieu">
+                            <p style="color:#555; margin:.3rem 0 .2rem 0;">Lieu de l'épreuve :</p>
+                            <p style="font-weight:bold; margin-bottom:1.2rem;"><t t-esc="doc.lieu"/></p>
+                        </t>
+
+                        <!-- Tableau Commission / Membres / Horaires et candidats -->
+                        <table style="width:100%; border-collapse:collapse; font-size:9pt;">
+                            <thead>
+                                <tr style="background:#f0f0f0;">
+                                    <th style="border:1px solid #ccc; padding:.4rem .6rem; width:2.5cm; text-align:center;">Commission</th>
+                                    <th style="border:1px solid #ccc; padding:.4rem .6rem;">Membres</th>
+                                    <th style="border:1px solid #ccc; padding:.4rem .6rem;">Horaires et candidats</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="commissions" t-as="comm">
+                                    <tr>
+                                        <td style="border:1px solid #ccc; padding:.5rem .6rem; text-align:center; font-weight:bold; vertical-align:top;">
+                                            <t t-esc="comm['num']"/>
+                                        </td>
+                                        <td style="border:1px solid #ccc; padding:.5rem .6rem; vertical-align:top;">
+                                            <t t-foreach="comm['membres']" t-as="m">
+                                                <p style="margin:0;"><t t-esc="m.name"/></p>
+                                            </t>
+                                        </td>
+                                        <td style="border:1px solid #ccc; padding:.5rem .6rem; vertical-align:top;">
+                                            <t t-foreach="comm['certs']" t-as="cert">
+                                                <p style="margin:0;">
+                                                    <t t-if="cert.heure_debut_b">
+                                                        <t t-esc="'%dh%02d' % (int(cert.heure_debut_b), int(round((cert.heure_debut_b % 1)*60)))"/>
+                                                        –
+                                                    </t>
+                                                    <t t-esc="cert.partner_id.name"/>
+                                                </p>
+                                            </t>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+
+                        <!-- Pied de page -->
+                        <div style="margin-top:1cm; text-align:center; font-size:8pt; border-top:1px solid #aaa; padding-top:.4cm;">
+                            <t t-esc="company.name"/>
+                            <t t-if="company.street"> | <t t-esc="company.street"/>
+                                <t t-if="company.zip"> <t t-esc="company.zip"/></t>
+                                <t t-if="company.city"> <t t-esc="company.city"/></t>
+                            </t>
+                            <t t-if="company.phone"> – <t t-esc="company.phone"/></t>
+                            <t t-if="company.email"> – <t t-esc="company.email"/></t>
+                        </div>
+
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <!-- PDF 3 : Convocation CANDIDAT individuelle (Circuit B)           -->
+    <!-- Modèle : training.certification                                  -->
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <record id="report_certification_convocation_candidat_b" model="ir.actions.report">
+        <field name="name">Convocation candidat — Circuit B</field>
+        <field name="model">training.certification</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">training_frmjc.tmpl_convocation_candidat_b</field>
+        <field name="report_file">training_frmjc.tmpl_convocation_candidat_b</field>
+        <field name="binding_model_id" ref="model_training_certification"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="training_frmjc.paperformat_frmjc_a4"/>
+    </record>
+
+    <template id="tmpl_convocation_candidat_b">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+
+                        <t t-set="hab" t-value="doc.session_id.habilitation_id"/>
+                        <t t-set="js" t-value="doc.jury_session_id"/>
+                        <t t-set="responsable" t-value="doc.session_id.responsable_id"/>
+                        <t t-set="mois_fr" t-value="{1:'janvier',2:'février',3:'mars',4:'avril',5:'mai',6:'juin',7:'juillet',8:'août',9:'septembre',10:'octobre',11:'novembre',12:'décembre'}"/>
+                        <t t-set="jours_fr" t-value="{0:'lundi',1:'mardi',2:'mercredi',3:'jeudi',4:'vendredi',5:'samedi',6:'dimanche'}"/>
+                        <t t-set="today" t-value="context_timestamp(datetime.datetime.now())"/>
+                        <t t-set="h_pass" t-value="'%dh%02d' % (int(doc.heure_debut_b), int(round((doc.heure_debut_b % 1)*60))) if doc.heure_debut_b else 'à définir'"/>
+                        <t t-set="date_jury" t-value="js.date if js else False"/>
+
+                        <!-- Date alignée à droite -->
+                        <p style="text-align:right; margin-bottom:1.5rem;">
+                            Rennes, le
+                            <t t-esc="today.day"/>
+                            <t t-esc="mois_fr.get(today.month, '')"/>
+                            <t t-esc="today.year"/>
+                        </p>
+
+                        <!-- Encadré formation + titre -->
+                        <div style="border:1.5px solid #333; padding:.8rem 1.2rem; margin-bottom:1.5rem; text-align:center;">
+                            <p style="font-weight:bold; margin:0 0 .2rem 0;">
+                                <t t-esc="(hab.type_formation or '').upper()"/>
+                                <t t-if="hab.specialite"> <t t-esc="hab.specialite"/></t>
+                            </p>
+                            <t t-if="hab.mention">
+                                <p style="margin:0 0 .6rem 0; font-size:.9rem;">
+                                    Mention : <t t-esc="hab.mention"/>
+                                </p>
+                            </t>
+                            <p style="font-weight:bold; font-size:1.05rem; margin:.6rem 0 .5rem 0;">
+                                CONVOCATION CANDIDAT : Certification
+                                <t t-esc="doc.bloc_id.name"/>
+                            </p>
+                            <!-- Intitulés des UCs du bloc -->
+                            <t t-if="doc.bloc_id.module_ids">
+                                <div style="text-align:left; margin-top:.5rem;">
+                                    <t t-foreach="doc.bloc_id.module_ids" t-as="mod">
+                                        <p style="font-weight:bold; font-size:.85rem; text-transform:uppercase; margin:.1rem 0 0 0;">
+                                            <t t-esc="mod.code"/> : <t t-esc="mod.intitule or mod.code"/>
+                                        </p>
+                                    </t>
+                                </div>
+                            </t>
+                        </div>
+
+                        <!-- Destinataire -->
+                        <p style="margin-bottom:1rem;">
+                            <t t-esc="doc.partner_id.name"/>
+                        </p>
+
+                        <!-- Corps de la convocation -->
+                        <p style="text-align:justify; margin-bottom:1rem;">
+                            Vous êtes convoqué(e)
+                            <t t-if="date_jury">
+                                <strong>
+                                    <t t-esc="jours_fr.get(date_jury.weekday(), '')"/>
+                                    <t t-esc="date_jury.day"/>
+                                    <t t-esc="mois_fr.get(date_jury.month, '')"/>
+                                    <t t-esc="date_jury.year"/>
+                                </strong>
+                            </t>
+                            à l'épreuve de certification du
+                            <t t-esc="doc.bloc_id.name"/>
+                            <t t-if="hab.type_formation">
+                                du <t t-esc="(hab.type_formation or '').upper()"/>
+                            </t>
+                            <t t-if="hab.specialite"><t t-esc="hab.specialite"/>,</t>
+                            <t t-if="hab.mention">mention <t t-esc="hab.mention"/>.</t>
+                        </p>
+
+                        <p style="margin-bottom:1rem;">
+                            Vous passerez l'épreuve
+                            <t t-if="doc.numero_commission">
+                                devant la commission n°<strong><t t-esc="doc.numero_commission"/></strong>,
+                            </t>
+                            à <strong><t t-esc="h_pass"/></strong>.
+                            <t t-if="js and js.lieu">
+                                <br/>Lieu : <strong><t t-esc="js.lieu"/></strong>
+                            </t>
+                        </p>
+
+                        <p style="margin-bottom:.5rem;">
+                            Nous vous demandons d'arriver un quart d'heure avant votre passage et de
+                            vous munir de :
+                        </p>
+                        <ul style="margin-bottom:1.2rem;">
+                            <li>votre pièce d'identité,</li>
+                            <li>votre livret de formation (PIF)</li>
+                            <li>un exemplaire papier de vos dossiers pour chaque UC du <t t-esc="doc.bloc_id.name"/></li>
+                            <li>de tout document que vous jugerez utile pour appuyer votre présentation.</li>
+                        </ul>
+
+                        <p style="margin-bottom:1.5rem;">
+                            Nous vous souhaitons bonne chance pour cette épreuve.
+                        </p>
+
+                        <p>Cordialement,</p>
+
+                        <div style="text-align:right; margin-top:1rem;">
+                            <p style="margin:0;"><strong><t t-esc="responsable.name or ''"/></strong></p>
+                            <t t-if="responsable.email">
+                                <p style="margin:0; font-size:.9rem;"><t t-esc="responsable.email"/></p>
+                            </t>
+                            <t t-if="responsable.phone">
+                                <p style="margin:0; font-size:.9rem;"><t t-esc="responsable.phone"/></p>
+                            </t>
+                        </div>
+
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

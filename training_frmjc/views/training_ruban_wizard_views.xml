@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_training_ruban_wizard_form" model="ir.ui.view">
+        <field name="name">training.ruban.wizard.form</field>
+        <field name="model">training.ruban.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Construction du ruban pédagogique">
+
+                <field name="state" invisible="1"/>
+
+                <!-- ÉTAPE 1 — Paramétrage -->
+                <group invisible="state != 'etape1'">
+                    <field name="session_id"/>
+                    <field name="date_debut_souhaitee"/>
+                    <field name="date_fin_approximative"/>
+                </group>
+
+                <!-- ÉTAPE 2 — Sélection des semaines -->
+                <div invisible="state != 'etape2'">
+
+                    <!-- Bandeau fixe : compteur + consigne -->
+                    <div style="position: sticky; top: 0; z-index: 10; background: white; padding: 8px 0; border-bottom: 1px solid #dee2e6; margin-bottom: 8px;">
+                        <div class="alert alert-info mb-2" role="status">
+                            Cochez les semaines à inclure dans le ruban.
+                            Les <strong>semaines de formation</strong> occupent une semaine entière
+                            (lun→ven) — le DEJEPS en exige exactement <strong>20</strong>.
+                            Les autres types (<em>certification, remédiation…</em>) sont des
+                            <strong>journées ponctuelles</strong> : précisez la date exacte dans la
+                            colonne « Date si journée ».
+                            Laissez le N° à <strong>0</strong> pour une numérotation automatique
+                            des semaines de formation.
+                        </div>
+                        <group string="Avancement de la sélection">
+                            <field name="nb_semaines_formation_selectionnees"
+                                   string="Semaines de formation sélectionnées"/>
+                            <field name="nb_semaines_hors_formation"
+                                   string="Semaines hors-formation"/>
+                        </group>
+                    </div>
+
+                    <!-- Liste des semaines candidates -->
+                    <field name="semaine_candidate_ids">
+                        <list editable="bottom"
+                              limit="200"
+                              decoration-success="selectionnee and type_semaine == 'formation'"
+                              decoration-warning="selectionnee and type_semaine != 'formation'">
+                            <field name="mois_annee" optional="hide"/>
+                            <field name="date_debut" readonly="1" string="Semaine du"/>
+                            <field name="date_fin" readonly="1" string="au"/>
+                            <field name="selectionnee"/>
+                            <field name="type_semaine"
+                                   readonly="not selectionnee"/>
+                            <field name="date_jour"
+                                   string="Date si journée"
+                                   readonly="not selectionnee or type_semaine == 'formation'"
+                                   optional="show"
+                                   help="Pour une certification ou événement ponctuel : date exacte de la journée dans cette semaine"/>
+                            <field name="numero_semaine"
+                                   string="N° (0=auto)"
+                                   readonly="not selectionnee or type_semaine != 'formation'"/>
+                            <field name="motif_exclusion"
+                                   optional="show"
+                                   readonly="not selectionnee"/>
+                        </list>
+                    </field>
+                </div>
+
+                <footer>
+                    <!-- Étape 1 -->
+                    <button name="action_generer_semaines"
+                            string="Générer les semaines →"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state != 'etape1'"/>
+
+                    <!-- Étape 2 -->
+                    <button name="action_retour_etape1"
+                            string="← Modifier les dates"
+                            type="object"
+                            invisible="state != 'etape2'"/>
+                    <button name="action_valider_selection"
+                            string="Valider le ruban"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state != 'etape2'"/>
+
+                    <button string="Annuler" class="btn-secondary"
+                            special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_training_ruban_wizard" model="ir.actions.act_window">
+        <field name="name">Construire le ruban pédagogique</field>
+        <field name="res_model">training.ruban.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+</odoo>

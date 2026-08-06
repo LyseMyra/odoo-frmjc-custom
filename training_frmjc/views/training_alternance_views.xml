@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_training_alternance_list" model="ir.ui.view">
+        <field name="name">training.alternance.list</field>
+        <field name="model">training.alternance</field>
+        <field name="arch" type="xml">
+            <list string="Dossiers d'alternance"
+                  decoration-success="statut == 'valide'"
+                  decoration-warning="statut == 'soumis'"
+                  decoration-muted="statut == 'archive'">
+                <field name="partner_id" string="Stagiaire"/>
+                <field name="session_id" string="Session"/>
+                <field name="structure_id" string="Structure d'accueil"/>
+                <field name="tuteur_id" string="Tuteur / MA"/>
+                <field name="date_debut"/>
+                <field name="date_fin"/>
+                <field name="statut" widget="badge"/>
+                <field name="est_complet" string="Complet"/>
+                <button name="action_valider" string="Valider" type="object"
+                        class="btn-sm btn-success"
+                        invisible="statut != 'soumis'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_training_alternance_form" model="ir.ui.view">
+        <field name="name">training.alternance.form</field>
+        <field name="model">training.alternance</field>
+        <field name="arch" type="xml">
+            <form string="Dossier d'alternance">
+                <header>
+                    <button name="action_valider" string="Valider" type="object"
+                            class="btn-primary"
+                            invisible="statut != 'soumis'"/>
+                    <button name="action_archiver" string="Archiver" type="object"
+                            invisible="statut == 'archive'"/>
+                    <field name="statut" widget="statusbar"
+                           statusbar_visible="brouillon,soumis,valide"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group string="Inscription">
+                            <field name="inscription_id"/>
+                            <field name="partner_id" readonly="1"/>
+                            <field name="session_id" readonly="1"/>
+                            <field name="est_complet" readonly="1"/>
+                        </group>
+                        <group string="Dates d'accueil">
+                            <field name="date_debut"/>
+                            <field name="date_fin"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Structure d'accueil">
+                            <group>
+                                <field name="structure_id"
+                                       domain="[('is_company','=',True)]"/>
+                                <field name="responsable_id"
+                                       domain="[('is_company','=',False)]"/>
+                            </group>
+                        </page>
+
+                        <page string="Tuteur / MA">
+                            <group>
+                                <field name="tuteur_id"
+                                       domain="[('is_company','=',False)]"/>
+                            </group>
+                        </page>
+
+                        <page string="Poste et missions">
+                            <group>
+                                <field name="intitule_poste"/>
+                                <field name="publics"/>
+                            </group>
+                            <group>
+                                <field name="missions_principales"/>
+                                <field name="missions_complementaires"/>
+                                <field name="activites_coordination"/>
+                                <field name="projet_alternance"/>
+                            </group>
+                        </page>
+
+                        <page string="Notes secrétariat">
+                            <field name="notes_secretariat" nolabel="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_training_alternance_search" model="ir.ui.view">
+        <field name="name">training.alternance.search</field>
+        <field name="model">training.alternance</field>
+        <field name="arch" type="xml">
+            <search string="Dossiers d'alternance">
+                <field name="partner_id" string="Stagiaire"/>
+                <field name="structure_id"/>
+                <field name="session_id"/>
+                <filter name="soumis" string="À valider"
+                        domain="[('statut','=','soumis')]"/>
+                <filter name="valide" string="Validés"
+                        domain="[('statut','=','valide')]"/>
+                <filter name="incomplet" string="Incomplets"
+                        domain="[('est_complet','=',False),('statut','!=','archive')]"/>
+                <separator/>
+                <filter name="group_session" string="Par session"
+                        context="{'group_by': 'session_id'}"/>
+                <filter name="group_statut" string="Par statut"
+                        context="{'group_by': 'statut'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_training_alternance" model="ir.actions.act_window">
+        <field name="name">Dossiers d'alternance</field>
+        <field name="res_model">training.alternance</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_training_alternance_search"/>
+        <field name="context">{'search_default_soumis': 1}</field>
+    </record>
+
+</odoo>

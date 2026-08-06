@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ── Vue formulaire ── éditeur principal du programme de la semaine ── -->
+    <record id="view_training_week_form" model="ir.ui.view">
+        <field name="name">training.week.form</field>
+        <field name="model">training.week</field>
+        <field name="arch" type="xml">
+            <form string="Semaine / Événement">
+                <header>
+                    <!-- Champs techniques invisible pour la condition du bouton -->
+                    <field name="all_intervenants_definis" invisible="1"/>
+                    <field name="nb_lignes_sans_intervenant" invisible="1"/>
+
+                    <!-- Bouton actif uniquement quand tous les intervenants sont définis -->
+                    <button name="action_generer_presences"
+                            string="Générer les présences"
+                            type="object"
+                            class="btn-primary"
+                            invisible="not all_intervenants_definis or type_semaine != 'formation'"
+                            confirm="Cela créera les confirmations de présence pour tous les stagiaires acceptés de la session. Continuer ?"/>
+
+                    <!-- Bouton renvoi listes intervenants (actif si tous les intervenants sont définis) -->
+                    <button name="action_envoyer_listes_intervenants"
+                            string="Envoyer listes aux intervenants"
+                            type="object"
+                            class="btn-secondary"
+                            invisible="type_semaine != 'formation' or nb_lignes_sans_intervenant &gt; 0"
+                            confirm="Cela enverra (ou renverra) les listes de présence par email à chaque intervenant de la semaine. Continuer ?"/>
+                    <!-- Bouton grisé si des intervenants sont manquants -->
+                    <button string="Envoyer listes aux intervenants"
+                            class="btn-secondary disabled"
+                            invisible="type_semaine != 'formation' or not nb_lignes_sans_intervenant"
+                            title="Définissez tous les intervenants avant d'envoyer les listes"/>
+
+                    <!-- Message indicatif quand des intervenants manquent -->
+                    <span class="text-warning fw-semibold small"
+                          invisible="all_intervenants_definis or type_semaine != 'formation' or not nb_lignes_sans_intervenant">
+                        ⚠ <field name="nb_lignes_sans_intervenant" readonly="1" nolabel="1"/>
+                        ligne(s) sans intervenant — définissez tous les intervenants pour envoyer les présences.
+                    </span>
+                </header>
+                <sheet>
+
+                    <!-- Champ technique pour domaines -->
+                    <field name="formation_id" invisible="1"/>
+
+                    <!-- Titre -->
+                    <div class="oe_title">
+                        <label for="name" string="Libellé"/>
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+
+                    <group>
+                        <group string="Planning">
+                            <field name="session_id"/>
+                            <field name="type_semaine"/>
+                            <!-- S° seulement pour les semaines de formation -->
+                            <field name="numero_semaine"
+                                   string="N° de semaine (S°)"
+                                   invisible="type_semaine != 'formation'"/>
+                            <field name="date_debut"
+                                   string="Début (semaine)"
+                                   invisible="type_semaine != 'formation'"/>
+                            <field name="date_fin"
+                                   string="Fin (semaine)"
+                                   invisible="type_semaine != 'formation'"/>
+                            <!-- Pour les journées ponctuelles -->
+                            <field name="date_debut"
+                                   string="Date de l'événement"
+                                   invisible="type_semaine == 'formation'"/>
+                            <field name="statut" optional="show"/>
+                            <field name="motif_exclusion"/>
+                        </group>
+                        <group string="Contenu / Programme">
+                            <field name="theme"
+                                   placeholder="Ex : Se connaître – Diagnostic, Certification BC2…"/>
+                            <field name="lieu"
+                                   placeholder="Ex : Rennes, Brest, À définir"/>
+                            <field name="blocs_competences"
+                                   string="BC couverts"
+                                   placeholder="Ex : BC1 – BC2"
+                                   invisible="type_semaine != 'formation'"/>
+                            <div colspan="2" invisible="type_semaine != 'formation'">
+                                <button name="action_calculer_bc"
+                                        string="Calculer BC depuis les modules"
+                                        type="object"
+                                        class="btn-secondary btn-sm"/>
+                            </div>
+                        </group>
+                    </group>
+
+                    <!-- Volume horaire (formation uniquement) -->
+                    <group string="Volume horaire" invisible="type_semaine != 'formation'">
+                        <field name="volume_horaire_calcule"
+                               readonly="1"
+                               help="Objectif : 35h par semaine de formation"/>
+                    </group>
+
+                    <!-- Grille jour par jour — visible UNIQUEMENT pour les semaines de formation -->
+                    <notebook invisible="type_semaine != 'formation'">
+                        <page string="Programme jour par jour">
+                            <p class="text-muted" style="font-size:0.9em; margin-bottom:8px;">
+                                Ajoutez les modules (BC et BAT) pour chaque jour de la semaine.
+                                La liste des modules proposés correspond à la formation de la session.
+                            </p>
+                            <field name="week_line_ids">
+                                <list editable="bottom"
+                                      decoration-info="jour == 'lundi'"
+                                      string="Modules par jour">
+                                    <field name="jour"/>
+                                    <field name="module_id"
+                                           domain="[('formation_id', '=', parent.formation_id)]"/>
+                                    <field name="heures"/>
+                                    <field name="intervenant_id" optional="show"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ── Vue liste — lecture seule, clic = ouverture du formulaire ── -->
+    <record id="view_training_week_list" model="ir.ui.view">
+        <field name="name">training.week.list</field>
+        <field name="model">training.week</field>
+        <field name="arch" type="xml">
+            <list string="Semaines / Ruban"
+                  decoration-success="type_semaine == 'formation'"
+                  decoration-warning="type_semaine in ('certification','remediation')"
+                  decoration-info="type_semaine in ('rencontre_tuteurs','animation','autre')">
+                <field name="mois_annee" column_invisible="1"/>
+                <field name="session_id" optional="show"/>
+                <field name="numero_semaine" string="S°"
+                       optional="show"/>
+                <field name="date_debut" string="Date"/>
+                <field name="date_fin" string="Au" optional="show"/>
+                <field name="type_semaine" string="Type"/>
+                <field name="blocs_competences" string="BC" optional="show"/>
+                <field name="theme" string="Thème / Contenu"/>
+                <field name="lieu" string="Lieu"/>
+                <field name="volume_horaire_calcule" string="Heures" readonly="1" optional="show"/>
+                <field name="statut" optional="show"/>
+                <field name="motif_exclusion" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ── Vue calendrier ──────────────────────────────────────────── -->
+    <record id="view_training_week_calendar" model="ir.ui.view">
+        <field name="name">training.week.calendar</field>
+        <field name="model">training.week</field>
+        <field name="arch" type="xml">
+            <calendar string="Ruban pédagogique"
+                      date_start="date_debut"
+                      date_stop="date_fin"
+                      color="session_id">
+                <field name="session_id"/>
+                <field name="type_semaine"/>
+                <field name="volume_horaire_calcule"/>
+            </calendar>
+        </field>
+    </record>
+
+    <!-- ── Vue recherche ──────────────────────────────────────────── -->
+    <record id="view_training_week_search" model="ir.ui.view">
+        <field name="name">training.week.search</field>
+        <field name="model">training.week</field>
+        <field name="arch" type="xml">
+            <search string="Semaines">
+                <field name="session_id"/>
+                <filter name="formation" string="Semaines de formation"
+                        domain="[('type_semaine','=','formation')]"/>
+                <filter name="hors_formation" string="Journées ponctuelles"
+                        domain="[('type_semaine','!=','formation')]"/>
+                <separator/>
+                <filter name="group_by_mois" string="Par mois"
+                        context="{'group_by': 'mois_annee'}"/>
+                <filter name="group_by_session" string="Par session"
+                        context="{'group_by': 'session_id'}"/>
+                <filter name="group_by_type" string="Par type"
+                        context="{'group_by': 'type_semaine'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- ── Action ──────────────────────────────────────────────────── -->
+    <record id="action_training_week" model="ir.actions.act_window">
+        <field name="name">Semaines / Ruban</field>
+        <field name="res_model">training.week</field>
+        <field name="view_mode">list,calendar,form</field>
+        <field name="search_view_id" ref="view_training_week_search"/>
+        <field name="context">{'search_default_group_by_mois': 1}</field>
+    </record>
+
+</odoo>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ── Séquences conventions ────────────────────────────────── -->
+    <record id="seq_convention_alternance" model="ir.sequence">
+        <field name="name">Convention d'alternance</field>
+        <field name="code">training.convention.alternance</field>
+        <field name="prefix">CONV-ALT/%(year)s/</field>
+        <field name="padding">3</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="seq_convention_formation" model="ir.sequence">
+        <field name="name">Convention de formation continue</field>
+        <field name="code">training.convention.formation</field>
+        <field name="prefix">CONV-FC/%(year)s/</field>
+        <field name="padding">3</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="seq_convention_cefa" model="ir.sequence">
+        <field name="name">Fiche CEFA (apprentissage)</field>
+        <field name="code">training.convention.cefa</field>
+        <field name="prefix">CEFA/%(year)s/</field>
+        <field name="padding">3</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <!-- ── Cron : synchronisation des signatures ────────────────── -->
+    <record id="ir_cron_sync_signatures" model="ir.cron">
+        <field name="name">FRMJC - Synchronisation signatures conventions</field>
+        <field name="model_id" ref="model_training_convention"/>
+        <field name="state">code</field>
+        <field name="code">
+model.search([
+    ('statut', '=', 'en_cours_signature'),
+    ('sign_request_id', '!=', False),
+]).action_synchroniser_signature()
+        </field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active">True</field>
+    </record>
+
+</odoo>

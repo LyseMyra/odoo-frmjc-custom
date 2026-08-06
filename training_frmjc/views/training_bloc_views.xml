@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ── Vue liste ────────────────────────────────────────────────── -->
+    <record id="view_training_bloc_list" model="ir.ui.view">
+        <field name="name">training.bloc.list</field>
+        <field name="model">training.bloc</field>
+        <field name="arch" type="xml">
+            <list string="Blocs pédagogiques">
+                <field name="name" string="Code"/>
+                <field name="intitule" optional="hide"/>
+                <field name="type_bloc"/>
+                <field name="formation_id"/>
+                <field name="nb_modules" string="Nb modules"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ── Vue formulaire ───────────────────────────────────────────── -->
+    <record id="view_training_bloc_form" model="ir.ui.view">
+        <field name="name">training.bloc.form</field>
+        <field name="model">training.bloc</field>
+        <field name="arch" type="xml">
+            <form string="Bloc pédagogique">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" string="Code du bloc"/>
+                        <h1>
+                            <field name="name" placeholder="Ex : BC1, BAT2, BC1-2-3-4"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Identification">
+                            <field name="formation_id"/>
+                            <field name="type_bloc"/>
+                            <field name="intitule"
+                                   placeholder="Ex : Animer et accompagner une équipe dans le champ de l'animation"/>
+                        </group>
+                        <group string="Statistiques">
+                            <field name="nb_modules" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Modules">
+                            <field name="module_ids">
+                                <list editable="bottom" string="Modules" optional="show">
+                                    <field name="sequence" optional="hide"/>
+                                    <field name="code" optional="hide"/>
+                                    <field name="intitule"/>
+                                    <field name="objectifs" optional="show"/>
+                                    <field name="intervenant_default_id" optional="show"/>
+                                    <field name="volume_of" string="Vol OF (h)"/>
+                                    <field name="volume_entreprise" string="Vol ENT (h)"/>
+                                    <field name="volume_total" string="Total (h)" readonly="1"/>
+                                    <field name="semaine_debut" string="S° début" readonly="1" optional="show"/>
+                                    <field name="semaine_fin" string="S° fin" readonly="1" optional="show"/>
+                                    <field name="modalites_peda" optional="show"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ── Vue recherche ────────────────────────────────────────────── -->
+    <record id="view_training_bloc_search" model="ir.ui.view">
+        <field name="name">training.bloc.search</field>
+        <field name="model">training.bloc</field>
+        <field name="arch" type="xml">
+            <search string="Blocs pédagogiques">
+                <field name="name"/>
+                <field name="intitule"/>
+                <field name="formation_id"/>
+                <filter name="bc" string="BCs" domain="[('type_bloc','=','bc')]"/>
+                <filter name="bat" string="BATs" domain="[('type_bloc','=','bat')]"/>
+                <filter name="transversal" string="Transversaux"
+                        domain="[('type_bloc','=','transversal')]"/>
+                <separator/>
+                <filter name="group_by_formation" string="Par formation"
+                        context="{'group_by': 'formation_id'}"/>
+                <filter name="group_by_type" string="Par type"
+                        context="{'group_by': 'type_bloc'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- ── Action fenêtre ───────────────────────────────────────────── -->
+    <record id="action_training_bloc" model="ir.actions.act_window">
+        <field name="name">Blocs pédagogiques (BC / BAT)</field>
+        <field name="res_model">training.bloc</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_training_bloc_search"/>
+        <field name="context">{'search_default_group_by_formation': 1}</field>
+    </record>
+
+</odoo>

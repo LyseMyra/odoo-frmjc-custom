@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_training_ruban_import_wizard_form" model="ir.ui.view">
+        <field name="name">training.ruban.import.wizard.form</field>
+        <field name="model">training.ruban.import.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Import du ruban pédagogique">
+
+                <!-- Champs techniques cachés -->
+                <field name="state" invisible="1"/>
+                <field name="nb_alertes" invisible="1"/>
+
+                <!-- ── Résultat ──────────────────────────────────────── -->
+                <group invisible="state != 'done'">
+                    <div class="alert alert-success" role="status" invisible="nb_alertes != 0">
+                        <strong>Import terminé sans alerte.</strong>
+                    </div>
+                    <div class="alert alert-warning" role="alert" invisible="nb_alertes == 0">
+                        <strong>Import terminé avec alertes — consultez le journal ci-dessous.</strong>
+                    </div>
+                    <group string="Résumé" col="6">
+                        <field name="nb_blocs"   string="Blocs créés" readonly="1"/>
+                        <field name="nb_modules" string="Modules créés" readonly="1"/>
+                        <field name="nb_reps"    string="Répartitions ajoutées" readonly="1"/>
+                        <field name="nb_alertes" string="Alertes" readonly="1"/>
+                    </group>
+                    <field name="rapport" widget="text" readonly="1"
+                           style="font-family:monospace; font-size:11px; min-height:180px;"/>
+                </group>
+
+                <!-- Bouton retour (état done) -->
+                <group invisible="state != 'done'">
+                    <div>
+                        <button string="Retour / Nouvel import" type="object"
+                                name="action_retour" class="btn btn-secondary"/>
+                    </div>
+                </group>
+
+                <!-- ── Configuration ─────────────────────────────────── -->
+                <group invisible="state != 'config'">
+
+                    <div class="alert alert-info" role="status">
+                        <strong>Format attendu (.xlsx) :</strong>
+                        <ul style="margin:6px 0 0 0; padding-left:18px;">
+                            <li>Les <b>2 premières lignes</b> sont des en-têtes (paramétrable).</li>
+                            <li>Chaque ligne = un module dans <b>une semaine spécifique</b>. Le même code peut revenir plusieurs fois (une ligne par semaine) : un seul module sera créé avec toutes ses répartitions.</li>
+                            <li>Colonnes par défaut : <b>A</b> BLOC · <b>B</b> Code module · <b>C</b> Intitulé/Objectifs · <b>D</b> Contenus · <b>E</b> Intervenant · <b>F</b> Modalités péda · <b>G</b> N° semaine · <b>H</b> (fin, ignorée) · <b>I</b> Vol. OF · <b>J</b> Activités ENT · <b>K</b> Commandes MA · <b>L</b> Vol. ENT · <b>M</b> Total (ignoré) · <b>N</b> Lundi · <b>O</b> Mardi · <b>P</b> Mercredi · <b>Q</b> Jeudi · <b>R</b> Vendredi</li>
+                        </ul>
+                    </div>
+
+                    <group string="Paramètres principaux">
+                        <group>
+                            <field name="formation_id"/>
+                            <field name="fichier" widget="binary" filename="fichier_nom"/>
+                            <field name="fichier_nom" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="ligne_debut"/>
+                            <field name="ecraser_modules"/>
+                        </group>
+                    </group>
+
+                </group>
+
+                <footer invisible="state != 'config'">
+                    <button string="Importer" type="object" name="action_importer"
+                            class="btn-primary"
+                            invisible="not fichier or not formation_id"/>
+                    <button string="Annuler" special="cancel"/>
+                </footer>
+
+            </form>
+        </field>
+    </record>
+
+    <record id="action_training_ruban_import_wizard" model="ir.actions.act_window">
+        <field name="name">Import du ruban pédagogique</field>
+        <field name="res_model">training.ruban.import.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_training_ruban_import_wizard_form"/>
+        <field name="target">new</field>
+    </record>
+
+</odoo>

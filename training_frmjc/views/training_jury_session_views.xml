@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ── Vue liste ── -->
+    <record id="view_training_jury_session_list" model="ir.ui.view">
+        <field name="name">training.jury.session.list</field>
+        <field name="model">training.jury.session</field>
+        <field name="arch" type="xml">
+            <list string="Sessions jury"
+                  decoration-success="statut in ('realise','clos')"
+                  decoration-info="statut == 'convoque'"
+                  decoration-warning="statut == 'planifie'">
+                <field name="date"/>
+                <field name="session_id"/>
+                <field name="bloc_id"/>
+                <field name="lieu"/>
+                <field name="heure_debut" widget="float_time"/>
+                <field name="nb_candidats" string="Candidats"/>
+                <field name="statut" widget="badge"/>
+                <button name="action_affecter_creneaux" string="Créneaux" type="object"
+                        class="btn-sm btn-secondary"
+                        invisible="statut not in ('brouillon','planifie')"/>
+                <button name="action_convoquer_jury" string="Convoquer" type="object"
+                        class="btn-sm btn-primary"
+                        invisible="statut != 'planifie'"
+                        confirm="Envoyer les convocations aux candidats et aux membres du jury ?"/>
+                <button name="action_imprimer_convocation_jury" string="Imprimer" type="object"
+                        class="btn-sm btn-outline-secondary"
+                        invisible="statut == 'brouillon'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ── Vue formulaire ── -->
+    <record id="view_training_jury_session_form" model="ir.ui.view">
+        <field name="name">training.jury.session.form</field>
+        <field name="model">training.jury.session</field>
+        <field name="arch" type="xml">
+            <form string="Session jury">
+                <header>
+                    <button name="action_planifier" string="Planifier"
+                            type="object" class="btn-primary"
+                            invisible="statut != 'brouillon'"/>
+                    <button name="action_affecter_creneaux" string="Affecter les créneaux"
+                            type="object" class="btn-secondary"
+                            invisible="statut not in ('brouillon','planifie')"
+                            confirm="Cela recalculera les créneaux de tous les candidats. Continuer ?"/>
+                    <button name="action_convoquer_jury" string="Convoquer (envoyer emails)"
+                            type="object" class="btn-primary"
+                            invisible="statut != 'planifie'"
+                            confirm="Envoyer les convocations aux candidats et aux membres du jury ?"/>
+                    <button name="action_imprimer_convocation_jury" string="Imprimer convocation jury"
+                            type="object" class="btn-secondary"
+                            invisible="statut == 'brouillon'"/>
+                    <button name="action_marquer_realise" string="Marquer réalisé"
+                            type="object"
+                            invisible="statut != 'convoque'"/>
+                    <button name="action_clore" string="Clore"
+                            type="object"
+                            invisible="statut != 'realise'"/>
+                    <field name="statut" widget="statusbar"
+                           statusbar_visible="brouillon,planifie,convoque,realise,clos"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group string="Identification">
+                            <field name="session_id"/>
+                            <field name="bloc_id"/>
+                            <field name="nb_candidats" readonly="1"/>
+                        </group>
+                        <group string="Logistique">
+                            <field name="date"/>
+                            <field name="heure_debut" widget="float_time"/>
+                            <field name="heure_fin" widget="float_time"/>
+                            <field name="duree_creneau" widget="float_time"
+                                   string="Durée par candidat"/>
+                            <field name="lieu"/>
+                        </group>
+                    </group>
+                    <group string="Membres du jury">
+                        <field name="jury_membre_ids" widget="many2many_tags"
+                               nolabel="1"
+                               domain="[('is_company','=',False)]"/>
+                    </group>
+                    <notebook>
+                        <page string="Candidats">
+                            <field name="certification_ids" readonly="1">
+                                <list string="Candidats"
+                                      decoration-success="resultat == 'admis'"
+                                      decoration-danger="resultat == 'ajourne'">
+                                    <field name="ordre_passage" string="N°"/>
+                                    <field name="partner_id" string="Stagiaire"/>
+                                    <field name="heure_debut_b" widget="float_time" string="Début"/>
+                                    <field name="heure_fin_b" widget="float_time" string="Fin"/>
+                                    <field name="statut" widget="badge"/>
+                                    <field name="resultat" widget="badge"/>
+                                    <field name="mention" optional="show"/>
+                                    <field name="points" optional="show"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notes">
+                            <field name="notes" nolabel="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ── Vue recherche ── -->
+    <record id="view_training_jury_session_search" model="ir.ui.view">
+        <field name="name">training.jury.session.search</field>
+        <field name="model">training.jury.session</field>
+        <field name="arch" type="xml">
+            <search string="Sessions jury">
+                <field name="session_id"/>
+                <field name="bloc_id"/>
+                <filter name="a_venir" string="À venir"
+                        domain="[('statut','in',('brouillon','planifie','convoque')),('date','>=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="realises" string="Réalisés"
+                        domain="[('statut','in',('realise','clos'))]"/>
+                <separator/>
+                <filter name="group_session" string="Par session"
+                        context="{'group_by': 'session_id'}"/>
+                <filter name="group_bloc" string="Par BC"
+                        context="{'group_by': 'bloc_id'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- ── Action ── -->
+    <record id="action_training_jury_session" model="ir.actions.act_window">
+        <field name="name">Sessions jury</field>
+        <field name="res_model">training.jury.session</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_training_jury_session_search"/>
+        <field name="context">{'search_default_a_venir': 1}</field>
+    </record>
+
+</odoo>

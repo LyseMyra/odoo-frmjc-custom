@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="action_report_training_ruban" model="ir.actions.report">
+        <field name="name">Planning de formation</field>
+        <field name="model">training.session</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">training_frmjc.report_ruban_template</field>
+        <field name="report_file">training_frmjc.report_ruban_template</field>
+        <field name="binding_model_id" ref="model_training_session"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_ruban_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="session">
+                <t t-call="web.external_layout">
+                    <div class="page">
+
+                        <style>
+                            @page { size: A4 portrait; margin: 1.5cm; }
+
+                            /* ── En-tête ─────────────────────────── */
+                            .planning-header {
+                                text-align: center;
+                                margin-bottom: 14px;
+                                border-bottom: 2px solid #333;
+                                padding-bottom: 10px;
+                            }
+                            .planning-title {
+                                font-size: 15pt;
+                                font-weight: bold;
+                                text-transform: uppercase;
+                                letter-spacing: 1px;
+                                margin-bottom: 3px;
+                            }
+                            .planning-subtitle {
+                                font-size: 10pt;
+                                color: #444;
+                                margin-bottom: 2px;
+                            }
+                            .planning-periode {
+                                font-size: 9pt;
+                                color: #666;
+                                margin-top: 4px;
+                            }
+                            .planning-label {
+                                font-size: 11pt;
+                                font-weight: bold;
+                                margin-top: 5px;
+                                color: #222;
+                            }
+
+                            /* ── Tableau principal ────────────────── */
+                            .planning-table {
+                                border-collapse: collapse;
+                                width: 100%;
+                                font-size: 9pt;
+                            }
+                            .planning-table th {
+                                background-color: #2c3e50;
+                                color: white;
+                                text-align: center;
+                                padding: 6px 4px;
+                                border: 1px solid #555;
+                                font-weight: bold;
+                            }
+                            .planning-table td {
+                                border: 1px solid #bbb;
+                                padding: 5px 6px;
+                                vertical-align: middle;
+                            }
+
+                            /* ── Colonne Année ────────────────────── */
+                            .col-annee {
+                                width: 8%;
+                                text-align: center;
+                                font-size: 18pt;
+                                font-weight: bold;
+                                color: #2c3e50;
+                                vertical-align: middle;
+                                background-color: #ecf0f1;
+                                border-right: 2px solid #2c3e50;
+                                line-height: 1.1;
+                            }
+                            .col-date  { width: 20%; font-size: 8.5pt; }
+                            .col-bc    { width: 12%; text-align: center; font-size: 8.5pt; font-weight: bold; }
+                            .col-theme { width: 42%; }
+                            .col-lieu  { width: 18%; font-size: 8.5pt; }
+
+                            /* ── Styles par type de semaine ───────── */
+                            .row-formation     { background-color: #ffffff; }
+                            .row-certification { background-color: #fff3cd; font-style: italic; }
+                            .row-remediation   { background-color: #f8d7da; font-style: italic; }
+                            .row-rencontre     { background-color: #d4edda; }
+                            .row-animation     { background-color: #cce5ff; }
+                            .row-autre         { background-color: #f8f9fa; }
+
+                            /* ── Pastille BC ──────────────────────── */
+                            .bc-badge {
+                                display: inline-block;
+                                padding: 2px 6px;
+                                border-radius: 3px;
+                                font-size: 8pt;
+                                font-weight: bold;
+                                border: 1px solid rgba(0,0,0,0.15);
+                                white-space: nowrap;
+                            }
+
+                            /* ── Pied de page ─────────────────────── */
+                            .planning-footer {
+                                font-size: 7.5pt;
+                                color: #777;
+                                font-style: italic;
+                                margin-top: 14px;
+                                padding-top: 6px;
+                                border-top: 1px solid #ccc;
+                            }
+
+                            /* ── Bilan ────────────────────────────── */
+                            .bilan-section {
+                                margin-top: 16px;
+                                page-break-inside: avoid;
+                            }
+                            .bilan-section-title {
+                                font-size: 10pt;
+                                font-weight: bold;
+                                margin-bottom: 6px;
+                                color: #2c3e50;
+                                border-bottom: 1px solid #2c3e50;
+                                padding-bottom: 3px;
+                            }
+                            .bilan-table {
+                                border-collapse: collapse;
+                                font-size: 9pt;
+                            }
+                            .bilan-table th {
+                                background-color: #2c3e50;
+                                color: white;
+                                padding: 4px 12px;
+                                text-align: left;
+                            }
+                            .bilan-table td {
+                                border: 1px solid #dee2e6;
+                                padding: 4px 12px;
+                            }
+                            .bilan-total td {
+                                font-weight: bold;
+                                border-top: 2px solid #2c3e50;
+                            }
+                        </style>
+
+                        <!-- ── En-tête ──────────────────────────────────────── -->
+                        <div class="planning-header">
+                            <div class="planning-title">
+                                <t t-esc="(session.formation_id.type_formation or '').upper()"/>
+                                <t t-if="session.date_debut and session.date_fin">
+                                    &#160;<t t-esc="session.date_debut.year"/>
+                                    –
+                                    <t t-esc="session.date_fin.year"/>
+                                </t>
+                            </div>
+                            <t t-if="session.formation_id.specialite">
+                                <div class="planning-subtitle">
+                                    <t t-esc="session.formation_id.specialite"/>
+                                </div>
+                            </t>
+                            <t t-if="session.formation_id.mention">
+                                <div class="planning-subtitle">
+                                    Mention <t t-esc="session.formation_id.mention"/>
+                                </div>
+                            </t>
+                            <div class="planning-label">Planning de formation</div>
+                            <t t-if="session.date_debut and session.date_fin">
+                                <div class="planning-periode">
+                                    Du
+                                    <span t-field="session.date_debut"
+                                          t-options='{"format": "d MMMM yyyy", "lang": "fr_FR"}'/>
+                                    au
+                                    <span t-field="session.date_fin"
+                                          t-options='{"format": "d MMMM yyyy", "lang": "fr_FR"}'/>
+                                </div>
+                            </t>
+                        </div>
+
+                        <!-- ── Aucune semaine ────────────────────────────────── -->
+                        <t t-if="not session.week_ids">
+                            <p style="color:#856404; background:#fff3cd; padding:10px; border-radius:4px;">
+                                Ce planning ne contient aucune semaine.
+                                Utilisez "Construire le ruban" depuis la fiche session.
+                            </p>
+                        </t>
+
+                        <!-- ── Tableau principal ─────────────────────────────── -->
+                        <t t-if="session.week_ids">
+                            <table class="planning-table">
+                                <thead>
+                                    <tr>
+                                        <th class="col-annee">Année</th>
+                                        <th class="col-date">Date</th>
+                                        <th class="col-bc">BC</th>
+                                        <th class="col-theme">Thème</th>
+                                        <th class="col-lieu">Lieux</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="session.get_weeks_par_annee()" t-as="ga">
+                                        <t t-set="nb_semaines_annee" t-value="ga[1]"/>
+                                        <t t-foreach="ga[2]" t-as="week">
+                                            <t t-set="row_class" t-value="'row-' + (week.type_semaine or 'formation')"/>
+                                            <tr t-att-class="row_class">
+                                                <!-- Cellule Année : seulement pour la 1re semaine du groupe -->
+                                                <t t-if="week_index == 0">
+                                                    <td t-att-rowspan="nb_semaines_annee" class="col-annee">
+                                                        <t t-esc="ga[0]"/>
+                                                    </td>
+                                                </t>
+                                                <!-- Date -->
+                                                <td class="col-date">
+                                                    <t t-esc="week.date_range_str or ''"/>
+                                                </td>
+                                                <!-- BC -->
+                                                <td class="col-bc">
+                                                    <t t-if="week.blocs_competences">
+                                                        <span class="bc-badge">
+                                                            <t t-esc="week.blocs_competences"/>
+                                                        </span>
+                                                    </t>
+                                                </td>
+                                                <!-- Thème -->
+                                                <td class="col-theme">
+                                                    <t t-esc="week.theme or ''"/>
+                                                </td>
+                                                <!-- Lieu -->
+                                                <td class="col-lieu">
+                                                    <t t-esc="week.lieu or ''"/>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </t>
+                                </tbody>
+                            </table>
+
+                            <!-- ── Bilan par BC ──────────────────────────────── -->
+                            <t t-set="bilan" t-value="session.get_bilan_bc()"/>
+                            <t t-if="bilan">
+                                <div class="bilan-section">
+                                    <div class="bilan-section-title">Bilan par Bloc de Compétences</div>
+                                    <table class="bilan-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Bloc</th>
+                                                <th style="text-align:right;">Heures planifiées</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-foreach="bilan" t-as="bc_item">
+                                                <tr>
+                                                    <td><t t-esc="bc_item[0]"/></td>
+                                                    <td style="text-align:right;">
+                                                        <t t-esc="'%.1f' % bc_item[1]"/>h
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                            <tr class="bilan-total">
+                                                <td>TOTAL</td>
+                                                <td style="text-align:right;">
+                                                    <t t-esc="'%.1f' % sum(x[1] for x in bilan)"/>h
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </t>
+
+                            <!-- ── Pied de page ──────────────────────────────── -->
+                            <div class="planning-footer">
+                                Les dates et lieux sont indiqués à titre indicatif et peuvent être modifiés en cours de formation.
+                                <t t-if="session.numero_drajes">
+                                    — N° DRAJES : <t t-esc="session.numero_drajes"/>
+                                </t>
+                                <t t-if="session.responsable_id">
+                                    — Responsable pédagogique : <t t-esc="session.responsable_id.name"/>
+                                </t>
+                            </div>
+                        </t>
+
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_training_session_list" model="ir.ui.view">
+        <field name="name">training.session.list</field>
+        <field name="model">training.session</field>
+        <field name="arch" type="xml">
+            <list string="Sessions">
+                <field name="name" />
+                <field name="formation_id" />
+                <field name="habilitation_id" />
+                <field name="responsable_id" />
+                <field name="date_debut" />
+                <field name="date_fin" />
+                <field name="statut" />
+            </list>
+        </field>
+    </record>
+
+    <record id="view_training_session_form" model="ir.ui.view">
+        <field name="name">training.session.form</field>
+        <field name="model">training.session</field>
+        <field name="arch" type="xml">
+            <form string="Session de formation">
+                <header>
+                    <button name="action_ouvrir_ruban_wizard"
+                        string="Construire le ruban"
+                        type="object"
+                        class="btn-secondary" />
+                    <button name="action_ouvrir" string="Ouvrir"
+                        type="object"
+                        invisible="statut != 'brouillon'" />
+                    <button name="action_demarrer" string="Démarrer"
+                        type="object"
+                        invisible="statut != 'ouvert'" />
+                    <button name="action_terminer" string="Terminer"
+                        type="object"
+                        invisible="statut != 'en_cours'" />
+                    <button name="action_annuler" string="Annuler"
+                        type="object"
+                        invisible="statut in ['termine','annule']" />
+                    <button name="action_creer_bons_de_commande"
+                        string="Créer bons de commande intervenants"
+                        type="object"
+                        class="btn-secondary"
+                        invisible="nb_depenses_a_commander == 0"
+                        confirm="Un bon de commande sera créé par intervenant pour toutes les dépenses validées. Les dépenses déjà commandées sont ignorées. Continuer ?" />
+                    <field name="nb_depenses_a_commander" invisible="1" />
+                    <field name="statut" widget="statusbar"
+                        statusbar_visible="brouillon,ouvert,en_cours,termine" />
+                </header>
+                <sheet>
+                    <group>
+                        <group string="Identification">
+                            <field name="name" />
+                            <field name="numero_drajes" />
+                            <field name="formation_id" />
+                            <field name="habilitation_id" />
+                            <field name="responsable_id" />
+                            <field name="responsable_email" widget="email" readonly="1" />
+                            <field name="responsable_phone" widget="phone" readonly="1" />
+                        </group>
+                        <group string="Dates">
+                            <field name="date_debut" />
+                            <field name="date_fin" />
+                        </group>
+                    </group>
+                    <group string="Informations administratives">
+                        <group>
+                            <field name="lieu_formation" />
+                            <field name="nature_action" />
+                            <field name="volume_heures_prevues" widget="float_time" />
+                        </group>
+                        <group>
+                            <field name="signataire_nom" />
+                            <field name="signataire_titre" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Ruban pédagogique">
+                            <field name="week_ids"
+                                context="{'default_session_id': id}"
+                                readonly="0">
+                                <list string="Ruban"
+                                    decoration-success="type_semaine == 'formation'"
+                                    decoration-warning="type_semaine in ('certification','remediation')"
+                                    decoration-info="type_semaine in ('rencontre_tuteurs','animation','autre')"
+                                    default_order="date_debut">
+                                    <field name="numero_semaine" string="S°" optional="show" />
+                                    <field name="date_range_str" string="Période" />
+                                    <field name="type_semaine" string="Type" />
+                                    <field name="blocs_competences" string="BC" optional="show" />
+                                    <field name="theme" string="Thème / Contenu" />
+                                    <field name="lieu" string="Lieu" />
+                                    <field name="resume_lundi" string="Lundi" optional="show" />
+                                    <field name="resume_mardi" string="Mardi" optional="show" />
+                                    <field name="resume_mercredi" string="Merc." optional="show" />
+                                    <field name="resume_jeudi" string="Jeudi" optional="show" />
+                                    <field name="resume_vendredi" string="Vend." optional="show" />
+                                    <field name="volume_horaire_calcule" string="Heures"
+                                        optional="show" />
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Dépenses intervenants">
+                            <group string="Intervenants effectifs (depuis le ruban)">
+                                <field name="intervenant_ids"
+                                    widget="many2many_tags"
+                                    readonly="1"
+                                    nolabel="1" />
+                            </group>
+                            <separator string="Dépenses" />
+                            <field name="depense_intervenant_ids"
+                                context="{'default_session_id': id}">
+                                <list editable="bottom"
+                                    decoration-success="statut == 'bc_cree'"
+                                    decoration-warning="statut == 'valide'"
+                                    decoration-muted="statut == 'brouillon'">
+                                    <field name="partner_id" string="Intervenant" />
+                                    <field name="date_depense" />
+                                    <field name="product_id"
+                                        domain="[('name', 'ilike', 'DEJEPS')]" />
+                                    <field name="description" />
+                                    <field name="quantite" />
+                                    <field name="prix_unitaire" />
+                                    <field name="montant_total" readonly="1" />
+                                    <field name="statut" widget="badge" />
+                                    <button name="action_valider" string="Valider"
+                                        type="object" class="btn-sm btn-success"
+                                        invisible="statut != 'brouillon'" />
+                                    <button name="action_remettre_brouillon" string="↩"
+                                        type="object" class="btn-sm btn-secondary"
+                                        invisible="statut != 'valide'" />
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Suivi financier">
+                            <group string="Recettes (stagiaires acceptés)">
+                                <group>
+                                    <field name="nb_stagiaires_acceptes" readonly="1" />
+                                    <field name="total_recettes_theoriques" readonly="1" />
+                                </group>
+                                <group>
+                                    <field name="total_recettes_reelles" readonly="1" />
+                                    <field name="ecart_recettes" readonly="1" />
+                                </group>
+                            </group>
+                            <group string="Dépenses intervenants">
+                                <group>
+                                    <field name="nb_depenses_a_commander" readonly="1" />
+                                    <field name="total_depenses_validees" readonly="1" />
+                                </group>
+                                <group>
+                                    <field name="total_depenses_commandees" readonly="1" />
+                                </group>
+                            </group>
+                            <group string="Synthèse">
+                                <group>
+                                    <field name="marge_nette" readonly="1" />
+                                </group>
+                                <group>
+                                    <field name="cout_par_stagiaire" readonly="1" />
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Notes">
+                            <field name="notes" nolabel="1" />
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter />
+            </form>
+        </field>
+    </record>
+
+    <record id="view_training_session_search" model="ir.ui.view">
+        <field name="name">training.session.search</field>
+        <field name="model">training.session</field>
+        <field name="arch" type="xml">
+            <search string="Sessions">
+                <field name="name" />
+                <field name="formation_id" />
+                <field name="responsable_id" />
+                <filter name="en_cours" string="En cours"
+                    domain="[('statut','=','en_cours')]" />
+                <filter name="ouvert" string="Ouvertes"
+                    domain="[('statut','=','ouvert')]" />
+                <separator />
+                <filter name="group_formation" string="Grouper par Formation"
+                    context="{'group_by': 'formation_id'}" />
+                <filter name="group_statut" string="Grouper par Statut"
+                    context="{'group_by': 'statut'}" />
+            </search>
+        </field>
+    </record>
+
+    <record id="action_training_session" model="ir.actions.act_window">
+        <field name="name">Sessions</field>
+        <field name="res_model">training.session</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_training_session_search" />
+    </record>
+
+</odoo>
