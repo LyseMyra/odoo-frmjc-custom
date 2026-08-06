@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_mobility_export_bm_wizard_form" model="ir.ui.view">
+        <field name="name">mobility.export.bm.wizard.form</field>
+        <field name="model">mobility.export.bm.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Exporter BM">
+                <group>
+                    <field name="grant_id" readonly="1" invisible="not grant_id"/>
+                    <field name="mobility_ids" widget="many2many_tags"/>
+                </group>
+                <footer>
+                    <button name="action_exporter" string="Exporter" type="object" class="oe_highlight"/>
+                    <button string="Annuler" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Bindable depuis la liste des mobilités (sélection multiple) -->
+    <record id="action_mobility_export_bm_from_mobility" model="ir.actions.act_window">
+        <field name="name">Exporter BM</field>
+        <field name="res_model">mobility.export.bm.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_mobility_mobility"/>
+        <field name="binding_view_types">list</field>
+    </record>
+
+    <!-- Bindable depuis la fiche d'une convention de subvention -->
+    <record id="action_mobility_export_bm_from_grant" model="ir.actions.act_window">
+        <field name="name">Exporter BM</field>
+        <field name="res_model">mobility.export.bm.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_mobility_grant"/>
+        <field name="binding_view_types">form</field>
+    </record>
+
+</odoo>

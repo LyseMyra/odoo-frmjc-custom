@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Forfaits fixes (§11.4 du cahier) : "constantes de configuration, pas
+    une table dédiée" — stockés en ir.config_parameter plutôt qu'un
+    nouveau modèle, modifiables sans toucher au code. Non utilisés par le
+    bouton "Calculer" (limité aux 4 postes journaliers/voyage, §11.1) :
+    ces montants restent des repères manuels pour les postes Soutien
+    linguistique / Visite préparatoire / Argent de poche (référence UE).
+-->
+<odoo noupdate="1">
+
+    <record id="param_mobility_forfait_soutien_linguistique" model="ir.config_parameter">
+        <field name="key">mobility_frmjc.forfait_soutien_linguistique</field>
+        <field name="value">150.0</field>
+    </record>
+
+    <record id="param_mobility_forfait_visite_preparatoire" model="ir.config_parameter">
+        <field name="key">mobility_frmjc.forfait_visite_preparatoire</field>
+        <field name="value">609.0</field>
+    </record>
+
+    <record id="param_mobility_forfait_argent_poche_individuel" model="ir.config_parameter">
+        <field name="key">mobility_frmjc.forfait_argent_poche_individuel</field>
+        <field name="value">238.0</field>
+    </record>
+
+    <record id="param_mobility_forfait_argent_poche_equipe" model="ir.config_parameter">
+        <field name="key">mobility_frmjc.forfait_argent_poche_equipe</field>
+        <field name="value">125.0</field>
+    </record>
+
+</odoo>

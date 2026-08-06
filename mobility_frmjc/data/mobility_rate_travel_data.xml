@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Barème voyage par tranche kilométrique — montants officiels confirmés
+    par GUIDE ERASMUS_Explication financement (document fourni par
+    l'utilisateur, "Quels sont les coûts éligibles et les règles de
+    financement applicables ? — Voyage").
+
+    Codes BAND_09/11/30/40/50 confirmés par un échantillon BM réel.
+    Codes BAND_20/60/70 provisoires : montants officiels certains, code BM
+    exact non encore vérifié — à confirmer avant tout export réel (Phase 10).
+-->
+<odoo noupdate="1">
+
+    <record id="rate_travel_band_09" model="mobility.rate.travel">
+        <field name="tranche_kilometrique">BAND_09</field>
+        <field name="sequence">10</field>
+        <field name="montant_standard">0</field>
+        <field name="montant_ecoresponsable">0</field>
+    </record>
+
+    <record id="rate_travel_band_11" model="mobility.rate.travel">
+        <field name="tranche_kilometrique">BAND_11</field>
+        <field name="sequence">20</field>
+        <field name="montant_standard">28</field>
+        <field name="montant_ecoresponsable">56</field>
+    </record>
+
+    <record id="rate_travel_band_20" model="mobility.rate.travel">
+        <field name="tranche_kilometrique">BAND_20</field>
+        <field name="sequence">30</field>
+        <field name="montant_standard">211</field>
+        <field name="montant_ecoresponsable">285</field>
+    </record>
+
+    <record id="rate_travel_band_30" model="mobility.rate.travel">
+        <field name="tranche_kilometrique">BAND_30</field>
+        <field name="sequence">40</field>
+        <field name="montant_standard">309</field>
+        <field name="montant_ecoresponsable">417</field>
+    </record>
+
+    <record id="rate_travel_band_40" model="mobility.rate.travel">
+        <field name="tranche_kilometrique">BAND_40</field>
+        <field name="sequence">50</field>
+        <field name="montant_standard">395</field>
+        <field name="montant_ecoresponsable">535</field>
+    </record>
+
+    <record id="rate_travel_band_50" model="mobility.rate.travel">
+        <field name="tranche_kilometrique">BAND_50</field>
+        <field name="sequence">60</field>
+        <field name="montant_standard">580</field>
+        <field name="montant_ecoresponsable">785</field>
+    </record>
+
+    <record id="rate_travel_band_60" model="mobility.rate.travel">
+        <field name="tranche_kilometrique">BAND_60</field>
+        <field name="sequence">70</field>
+        <field name="montant_standard">1188</field>
+        <field name="montant_ecoresponsable">1188</field>
+    </record>
+
+    <record id="rate_travel_band_70" model="mobility.rate.travel">
+        <field name="tranche_kilometrique">BAND_70</field>
+        <field name="sequence">80</field>
+        <field name="montant_standard">1735</field>
+        <field name="montant_ecoresponsable">1735</field>
+    </record>
+
+</odoo>

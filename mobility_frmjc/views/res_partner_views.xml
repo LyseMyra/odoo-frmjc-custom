@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_partner_form_mobility" model="ir.ui.view">
+        <field name="name">res.partner.form.mobility</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <notebook position="inside">
+                <page string="Volontariat" name="mobility_frmjc">
+                    <group>
+                        <group string="Identifiants réglementaires">
+                            <field name="oid"/>
+                            <field name="pic"/>
+                            <field name="erasmus_code"/>
+                            <field name="id_national"/>
+                        </group>
+                        <group string="Dénomination officielle">
+                            <field name="nom_legal"/>
+                            <field name="nom_commercial"/>
+                            <field name="acronyme"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Statut de la structure">
+                            <field name="type_organisme"/>
+                            <field name="organisme_public"/>
+                            <field name="sans_but_lucratif"/>
+                            <field name="effectif_moins_250"/>
+                        </group>
+                        <group string="Rôle(s) et coordonnées">
+                            <field name="structure_role_ids" widget="many2many_tags"/>
+                            <field name="telephone_2"/>
+                            <field name="fax"/>
+                        </group>
+                    </group>
+                    <group string="Adresse légale">
+                        <field name="adresse_legale" nolabel="1"/>
+                    </group>
+                </page>
+            </notebook>
+        </field>
+    </record>
+
+</odoo>

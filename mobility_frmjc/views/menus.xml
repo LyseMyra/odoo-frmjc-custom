@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ── Racine ──────────────────────────────────────────────────── -->
+    <menuitem id="menu_mobility_root"
+        name="Volontariat"
+        sequence="51"
+        web_icon="mobility_frmjc,static/description/icon.png" />
+
+    <!-- ── Pipeline (mobilités) ───────────────────────────────────── -->
+    <menuitem id="menu_mobility_mobility"
+        name="Mobilités"
+        parent="menu_mobility_root"
+        action="action_mobility_mobility"
+        sequence="10" />
+
+    <!-- ── Documents (objet transversal) ─────────────────────────────
+         Registre global tous documents/toutes mobilités confondues.
+         Le suivi document par document se fait normalement depuis
+         l'onglet Documents de la fiche Mobilité. -->
+    <menuitem id="menu_mobility_document"
+        name="Documents"
+        parent="menu_mobility_root"
+        action="action_mobility_document"
+        sequence="20" />
+
+    <!-- ── Finance ─────────────────────────────────────────────────── -->
+    <menuitem id="menu_mobility_finance_root"
+        name="Finance"
+        parent="menu_mobility_root"
+        sequence="30" />
+
+    <menuitem id="menu_mobility_finance_line"
+        name="Grand livre financier"
+        parent="menu_mobility_finance_root"
+        action="action_mobility_finance_line"
+        sequence="10" />
+
+    <!-- ── Export / Import BM ─────────────────────────────────────────
+         L'export se lance depuis la sélection dans la liste des
+         Mobilités, ou depuis une fiche Convention de subvention (menu
+         Actions ⚙), pas depuis une entrée de menu dédiée. -->
+    <menuitem id="menu_mobility_import_bm"
+        name="Importer BM"
+        parent="menu_mobility_root"
+        action="action_mobility_import_bm"
+        sequence="40" />
+
+    <!-- ── Configuration ──────────────────────────────────────────── -->
+    <menuitem id="menu_mobility_config"
+        name="Configuration"
+        parent="menu_mobility_root"
+        sequence="100" />
+
+    <menuitem id="menu_mobility_structure_role"
+        name="Rôles de structure"
+        parent="menu_mobility_config"
+        action="action_mobility_structure_role"
+        sequence="10" />
+
+    <menuitem id="menu_mobility_activity"
+        name="Activités &amp; offres"
+        parent="menu_mobility_config"
+        action="action_mobility_activity"
+        sequence="15" />
+
+    <menuitem id="menu_mobility_grant"
+        name="Conventions de subvention"
+        parent="menu_mobility_config"
+        action="action_mobility_grant"
+        sequence="20" />
+
+    <menuitem id="menu_mobility_habilitation"
+        name="Habilitations label LEAD"
+        parent="menu_mobility_config"
+        action="action_mobility_habilitation"
+        sequence="30" />
+
+    <menuitem id="menu_mobility_rate_country"
+        name="Barèmes pays"
+        parent="menu_mobility_config"
+        action="action_mobility_rate_country"
+        sequence="40" />
+
+    <menuitem id="menu_mobility_rate_travel"
+        name="Barèmes voyage"
+        parent="menu_mobility_config"
+        action="action_mobility_rate_travel"
+        sequence="50" />
+
+</odoo>

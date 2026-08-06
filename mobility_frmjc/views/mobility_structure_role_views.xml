@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_mobility_structure_role_list" model="ir.ui.view">
+        <field name="name">mobility.structure.role.list</field>
+        <field name="model">mobility.structure.role</field>
+        <field name="arch" type="xml">
+            <list string="Rôles de structure">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="code"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_mobility_structure_role_form" model="ir.ui.view">
+        <field name="name">mobility.structure.role.form</field>
+        <field name="model">mobility.structure.role</field>
+        <field name="arch" type="xml">
+            <form string="Rôle de structure">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="code"/>
+                        <field name="sequence"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_mobility_structure_role" model="ir.actions.act_window">
+        <field name="name">Rôles de structure</field>
+        <field name="res_model">mobility.structure.role</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+</odoo>

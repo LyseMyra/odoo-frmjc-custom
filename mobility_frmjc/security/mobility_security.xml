@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ── Groupe secrétariat volontariat ────────────────────────── -->
+    <record id="group_mobility_secretariat" model="res.groups">
+        <field name="name">Secrétariat volontariat</field>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+</odoo>

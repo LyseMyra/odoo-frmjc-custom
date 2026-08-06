@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_mobility_habilitation_list" model="ir.ui.view">
+        <field name="name">mobility.habilitation.list</field>
+        <field name="model">mobility.habilitation</field>
+        <field name="arch" type="xml">
+            <list string="Habilitations label LEAD">
+                <field name="numero_habilitation"/>
+                <field name="organisme_lead_id"/>
+                <field name="date_obtention"/>
+                <field name="date_expiration"/>
+                <field name="nb_mobilities"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_mobility_habilitation_form" model="ir.ui.view">
+        <field name="name">mobility.habilitation.form</field>
+        <field name="model">mobility.habilitation</field>
+        <field name="arch" type="xml">
+            <form string="Habilitation label LEAD">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="numero_habilitation"/>
+                            <field name="organisme_lead_id"/>
+                        </group>
+                        <group>
+                            <field name="date_obtention"/>
+                            <field name="date_expiration"/>
+                            <field name="agence_nationale_country_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Mobilités couvertes" name="mobilities">
+                            <field name="mobility_ids">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="participant_id"/>
+                                    <field name="mobility_direction"/>
+                                    <field name="start_date"/>
+                                    <field name="end_date"/>
+                                    <field name="status"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_mobility_habilitation_search" model="ir.ui.view">
+        <field name="name">mobility.habilitation.search</field>
+        <field name="model">mobility.habilitation</field>
+        <field name="arch" type="xml">
+            <search string="Habilitations label LEAD">
+                <field name="numero_habilitation"/>
+                <field name="organisme_lead_id"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_mobility_habilitation" model="ir.actions.act_window">
+        <field name="name">Habilitations label LEAD</field>
+        <field name="res_model">mobility.habilitation</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_mobility_habilitation_search"/>
+    </record>
+
+</odoo>

@@ -1,0 +1,12 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_mobility_structure_role_user,mobility.structure.role user,model_mobility_structure_role,base.group_user,1,1,1,0
+access_mobility_document_user,mobility.document user,model_mobility_document,base.group_user,1,1,1,0
+access_mobility_grant_user,mobility.grant user,model_mobility_grant,base.group_user,1,1,1,0
+access_mobility_habilitation_user,mobility.habilitation user,model_mobility_habilitation,base.group_user,1,1,1,0
+access_mobility_activity_user,mobility.activity user,model_mobility_activity,base.group_user,1,1,1,0
+access_mobility_mobility_user,mobility.mobility user,model_mobility_mobility,base.group_user,1,1,1,0
+access_mobility_finance_line_user,mobility.finance.line user,model_mobility_finance_line,base.group_user,1,1,1,1
+access_mobility_rate_country_user,mobility.rate.country user,model_mobility_rate_country,base.group_user,1,1,1,0
+access_mobility_rate_travel_user,mobility.rate.travel user,model_mobility_rate_travel,base.group_user,1,1,1,0
+access_mobility_export_bm_wizard_user,mobility.export.bm.wizard user,model_mobility_export_bm_wizard,base.group_user,1,1,1,1
+access_mobility_import_bm_wizard_user,mobility.import.bm.wizard user,model_mobility_import_bm_wizard,base.group_user,1,1,1,1

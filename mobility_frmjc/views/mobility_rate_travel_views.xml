@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_mobility_rate_travel_list" model="ir.ui.view">
+        <field name="name">mobility.rate.travel.list</field>
+        <field name="model">mobility.rate.travel</field>
+        <field name="arch" type="xml">
+            <list string="Barèmes voyage">
+                <field name="sequence" widget="handle"/>
+                <field name="tranche_kilometrique"/>
+                <field name="montant_standard"/>
+                <field name="montant_ecoresponsable"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_mobility_rate_travel_form" model="ir.ui.view">
+        <field name="name">mobility.rate.travel.form</field>
+        <field name="model">mobility.rate.travel</field>
+        <field name="arch" type="xml">
+            <form string="Barème voyage">
+                <sheet>
+                    <group>
+                        <field name="tranche_kilometrique"/>
+                        <field name="sequence"/>
+                        <field name="montant_standard"/>
+                        <field name="montant_ecoresponsable"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_mobility_rate_travel" model="ir.actions.act_window">
+        <field name="name">Barèmes voyage</field>
+        <field name="res_model">mobility.rate.travel</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+</odoo>

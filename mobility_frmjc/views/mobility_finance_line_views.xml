@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_mobility_finance_line_list" model="ir.ui.view">
+        <field name="name">mobility.finance.line.list</field>
+        <field name="model">mobility.finance.line</field>
+        <field name="arch" type="xml">
+            <list string="Grand livre financier">
+                <field name="mobility_id"/>
+                <field name="date"/>
+                <field name="poste"/>
+                <field name="nb_jours"/>
+                <field name="montant_prevu" sum="Total prévu"/>
+                <field name="montant_realise" sum="Total réalisé"/>
+                <field name="ecart" sum="Total écart"/>
+                <field name="statut_paiement"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_mobility_finance_line_form" model="ir.ui.view">
+        <field name="name">mobility.finance.line.form</field>
+        <field name="model">mobility.finance.line</field>
+        <field name="arch" type="xml">
+            <form string="Ligne financière">
+                <header>
+                    <button name="action_calculer" string="Calculer" type="object" class="oe_highlight"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="mobility_id"/>
+                            <field name="date"/>
+                            <field name="poste"/>
+                            <field name="nature"/>
+                        </group>
+                        <group>
+                            <field name="periode_du"/>
+                            <field name="periode_au"/>
+                            <field name="nb_jours"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Montants">
+                            <field name="montant_journalier"/>
+                            <field name="montant_prevu"/>
+                            <field name="montant_realise"/>
+                            <field name="ecart"/>
+                        </group>
+                        <group string="Paiement">
+                            <field name="statut_paiement"/>
+                            <field name="source_financement"/>
+                            <field name="export_bm"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Payeur">
+                            <field name="payeur_type"/>
+                            <field name="payeur_partner_id"/>
+                        </group>
+                        <group string="Bénéficiaire">
+                            <field name="beneficiaire_type"/>
+                            <field name="beneficiaire_partner_id"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="justificatif_id"/>
+                        <field name="notes"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_mobility_finance_line_search" model="ir.ui.view">
+        <field name="name">mobility.finance.line.search</field>
+        <field name="model">mobility.finance.line</field>
+        <field name="arch" type="xml">
+            <search string="Grand livre financier">
+                <field name="mobility_id"/>
+                <field name="poste"/>
+                <filter name="a_payer" string="À payer"
+                        domain="[('statut_paiement', '=', 'a_payer')]"/>
+                <separator/>
+                <filter name="group_poste" string="Grouper par poste"
+                        context="{'group_by': 'poste'}"/>
+                <filter name="group_statut" string="Grouper par statut"
+                        context="{'group_by': 'statut_paiement'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_mobility_finance_line" model="ir.actions.act_window">
+        <field name="name">Grand livre financier</field>
+        <field name="res_model">mobility.finance.line</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_mobility_finance_line_search"/>
+    </record>
+
+</odoo>

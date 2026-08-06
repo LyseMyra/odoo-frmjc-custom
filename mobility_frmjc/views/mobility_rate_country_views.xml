@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_mobility_rate_country_list" model="ir.ui.view">
+        <field name="name">mobility.rate.country.list</field>
+        <field name="model">mobility.rate.country</field>
+        <field name="arch" type="xml">
+            <list string="Barèmes pays">
+                <field name="country_id"/>
+                <field name="date_debut_validite"/>
+                <field name="date_fin_validite"/>
+                <field name="taux_soutien_organisationnel"/>
+                <field name="taux_soutien_inclusion"/>
+                <field name="taux_argent_poche"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_mobility_rate_country_form" model="ir.ui.view">
+        <field name="name">mobility.rate.country.form</field>
+        <field name="model">mobility.rate.country</field>
+        <field name="arch" type="xml">
+            <form string="Barème pays">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="country_id"/>
+                            <field name="date_debut_validite"/>
+                            <field name="date_fin_validite"/>
+                        </group>
+                        <group string="Taux (€/jour)">
+                            <field name="taux_soutien_organisationnel"/>
+                            <field name="taux_soutien_inclusion"/>
+                            <field name="taux_argent_poche"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_mobility_rate_country" model="ir.actions.act_window">
+        <field name="name">Barèmes pays</field>
+        <field name="res_model">mobility.rate.country</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+</odoo>

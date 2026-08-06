@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ── Kanban (pipeline) ──────────────────────────────────────── -->
+    <record id="view_mobility_mobility_kanban" model="ir.ui.view">
+        <field name="name">mobility.mobility.kanban</field>
+        <field name="model">mobility.mobility</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="status" quick_create="false" class="o_kanban_mobility">
+                <field name="name"/>
+                <field name="participant_id"/>
+                <field name="country_id"/>
+                <field name="programme"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <field name="status"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_global_click">
+                            <strong><field name="participant_id"/></strong>
+                            <div><field name="country_id"/></div>
+                            <div><field name="programme"/></div>
+                            <div>
+                                <field name="start_date"/> → <field name="end_date"/>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- ── Liste ──────────────────────────────────────────────────── -->
+    <record id="view_mobility_mobility_list" model="ir.ui.view">
+        <field name="name">mobility.mobility.list</field>
+        <field name="model">mobility.mobility</field>
+        <field name="arch" type="xml">
+            <list string="Mobilités">
+                <field name="name"/>
+                <field name="participant_id"/>
+                <field name="programme"/>
+                <field name="mobility_direction"/>
+                <field name="country_id"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <field name="status" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ── Formulaire ─────────────────────────────────────────────── -->
+    <record id="view_mobility_mobility_form" model="ir.ui.view">
+        <field name="name">mobility.mobility.form</field>
+        <field name="model">mobility.mobility</field>
+        <field name="arch" type="xml">
+            <form string="Mobilité">
+                <header>
+                    <button name="action_marquer_formalites" string="Formalités en cours"
+                            type="object" class="oe_highlight"
+                            invisible="status != 'selectionne'"/>
+                    <button name="action_marquer_placement" string="Placement en cours"
+                            type="object" class="oe_highlight"
+                            invisible="status != 'formalites'"/>
+                    <button name="action_marquer_mission" string="En mission"
+                            type="object" class="oe_highlight"
+                            invisible="status != 'placement'"/>
+                    <button name="action_marquer_termine" string="Terminé"
+                            type="object" class="oe_highlight"
+                            invisible="status != 'mission'"/>
+                    <button name="action_marquer_suivi_post" string="Suivi post-mission"
+                            type="object" class="oe_highlight"
+                            invisible="status != 'termine'"/>
+                    <button name="action_valider_fiche_renseignement"
+                            string="Valider la fiche de renseignement"
+                            type="object" class="oe_highlight"
+                            invisible="not fiche_renseignement_soumise_le or fiche_renseignement_validee"/>
+                    <button name="action_ouvrir_fiche_renseignement"
+                            string="Ouvrir le lien du formulaire public"
+                            type="object"/>
+                    <field name="status" widget="statusbar"
+                           statusbar_visible="selectionne,formalites,placement,mission,termine,suivi_post"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <div class="alert alert-warning" role="alert"
+                         invisible="not eligibility_alerts">
+                        <field name="eligibility_alerts" readonly="1" nolabel="1"/>
+                    </div>
+                    <notebook>
+                        <page string="Informations" name="informations">
+                            <group>
+                                <group string="Identification">
+                                    <field name="prn"/>
+                                    <field name="offer_code"/>
+                                    <field name="reference_projet"/>
+                                    <field name="action_cle"/>
+                                    <field name="user_id"/>
+                                    <field name="company_id" groups="base.group_multi_company"/>
+                                </group>
+                                <group string="Volontaire">
+                                    <field name="participant_id"/>
+                                    <field name="email"/>
+                                    <field name="telephone"/>
+                                    <field name="sexe"/>
+                                    <field name="date_naissance"/>
+                                    <field name="age"/>
+                                    <field name="nationalite_id"/>
+                                    <field name="pays_residence_id"/>
+                                    <field name="ville_residence"/>
+                                    <field name="jeune"/>
+                                </group>
+                            </group>
+                            <group>
+                                <group string="Classification">
+                                    <field name="programme"/>
+                                    <field name="mobility_direction"/>
+                                    <field name="mobility_duration"/>
+                                    <field name="volunteering_type"/>
+                                    <field name="role_consortium"/>
+                                </group>
+                                <group string="Lieu &amp; dates">
+                                    <field name="country_id"/>
+                                    <field name="department_id"
+                                           domain="[('country_id', '=', country_id)]"/>
+                                    <field name="city"/>
+                                    <field name="start_date"/>
+                                    <field name="end_date"/>
+                                    <field name="duree_jours"/>
+                                </group>
+                            </group>
+                            <group>
+                                <group string="Offre">
+                                    <field name="titre_offre"/>
+                                    <field name="date_publication_offre"/>
+                                    <field name="date_selection_offre"/>
+                                    <field name="statut_offre"/>
+                                    <field name="source_offre"/>
+                                </group>
+                                <group string="Mission">
+                                    <field name="heures_semaine"/>
+                                    <field name="langue_travail"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="Fiche de renseignement" name="fiche_renseignement">
+                            <group>
+                                <group string="Statut">
+                                    <field name="portal_token" readonly="1"/>
+                                    <field name="fiche_renseignement_soumise_le" readonly="1"/>
+                                    <field name="fiche_renseignement_validee" readonly="1"/>
+                                </group>
+                                <group string="Identité complémentaire">
+                                    <field name="id_document_numero"/>
+                                    <field name="id_document_validite"/>
+                                    <field name="besoins_particuliers"/>
+                                </group>
+                            </group>
+                            <group>
+                                <group string="Contact d'urgence">
+                                    <field name="contact_urgence_nom"/>
+                                    <field name="contact_urgence_lien"/>
+                                    <field name="contact_urgence_adresse"/>
+                                    <field name="contact_urgence_telephone"/>
+                                    <field name="contact_urgence_email"/>
+                                </group>
+                                <group string="Structure d'envoi (saisie volontaire)">
+                                    <field name="sending_org_nom"/>
+                                    <field name="sending_org_oid_saisi"/>
+                                    <field name="sending_contact_nom"/>
+                                    <field name="sending_contact_email"/>
+                                    <field name="sending_contact_telephone"/>
+                                </group>
+                            </group>
+                            <group string="Déclaration sur l'honneur">
+                                <field name="declaration_acceptee"/>
+                                <field name="date_declaration"/>
+                                <field name="lieu_declaration"/>
+                                <field name="signature_nom"/>
+                            </group>
+                        </page>
+
+                        <page string="Structures" name="structures">
+                            <group>
+                                <group string="Référentiels">
+                                    <field name="grant_id"/>
+                                    <field name="habilitation_id"/>
+                                    <field name="lead_partner_id"/>
+                                    <field name="activity_id"/>
+                                </group>
+                                <group string="Structures">
+                                    <field name="sending_partner_id"/>
+                                    <field name="hosting_partner_id"
+                                           invisible="mobility_direction == 'envoi'"/>
+                                    <field name="support_partner_id"
+                                           invisible="mobility_direction == 'accueil'"/>
+                                    <field name="housing_partner_id"/>
+                                    <field name="tutor_partner_id"/>
+                                </group>
+                            </group>
+                            <group string="Convention de volontariat">
+                                <field name="convention_numero"/>
+                                <field name="convention_date"/>
+                                <field name="convention_document_id"/>
+                            </group>
+                        </page>
+
+                        <page string="Voyage &amp; soutien" name="voyage">
+                            <group>
+                                <group string="Fiche de renseignement">
+                                    <field name="fiche_renseignement_validee"/>
+                                </group>
+                                <group string="Soutien linguistique">
+                                    <field name="soutien_linguistique_type"/>
+                                </group>
+                            </group>
+                            <group>
+                                <group string="Voyage">
+                                    <field name="transport_principal"/>
+                                    <field name="voyage_vert"/>
+                                    <field name="tranche_kilometrique"/>
+                                    <field name="distance_reelle"/>
+                                </group>
+                                <group string="Force majeure">
+                                    <field name="force_majeure"/>
+                                    <field name="force_majeure_explication"
+                                           invisible="not force_majeure"/>
+                                </group>
+                            </group>
+                            <group string="Rapport participant">
+                                <field name="rapport_demande_le"/>
+                                <field name="rapport_recu_le"/>
+                            </group>
+                        </page>
+
+                        <page string="Suivi" name="suivi">
+                            <group>
+                                <group string="Accompagnement">
+                                    <field name="frequence_suivi"/>
+                                    <field name="mode_suivi"/>
+                                    <field name="date_dernier_entretien"/>
+                                    <field name="date_prochain_entretien"/>
+                                </group>
+                                <group string="Suivi pédagogique">
+                                    <field name="evaluation_intermediaire"/>
+                                    <field name="evaluation_finale"/>
+                                </group>
+                            </group>
+                            <group string="Observations">
+                                <field name="observations_suivi" nolabel="1"/>
+                            </group>
+                            <group string="Objectifs">
+                                <field name="objectifs_pedagogiques"/>
+                                <field name="objectifs_atteints"/>
+                                <field name="points_forts"/>
+                                <field name="axes_amelioration"/>
+                            </group>
+                        </page>
+
+                        <page string="Documents" name="documents">
+                            <field name="document_ids">
+                                <list editable="bottom">
+                                    <field name="document_type"/>
+                                    <field name="upload_date"/>
+                                    <field name="emis_par"/>
+                                    <field name="statut"/>
+                                    <field name="attachment" filename="attachment_filename"/>
+                                    <field name="attachment_filename" column_invisible="1"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Finance" name="finance">
+                            <field name="finance_line_ids">
+                                <list editable="bottom">
+                                    <field name="date"/>
+                                    <field name="poste"/>
+                                    <field name="periode_du"/>
+                                    <field name="periode_au"/>
+                                    <field name="nb_jours"/>
+                                    <field name="montant_journalier"/>
+                                    <field name="montant_prevu"/>
+                                    <field name="montant_realise"/>
+                                    <field name="ecart"/>
+                                    <field name="statut_paiement"/>
+                                    <field name="source_financement"/>
+                                    <button name="action_calculer" string="Calculer"
+                                            type="object" icon="fa-calculator"
+                                            title="Pré-remplir depuis le barème"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ── Recherche ──────────────────────────────────────────────── -->
+    <record id="view_mobility_mobility_search" model="ir.ui.view">
+        <field name="name">mobility.mobility.search</field>
+        <field name="model">mobility.mobility</field>
+        <field name="arch" type="xml">
+            <search string="Mobilités">
+                <field name="name"/>
+                <field name="participant_id"/>
+                <field name="prn"/>
+                <field name="programme"/>
+                <field name="country_id"/>
+                <filter name="accueil" string="Accueil"
+                        domain="[('mobility_direction', '=', 'accueil')]"/>
+                <filter name="envoi" string="Envoi"
+                        domain="[('mobility_direction', '=', 'envoi')]"/>
+                <separator/>
+                <filter name="en_cours" string="En cours (mission)"
+                        domain="[('status', '=', 'mission')]"/>
+                <separator/>
+                <filter name="group_status" string="Grouper par statut"
+                        context="{'group_by': 'status'}"/>
+                <filter name="group_programme" string="Grouper par programme"
+                        context="{'group_by': 'programme'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- ── Action ─────────────────────────────────────────────────── -->
+    <record id="action_mobility_mobility" model="ir.actions.act_window">
+        <field name="name">Mobilités</field>
+        <field name="res_model">mobility.mobility</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="search_view_id" ref="view_mobility_mobility_search"/>
+        <field name="context">{'search_default_group_status': 0}</field>
+    </record>
+
+</odoo>

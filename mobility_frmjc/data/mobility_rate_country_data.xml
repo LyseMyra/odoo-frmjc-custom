@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Barème pays A1 (soutien organisationnel) / A2 (soutien à l'inclusion) /
+    A3 (argent de poche), en €/jour — grille officielle Corps Européen de
+    Solidarité, période de programmation 2021-2027.
+
+    Source : GUIDE ERASMUS - Grille_Erasmus (document fourni par
+    l'utilisateur, "Quels sont les coûts unitaires par jour et par
+    participant ?"). date_debut_validite fixée au 01/01/2021 par défaut
+    (début de la programmation) en l'absence de date d'entrée en vigueur
+    précise dans le document source — à ajuster si un barème plus récent
+    doit coexister (ajouter un nouvel enregistrement avec sa propre
+    période de validité plutôt que modifier celui-ci).
+-->
+<odoo noupdate="1">
+
+    <record id="rate_country_at" model="mobility.rate.country">
+        <field name="country_id" ref="base.at"/>
+        <field name="date_debut_validite">2021-01-01</field>
+        <field name="taux_soutien_organisationnel">35</field>
+        <field name="taux_soutien_inclusion">12</field>
+        <field name="taux_argent_poche">7</field>
+    </record>
+
+    <record id="rate_country_be" model="mobility.rate.country">
+        <field name="country_id" ref="base.be"/>
+        <field name="date_debut_validite">2021-01-01</field>
+        <field name="taux_soutien_organisationnel">36</field>
+        <field name="taux_soutien_inclusion">12</field>
+        <field name="taux_argent_poche">6</field>
+    </record>
+
+    <record id="rate_country_bg" model="mobility.rate.country">
+        <field name="country_id" ref="base.bg"/>
+        <field name="date_debut_validite">2021-01-01</field>
+        <field name="taux_soutien_organisationnel">30</field>
+        <field name="taux_soutien_inclusion">10</field>
+        <field name="taux_argent_poche">7</field>
+    </record>
+
+    <record id="rate_country_hr" model="mobility.rate.country">
+        <field name="country_id" ref="base.hr"/>
+        <field name="date_debut_validite">2021-01-01</field>
+        <field name="taux_soutien_organisationnel">40</field>
+        <field name="taux_soutien_inclusion">13</field>
+        <field name="taux_argent_poche">10</field>
+    </record>
+
+    <record id="rate_country_cy" model="mobility.rate.country">
+        <field name="country_id" ref="base.cy"/>
+        <field name="date_debut_validite">2021-01-01</field>
+        <field name="taux_soutien_organisationnel">30</field>
+        <field name="taux_soutien_inclusion">9</field>
+        <field name="taux_argent_poche">7</field>
+    </record>
+
+    <record id="rate_country_cz" model="mobility.rate.country">
+        <field name="country_id" ref="base.cz"/>
+        <field name="date_debut_validite">2021-01-01</field>
+        <field name="taux_soutien_organisationnel">24</field>
+        <field name="taux_soutien_inclusion">8</field>
+        <field name="taux_argent_poche">7</field>
+    </record>
+
+    <record id="rate_country_dk" model="mobility.rate.country">
+        <field name="country_id" ref="base.dk"/>
+        <field name="date_debut_validite">2021-01-01</field>
+        <field name="taux_soutien_organisationnel">55</field>
+        <field name="taux_soutien_inclusion">19</field>
+        <field name="taux_argent_poche">12</field>
+    </record>
+
+    <record id="rate_country_ee" model="mobility.rate.country">
+        <field name="country_id" ref="base.ee"/>
+        <field name="date_debut_validite">2021-01-01</field>
+        <field name="taux_soutien_organisationnel">25</field>
+        <field name="taux_soutien_inclusion">8</field>
+        <field name="taux_argent_poche">5</field>
+    </record>
+
+    <record id="rate_country_fi" model="mobility.rate.country">
+        <field name="country_id" ref="base.fi"/>
+        <field name="date_debut_validite">2021-01-01</field>
+        <field name="taux_soutien_organisationnel">36</field>
+        <field name="taux_soutien_inclusion">12</field>
+        <field name="taux_argent_poche">7</field>
+    </record>
+
+    <record id="rate_country_fr" model="mobility.rate.country">
+        <field name="country_id" ref="base.fr"/>
+        <field name="date_debut_validite">2021-01-01</field>
+        <field name="taux_soutien_organisationnel">28</field>
+        <field name="taux_soutien_inclusion">9</field>
+        <field name="taux_argent_poche">8</field>
+    </record>
+
+    <record id="rate_country_de" model="mobility.rate.country">
+        <field name="country_id" ref="base.de"/>
+        <field name="date_debut_validite">2021-01-01</field>
+        <field name="taux_soutien_organisationnel">33</field>
+        <field name="taux_soutien_inclusion">12</field>
+        <field name="taux_argent_poche">7</field>
+    </record>
+
+    <record id="rate_country_gr" model="mobility.rate.country">
+        <field name="country_id" ref="base.gr"/>
+        <field name="date_debut_validite">2021-01-01</field>
+        <field name="taux_soutien_organisationnel">30</field>
+        <field name="taux_soutien_inclusion">9</field>
+        <field name="taux_argent_poche">7</field>
+    </record>
+
+    <record id="rate_country_hu" model="mobility.rate.country">
+        <field name="country_id" ref="base.hu"/>
+        <field name="date_debut_validite">2021-01-01</field>
+        <field name="taux_soutien_organisationnel">24</field>
+        <field name="taux_soutien_inclusion">8</field>
+        <field name="taux_argent_poche">7</field>
+    </record>
+
+    <record id="rate_country_ie" model="mobility.rate.country">
+        <field name="country_id" ref="base.ie"/>
+        <field name="date_debut_validite">2021-01-01</field>
+        <field name="taux_soutien_organisationnel">52</field>
+        <field name="taux_soutien_inclusion">18</field>
+        <field name="taux_argent_poche">11</field>
+    </record>
+
+    <record id="rate_country_it" model="mobility.rate.country">
+        <field name="country_id" ref="base.it"/>
+        <field name="date_debut_validite">2021-01-01</field>
+        <field name="taux_soutien_organisationnel">28</field>
+        <field name="taux_soutien_inclusion">9</field>
+        <field name="taux_argent_poche">6</field>
+    </record>
+
+    <record id="rate_country_lv" model="mobility.rate.country">
+        <field name="country_id" ref="base.lv"/>
+        <field name="date_debut_validite">2021-01-01</field>
+        <field name="taux_soutien_organisationnel">25</field>
+        <field name="taux_soutien_inclusion">8</field>
+        <field name="taux_argent_poche">5</field>
+    </record>
+
+    <record id="rate_country_lt" model="mobility.rate.country">
+        <field name="country_id" ref="base.lt"/>
+        <field name="date_debut_validite">2021-01-01</field>
+        <field name="taux_soutien_organisationnel">26</field>
+        <field name="taux_soutien_inclusion">8</field>
+        <field name="taux_argent_poche">6</field>
+    </record>
+
+    <record id="rate_country_lu" model="mobility.rate.country">
+        <field name="country_id" ref="base.lu"/>
+        <field name="date_debut_validite">2021-01-01</field>
+        <field name="taux_soutien_organisationnel">37</field>
+        <field name="taux_soutien_inclusion">13</field>
+        <field name="taux_argent_poche">7</field>
+    </record>
+
+    <record id="rate_country_mt" model="mobility.rate.country">
+        <field name="country_id" ref="base.mt"/>
+        <field name="date_debut_validite">2021-01-01</field>
+        <field name="taux_soutien_organisationnel">29</field>
+        <field name="taux_soutien_inclusion">11</field>
+        <field name="taux_argent_poche">6</field>
+    </record>
+
+    <record id="rate_country_nl" model="mobility.rate.country">
+        <field name="country_id" ref="base.nl"/>
+        <field name="date_debut_validite">2021-01-01</field>
+        <field name="taux_soutien_organisationnel">36</field>
+        <field name="taux_soutien_inclusion">13</field>
+        <field name="taux_argent_poche">7</field>
+    </record>
+
+    <record id="rate_country_pl" model="mobility.rate.country">
+        <field name="country_id" ref="base.pl"/>
+        <field name="date_debut_validite">2021-01-01</field>
+        <field name="taux_soutien_organisationnel">25</field>
+        <field name="taux_soutien_inclusion">8</field>
+        <field name="taux_argent_poche">6</field>
+    </record>
+
+    <record id="rate_country_pt" model="mobility.rate.country">
+        <field name="country_id" ref="base.pt"/>
+        <field name="date_debut_validite">2021-01-01</field>
+        <field name="taux_soutien_organisationnel">27</field>
+        <field name="taux_soutien_inclusion">9</field>
+        <field name="taux_argent_poche">6</field>
+    </record>
+
+    <record id="rate_country_ro" model="mobility.rate.country">
+        <field name="country_id" ref="base.ro"/>
+        <field name="date_debut_validite">2021-01-01</field>
+        <field name="taux_soutien_organisationnel">23</field>
+        <field name="taux_soutien_inclusion">8</field>
+        <field name="taux_argent_poche">4</field>
+    </record>
+
+    <record id="rate_country_sk" model="mobility.rate.country">
+        <field name="country_id" ref="base.sk"/>
+        <field name="date_debut_validite">2021-01-01</field>
+        <field name="taux_soutien_organisationnel">24</field>
+        <field name="taux_soutien_inclusion">8</field>
+        <field name="taux_argent_poche">6</field>
+    </record>
+
+    <record id="rate_country_si" model="mobility.rate.country">
+        <field name="country_id" ref="base.si"/>
+        <field name="date_debut_validite">2021-01-01</field>
+        <field name="taux_soutien_organisationnel">26</field>
+        <field name="taux_soutien_inclusion">8</field>
+        <field name="taux_argent_poche">5</field>
+    </record>
+
+    <record id="rate_country_es" model="mobility.rate.country">
+        <field name="country_id" ref="base.es"/>
+        <field name="date_debut_validite">2021-01-01</field>
+        <field name="taux_soutien_organisationnel">25</field>
+        <field name="taux_soutien_inclusion">8</field>
+        <field name="taux_argent_poche">6</field>
+    </record>
+
+    <record id="rate_country_se" model="mobility.rate.country">
+        <field name="country_id" ref="base.se"/>
+        <field name="date_debut_validite">2021-01-01</field>
+        <field name="taux_soutien_organisationnel">35</field>
+        <field name="taux_soutien_inclusion">12</field>
+        <field name="taux_argent_poche">7</field>
+    </record>
+
+    <record id="rate_country_mk" model="mobility.rate.country">
+        <field name="country_id" ref="base.mk"/>
+        <field name="date_debut_validite">2021-01-01</field>
+        <field name="taux_soutien_organisationnel">20</field>
+        <field name="taux_soutien_inclusion">6</field>
+        <field name="taux_argent_poche">4</field>
+    </record>
+
+    <record id="rate_country_is" model="mobility.rate.country">
+        <field name="country_id" ref="base.is"/>
+        <field name="date_debut_validite">2021-01-01</field>
+        <field name="taux_soutien_organisationnel">36</field>
+        <field name="taux_soutien_inclusion">12</field>
+        <field name="taux_argent_poche">8</field>
+    </record>
+
+    <record id="rate_country_li" model="mobility.rate.country">
+        <field name="country_id" ref="base.li"/>
+        <field name="date_debut_validite">2021-01-01</field>
+        <field name="taux_soutien_organisationnel">34</field>
+        <field name="taux_soutien_inclusion">11</field>
+        <field name="taux_argent_poche">8</field>
+    </record>
+
+    <record id="rate_country_tr" model="mobility.rate.country">
+        <field name="country_id" ref="base.tr"/>
+        <field name="date_debut_validite">2021-01-01</field>
+        <field name="taux_soutien_organisationnel">24</field>
+        <field name="taux_soutien_inclusion">8</field>
+        <field name="taux_argent_poche">6</field>
+    </record>
+
+    <record id="rate_country_no" model="mobility.rate.country">
+        <field name="country_id" ref="base.no"/>
+        <field name="date_debut_validite">2021-01-01</field>
+        <field name="taux_soutien_organisationnel">36</field>
+        <field name="taux_soutien_inclusion">12</field>
+        <field name="taux_argent_poche">8</field>
+    </record>
+
+    <!-- Barème générique de repli : "Pays tiers voisin de l'UE" — utilisé
+         quand le pays de mission n'a pas de barème spécifique ci-dessus. -->
+    <record id="rate_country_fallback" model="mobility.rate.country">
+        <field name="date_debut_validite">2021-01-01</field>
+        <field name="taux_soutien_organisationnel">29</field>
+        <field name="taux_soutien_inclusion">9</field>
+        <field name="taux_argent_poche">6</field>
+    </record>
+
+</odoo>

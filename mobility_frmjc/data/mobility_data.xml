@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ── Séquence des références de mobilité ───────────────────── -->
+    <record id="seq_mobility_mobility" model="ir.sequence">
+        <field name="name">Référence mobilité</field>
+        <field name="code">mobility.mobility</field>
+        <field name="prefix">MOB/%(year)s/</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <!-- ── Cron : clôture des mobilités dont la mission est échue ──── -->
+    <record id="ir_cron_mobility_terminer_missions" model="ir.cron">
+        <field name="name">Volontariat : Clôture des missions échues</field>
+        <field name="model_id" ref="model_mobility_mobility"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_terminer_missions_echues()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active">True</field>
+    </record>
+
+</odoo>
