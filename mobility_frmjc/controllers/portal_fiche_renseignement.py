@@ -8,14 +8,35 @@ _logger = logging.getLogger(__name__)
 
 class PortalFicheRenseignement(http.Controller):
     """Formulaire public (sans authentification) de la fiche de
-    renseignement volontaire — §4 du cahier des charges. L'accès se fait
-    par un token opaque (portal_token) inclus dans le lien envoyé au
-    volontaire après sa sélection, pas par un compte utilisateur."""
+    renseignement volontaire — §4 du cahier des charges.
+
+    Rempli par la STRUCTURE D'ACCUEIL (pas le volontaire) : elle est la
+    seule partie à disposer, dès ce stade, des informations sur le
+    volontaire, l'offre, la structure d'envoi et sa propre structure. La
+    mobilité est créée en amont par le secrétariat avec uniquement les
+    champs de classification (programme, direction, durée, type de
+    volontariat) — tout le reste (participant, structures, dates
+    proposées de l'offre) est inconnu tant que ce formulaire n'a pas été
+    soumis, d'où l'aspect non obligatoire de ces champs sur
+    mobility.mobility. Les dates RÉELLES de mission (start_date/end_date,
+    utilisées pour le calcul de durée) ne sont pas demandées ici : elles
+    ne sont connues qu'à l'arrivée effective du volontaire et seront
+    renseignées plus tard, par le secrétariat.
+
+    L'accès se fait par un token opaque (portal_token) inclus dans le
+    lien envoyé à la structure d'accueil, pas par un compte utilisateur.
+    """
 
     def _get_mobility(self, token):
         return request.env['mobility.mobility'].sudo().search(
             [('portal_token', '=', token)], limit=1,
         )
+
+    # NB : la résolution participant/structure et la construction du dict
+    # de vals sont mutualisées sur mobility.mobility (_find_or_create_*,
+    # _build_fiche_vals) — également utilisées par l'import Excel
+    # (mobility.import.fiche.wizard), pour un seul chemin logique quel
+    # que soit le canal de saisie.
 
     @http.route(
         '/mobilite/fiche/<string:token>', type='http',
@@ -52,13 +73,19 @@ class PortalFicheRenseignement(http.Controller):
             })
 
         errors = {}
-        if not post.get('date_naissance'):
-            errors['date_naissance'] = 'Champ requis.'
-        if not post.get('email'):
-            errors['email'] = 'Champ requis.'
+        champs_requis = [
+            ('participant_prenom', 'Prénom du volontaire'),
+            ('participant_nom', 'Nom du volontaire'),
+            ('email', 'Email du volontaire'),
+            ('date_naissance', 'Date de naissance'),
+            ('hosting_org_nom', "Nom de la structure d'accueil"),
+        ]
+        for field_name, label in champs_requis:
+            if not post.get(field_name):
+                errors[field_name] = 'Champ requis.'
         if not post.get('declaration_acceptee'):
             errors['declaration_acceptee'] = (
-                'Vous devez confirmer la déclaration sur l\'honneur pour '
+                "Vous devez confirmer la déclaration sur l'honneur pour "
                 'valider le formulaire.'
             )
 
@@ -72,36 +99,10 @@ class PortalFicheRenseignement(http.Controller):
                 'post': post,
             })
 
-        def _country_id(field_name):
-            value = post.get(field_name)
-            return int(value) if value else False
-
-        vals = {
-            'email': post.get('email'),
-            'telephone': post.get('telephone'),
-            'date_naissance': fields.Date.to_date(post.get('date_naissance')),
-            'nationalite_id': _country_id('nationalite_id'),
-            'pays_residence_id': _country_id('pays_residence_id'),
-            'ville_residence': post.get('ville_residence'),
-            'id_document_numero': post.get('id_document_numero'),
-            'id_document_validite': fields.Date.to_date(post.get('id_document_validite')),
-            'besoins_particuliers': post.get('besoins_particuliers'),
-            'contact_urgence_nom': post.get('contact_urgence_nom'),
-            'contact_urgence_lien': post.get('contact_urgence_lien'),
-            'contact_urgence_adresse': post.get('contact_urgence_adresse'),
-            'contact_urgence_telephone': post.get('contact_urgence_telephone'),
-            'contact_urgence_email': post.get('contact_urgence_email'),
-            'sending_org_nom': post.get('sending_org_nom'),
-            'sending_org_oid_saisi': post.get('sending_org_oid_saisi'),
-            'sending_contact_nom': post.get('sending_contact_nom'),
-            'sending_contact_email': post.get('sending_contact_email'),
-            'sending_contact_telephone': post.get('sending_contact_telephone'),
-            'declaration_acceptee': True,
-            'date_declaration': fields.Date.today(),
-            'lieu_declaration': post.get('lieu_declaration'),
-            'signature_nom': post.get('signature_nom'),
-            'fiche_renseignement_soumise_le': fields.Datetime.now(),
-        }
+        # La case n'est envoyée par le POST que si elle est cochée — sa
+        # présence a déjà été vérifiée ci-dessus (champs_requis).
+        post = dict(post, declaration_acceptee=True)
+        vals = mobility._build_fiche_vals(post)
         mobility.sudo().write(vals)
 
         # Trace du dépôt — un mobility.document marqueur, pas un fichier
@@ -112,8 +113,11 @@ class PortalFicheRenseignement(http.Controller):
             'document_type': 'fiche_renseignement',
             'statut': 'valide',
             'upload_date': fields.Date.today(),
-            'emis_par': mobility.participant_id.name,
-            'notes': "Fiche de renseignement soumise via le formulaire public.",
+            'emis_par': mobility.hosting_org_nom or mobility.hosting_partner_id.name,
+            'notes': (
+                "Fiche de renseignement soumise via le formulaire public "
+                "par la structure d'accueil."
+            ),
         })
 
         return request.render('mobility_frmjc.portal_fiche_merci', {

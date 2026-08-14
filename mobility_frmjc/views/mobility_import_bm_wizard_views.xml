@@ -18,11 +18,15 @@
         </field>
     </record>
 
+    <!-- Accroché au menu "⚙ Actions" de la liste Mobilités — même
+         emplacement que "Exporter BM", pas un menu dédié. -->
     <record id="action_mobility_import_bm" model="ir.actions.act_window">
         <field name="name">Importer BM</field>
         <field name="res_model">mobility.import.bm.wizard</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
+        <field name="binding_model_id" ref="model_mobility_mobility"/>
+        <field name="binding_view_types">list</field>
     </record>
 
 </odoo>

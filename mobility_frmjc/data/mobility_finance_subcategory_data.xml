@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Sous-catégories de lignes financières — extraites de deux documents
+    réels fournis par l'utilisateur (Budget prévisionnel ACCUEIL CES et
+    Budget réalisé). Comptes comptables (604xxx) repris tels quels.
+-->
+<odoo noupdate="1">
+
+    <!-- ── Structures (604100) ───────────────────────────────────── -->
+    <record id="finance_subcat_frais_envoi" model="mobility.finance.subcategory">
+        <field name="name">Frais d'envoi</field>
+        <field name="code">frais_envoi</field>
+        <field name="categorie">structures</field>
+        <field name="product_categ_id" ref="product_category_mobility_structures"/>
+        <field name="compte_comptable">604100</field>
+        <field name="nature_defaut">depense</field>
+        <field name="sequence">10</field>
+    </record>
+
+    <record id="finance_subcat_frais_gestion" model="mobility.finance.subcategory">
+        <field name="name">Frais de coordination</field>
+        <field name="code">frais_gestion</field>
+        <field name="categorie">structures</field>
+        <field name="product_categ_id" ref="product_category_mobility_structures"/>
+        <field name="nature_defaut">depense</field>
+        <field name="sequence">20</field>
+    </record>
+
+    <record id="finance_subcat_cout_exceptionnel" model="mobility.finance.subcategory">
+        <field name="name">Coût exceptionnel (Visa, préparation...)</field>
+        <field name="code">cout_exceptionnel</field>
+        <field name="categorie">structures</field>
+        <field name="product_categ_id" ref="product_category_mobility_structures"/>
+        <field name="compte_comptable">604100</field>
+        <field name="nature_defaut">depense</field>
+        <field name="sequence">30</field>
+    </record>
+
+    <!-- ── Transport (604200) ────────────────────────────────────── -->
+    <record id="finance_subcat_voyage" model="mobility.finance.subcategory">
+        <field name="name">Trajet A/R international</field>
+        <field name="code">voyage</field>
+        <field name="categorie">transport</field>
+        <field name="product_categ_id" ref="product_category_mobility_transport"/>
+        <field name="compte_comptable">604200</field>
+        <field name="nature_defaut">depense</field>
+        <field name="calculable">True</field>
+        <field name="type_calcul">voyage</field>
+        <field name="sequence">10</field>
+    </record>
+
+    <record id="finance_subcat_transport_local" model="mobility.finance.subcategory">
+        <field name="name">Transport sur place</field>
+        <field name="code">transport_local</field>
+        <field name="categorie">transport</field>
+        <field name="product_categ_id" ref="product_category_mobility_transport"/>
+        <field name="compte_comptable">604200</field>
+        <field name="nature_defaut">depense</field>
+        <field name="sequence">20</field>
+    </record>
+
+    <!-- ── Hébergement (604300) ──────────────────────────────────── -->
+    <record id="finance_subcat_loyer" model="mobility.finance.subcategory">
+        <field name="name">Loyer</field>
+        <field name="code">loyer</field>
+        <field name="categorie">hebergement</field>
+        <field name="product_categ_id" ref="product_category_mobility_hebergement"/>
+        <field name="compte_comptable">604300</field>
+        <field name="nature_defaut">depense</field>
+        <field name="sequence">10</field>
+    </record>
+
+    <record id="finance_subcat_eau" model="mobility.finance.subcategory">
+        <field name="name">Eau</field>
+        <field name="code">eau</field>
+        <field name="categorie">hebergement</field>
+        <field name="product_categ_id" ref="product_category_mobility_hebergement"/>
+        <field name="compte_comptable">604300</field>
+        <field name="nature_defaut">depense</field>
+        <field name="sequence">20</field>
+    </record>
+
+    <record id="finance_subcat_electricite_gaz" model="mobility.finance.subcategory">
+        <field name="name">Électricité + Gaz</field>
+        <field name="code">electricite_gaz</field>
+        <field name="categorie">hebergement</field>
+        <field name="product_categ_id" ref="product_category_mobility_hebergement"/>
+        <field name="compte_comptable">604300</field>
+        <field name="nature_defaut">depense</field>
+        <field name="sequence">30</field>
+    </record>
+
+    <record id="finance_subcat_internet" model="mobility.finance.subcategory">
+        <field name="name">Internet</field>
+        <field name="code">internet</field>
+        <field name="categorie">hebergement</field>
+        <field name="product_categ_id" ref="product_category_mobility_hebergement"/>
+        <field name="compte_comptable">604300</field>
+        <field name="nature_defaut">depense</field>
+        <field name="sequence">40</field>
+    </record>
+
+    <record id="finance_subcat_assurance_habitation" model="mobility.finance.subcategory">
+        <field name="name">Assurance habitation</field>
+        <field name="code">assurance_habitation</field>
+        <field name="categorie">hebergement</field>
+        <field name="product_categ_id" ref="product_category_mobility_hebergement"/>
+        <field name="compte_comptable">604300</field>
+        <field name="nature_defaut">depense</field>
+        <field name="sequence">50</field>
+    </record>
+
+    <record id="finance_subcat_autres_frais_logement" model="mobility.finance.subcategory">
+        <field name="name">Autres frais (taxe d'habitation, ménage, entretien...)</field>
+        <field name="code">autres_frais_logement</field>
+        <field name="categorie">hebergement</field>
+        <field name="product_categ_id" ref="product_category_mobility_hebergement"/>
+        <field name="compte_comptable">604300</field>
+        <field name="nature_defaut">depense</field>
+        <field name="sequence">60</field>
+    </record>
+
+    <!-- ── Indemnités (604400) ───────────────────────────────────── -->
+    <record id="finance_subcat_soutien_organisationnel" model="mobility.finance.subcategory">
+        <field name="name">Alimentation (soutien organisationnel)</field>
+        <field name="code">soutien_organisationnel</field>
+        <field name="categorie">indemnites</field>
+        <field name="product_categ_id" ref="product_category_mobility_indemnites"/>
+        <field name="compte_comptable">604400</field>
+        <field name="nature_defaut">indemnite</field>
+        <field name="calculable">True</field>
+        <field name="type_calcul">soutien_organisationnel</field>
+        <field name="sequence">10</field>
+    </record>
+
+    <record id="finance_subcat_argent_poche" model="mobility.finance.subcategory">
+        <field name="name">Argent de poche</field>
+        <field name="code">argent_poche</field>
+        <field name="categorie">indemnites</field>
+        <field name="product_categ_id" ref="product_category_mobility_indemnites"/>
+        <field name="compte_comptable">604400</field>
+        <field name="nature_defaut">indemnite</field>
+        <field name="calculable">True</field>
+        <field name="type_calcul">argent_poche</field>
+        <field name="sequence">20</field>
+    </record>
+
+    <record id="finance_subcat_soutien_inclusion" model="mobility.finance.subcategory">
+        <field name="name">Soutien à l'inclusion</field>
+        <field name="code">soutien_inclusion</field>
+        <field name="categorie">indemnites</field>
+        <field name="product_categ_id" ref="product_category_mobility_indemnites"/>
+        <field name="compte_comptable">604400</field>
+        <field name="nature_defaut">indemnite</field>
+        <field name="calculable">True</field>
+        <field name="type_calcul">soutien_inclusion</field>
+        <field name="sequence">30</field>
+    </record>
+
+    <!-- ── Divers (604500) ───────────────────────────────────────── -->
+    <record id="finance_subcat_soutien_linguistique" model="mobility.finance.subcategory">
+        <field name="name">Cours FLE / Soutien linguistique</field>
+        <field name="code">soutien_linguistique</field>
+        <field name="categorie">divers</field>
+        <field name="product_categ_id" ref="product_category_mobility_divers"/>
+        <field name="compte_comptable">604500</field>
+        <field name="nature_defaut">depense</field>
+        <field name="sequence">10</field>
+    </record>
+
+    <record id="finance_subcat_visite_preparatoire" model="mobility.finance.subcategory">
+        <field name="name">Visite préparatoire</field>
+        <field name="code">visite_preparatoire</field>
+        <field name="categorie">divers</field>
+        <field name="product_categ_id" ref="product_category_mobility_divers"/>
+        <field name="compte_comptable">604500</field>
+        <field name="nature_defaut">depense</field>
+        <field name="sequence">20</field>
+    </record>
+
+    <record id="finance_subcat_autre" model="mobility.finance.subcategory">
+        <field name="name">Autres frais</field>
+        <field name="code">autre</field>
+        <field name="categorie">divers</field>
+        <field name="product_categ_id" ref="product_category_mobility_divers"/>
+        <field name="compte_comptable">604500</field>
+        <field name="nature_defaut">depense</field>
+        <field name="sequence">30</field>
+    </record>
+
+    <!-- ── Financement / Recettes ────────────────────────────────────
+         Côté RECETTES du budget prévisionnel (BP-2.pdf), absent de la
+         première extraction qui ne couvrait que les dépenses. -->
+    <record id="finance_subcat_erasmus_plus" model="mobility.finance.subcategory">
+        <field name="name">ERASMUS+</field>
+        <field name="code">erasmus_plus</field>
+        <field name="categorie">financement</field>
+        <field name="product_categ_id" ref="product_category_mobility_financement"/>
+        <field name="nature_defaut">recette</field>
+        <field name="sequence">10</field>
+    </record>
+
+    <record id="finance_subcat_autres_financements" model="mobility.finance.subcategory">
+        <field name="name">Autres financements</field>
+        <field name="code">autres_financements</field>
+        <field name="categorie">financement</field>
+        <field name="product_categ_id" ref="product_category_mobility_financement"/>
+        <field name="nature_defaut">recette</field>
+        <field name="sequence">20</field>
+    </record>
+
+    <record id="finance_subcat_participation_accueil" model="mobility.finance.subcategory">
+        <field name="name">Participation de la structure d'accueil</field>
+        <field name="code">participation_accueil</field>
+        <field name="categorie">financement</field>
+        <field name="product_categ_id" ref="product_category_mobility_financement"/>
+        <field name="nature_defaut">recette</field>
+        <field name="sequence">30</field>
+    </record>
+
+</odoo>

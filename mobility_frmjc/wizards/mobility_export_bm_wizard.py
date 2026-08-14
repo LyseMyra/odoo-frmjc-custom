@@ -94,11 +94,15 @@ class MobilityExportBmWizard(models.TransientModel):
         charges (§9-§13) et de l'échantillon BM réel fourni.
 
         ⚠️ Reconstruction BEST-EFFORT, à vérifier contre un modèle BM
-        officiel propre avant tout envoi réel : l'échantillon disponible
-        est un export de données (PDF/OCR), pas le gabarit de colonnes
-        lui-même — son en-tête était disloqué à l'extraction. Couverture
-        partielle : les ~20 champs d'adresse/légal détaillés par
-        structure (§8) ne sont pas encore mappés colonne par colonne.
+        officiel propre avant tout envoi réel. Deux échantillons croisés :
+        un export brut complet (PDF/OCR, en-tête disloqué à l'extraction)
+        et un extrait « clair » plus lisible mais partiel — ce second
+        extrait ne montre ni Habilitation/Programme/Type mobilité/Durée/
+        Type volontariat (pourtant confirmés par le premier échantillon),
+        probablement un sous-ensemble simplifié plutôt qu'une preuve de
+        leur absence ; ils sont donc conservés. Couverture partielle : les
+        ~20 champs d'adresse/légal détaillés par structure (§8) ne sont
+        pas encore mappés colonne par colonne.
         """
 
         def _label(field_name, value):
@@ -133,6 +137,7 @@ class MobilityExportBmWizard(models.TransientModel):
             ('Activité', lambda m: m.activity_id.code_activite or ''),
             ('Nom légal organisme accueil',
              lambda m: m.hosting_partner_id.nom_legal or m.hosting_partner_id.name or ''),
+            ('ID du lieu', lambda m: m.activity_id.id_lieu or ''),
             ("Pays d'accueil", lambda m: m.country_id.name or ''),
             ("Lieu de l'activité", lambda m: m.city or ''),
             ('Jeune', lambda m: _oui_non(m.jeune)),
@@ -142,16 +147,17 @@ class MobilityExportBmWizard(models.TransientModel):
             ('Email du participant', lambda m: m.email or ''),
             ('Sexe du participant', lambda m: _label('sexe', m.sexe)),
             ('Âge du participant', lambda m: m.age),
+            ('OID organisme de soutien',
+             lambda m: _soutien_partner(m).oid or '' if _soutien_partner(m) else ''),
             ('Nom légal organisme de soutien',
              lambda m: (_soutien_partner(m).nom_legal or _soutien_partner(m).name)
              if _soutien_partner(m) else ''),
-            ('OID organisme de soutien',
-             lambda m: _soutien_partner(m).oid or '' if _soutien_partner(m) else ''),
             ("Pays d'origine", lambda m: m.pays_residence_id.name or ''),
             ("Ville d'origine", lambda m: m.ville_residence or ''),
             ('Force majeure', lambda m: _oui_non(m.force_majeure)),
             ('Explications force majeure', lambda m: m.force_majeure_explication or ''),
             ('Soutien linguistique', lambda m: m.soutien_linguistique_type or ''),
+            ('Frais de voyage', lambda m: m._get_finance_bm_summary()['voyage']['total']),
             ('Tranche kilométrique', lambda m: m.tranche_kilometrique or ''),
             ('Distance réelle en kilomètres', lambda m: m.distance_reelle or 0),
             ('Moyen de transport principal', lambda m: m.transport_principal or ''),

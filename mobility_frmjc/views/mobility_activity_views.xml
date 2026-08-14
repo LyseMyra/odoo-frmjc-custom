@@ -5,15 +5,13 @@
         <field name="name">mobility.activity.list</field>
         <field name="model">mobility.activity</field>
         <field name="arch" type="xml">
-            <list string="Activités &amp; offres">
-                <field name="code_activite"/>
-                <field name="name"/>
-                <field name="programme"/>
-                <field name="hosting_partner_id"/>
-                <field name="country_id"/>
-                <field name="city"/>
-                <field name="start_date"/>
-                <field name="end_date"/>
+            <list string="Activités">
+                <field name="code_activite" />
+                <field name="name" />
+                <field name="programme" />
+                <field name="hosting_partner_id" />
+                <field name="country_id" />
+                <field name="city" />
             </list>
         </field>
     </record>
@@ -22,28 +20,24 @@
         <field name="name">mobility.activity.form</field>
         <field name="model">mobility.activity</field>
         <field name="arch" type="xml">
-            <form string="Activité / offre">
+            <form string="Activité">
                 <sheet>
                     <group>
                         <group>
-                            <field name="code_activite"/>
-                            <field name="name"/>
-                            <field name="programme"/>
-                            <field name="id_lieu"/>
+                            <field name="code_activite" />
+                            <field name="name" />
+                            <field name="programme" />
+                            <field name="id_lieu" />
                         </group>
                         <group>
-                            <field name="hosting_partner_id"/>
-                            <field name="country_id"/>
-                            <field name="city"/>
+                            <field name="hosting_partner_id" />
+                            <field name="country_id" />
+                            <field name="city" />
                         </group>
                     </group>
-                    <group string="Dates proposées">
-                        <field name="start_date"/>
-                        <field name="end_date"/>
-                    </group>
                     <group string="Mission">
-                        <field name="domaine"/>
-                        <field name="description" nolabel="1"/>
+                        <field name="domaine" />
+                        <field name="description" nolabel="1" />
                     </group>
                 </sheet>
             </form>
@@ -54,21 +48,21 @@
         <field name="name">mobility.activity.search</field>
         <field name="model">mobility.activity</field>
         <field name="arch" type="xml">
-            <search string="Activités &amp; offres">
-                <field name="code_activite"/>
-                <field name="name"/>
-                <field name="hosting_partner_id"/>
+            <search string="Activités">
+                <field name="code_activite" />
+                <field name="name" />
+                <field name="hosting_partner_id" />
                 <filter name="group_programme" string="Grouper par programme"
-                        context="{'group_by': 'programme'}"/>
+                    context="{'group_by': 'programme'}" />
             </search>
         </field>
     </record>
 
     <record id="action_mobility_activity" model="ir.actions.act_window">
-        <field name="name">Activités &amp; offres</field>
+        <field name="name">Activités</field>
         <field name="res_model">mobility.activity</field>
         <field name="view_mode">list,form</field>
-        <field name="search_view_id" ref="view_mobility_activity_search"/>
+        <field name="search_view_id" ref="view_mobility_activity_search" />
     </record>
 
 </odoo>

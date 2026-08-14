@@ -25,26 +25,18 @@
         sequence="20" />
 
     <!-- ── Finance ─────────────────────────────────────────────────── -->
-    <menuitem id="menu_mobility_finance_root"
+    <menuitem id="menu_mobility_finance_line"
         name="Finance"
         parent="menu_mobility_root"
+        action="action_mobility_finance_line"
         sequence="30" />
 
-    <menuitem id="menu_mobility_finance_line"
-        name="Grand livre financier"
-        parent="menu_mobility_finance_root"
-        action="action_mobility_finance_line"
-        sequence="10" />
-
-    <!-- ── Export / Import BM ─────────────────────────────────────────
-         L'export se lance depuis la sélection dans la liste des
-         Mobilités, ou depuis une fiche Convention de subvention (menu
-         Actions ⚙), pas depuis une entrée de menu dédiée. -->
-    <menuitem id="menu_mobility_import_bm"
-        name="Importer BM"
-        parent="menu_mobility_root"
-        action="action_mobility_import_bm"
-        sequence="40" />
+    <!-- Export / Import BM : pas de menu dédié — les deux se lancent
+         depuis le menu "⚙ Actions" de la liste Mobilités (import), et en
+         plus depuis une fiche Convention de subvention pour l'export.
+         Fiche de renseignement (Excel) : même principe mais accroché à la
+         FICHE d'une mobilité (pas la liste) — le fichier est individuel
+         à une seule mobilité. -->
 
     <!-- ── Configuration ──────────────────────────────────────────── -->
     <menuitem id="menu_mobility_config"
@@ -59,7 +51,7 @@
         sequence="10" />
 
     <menuitem id="menu_mobility_activity"
-        name="Activités &amp; offres"
+        name="Activités"
         parent="menu_mobility_config"
         action="action_mobility_activity"
         sequence="15" />
@@ -87,5 +79,11 @@
         parent="menu_mobility_config"
         action="action_mobility_rate_travel"
         sequence="50" />
+
+    <menuitem id="menu_mobility_finance_subcategory"
+        name="Sous-catégories financières"
+        parent="menu_mobility_config"
+        action="action_mobility_finance_subcategory"
+        sequence="60" />
 
 </odoo>

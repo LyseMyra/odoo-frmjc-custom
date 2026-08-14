@@ -5,6 +5,8 @@ from . import mobility_grant
 from . import mobility_habilitation
 from . import mobility_activity
 from . import mobility_mobility
+from . import mobility_avenant
 from . import mobility_rate_country
 from . import mobility_rate_travel
+from . import mobility_finance_subcategory
 from . import mobility_finance_line

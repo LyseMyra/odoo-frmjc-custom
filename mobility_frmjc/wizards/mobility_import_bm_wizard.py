@@ -70,6 +70,7 @@ class MobilityImportBmWizard(models.TransientModel):
 
         idx_prn = col('PRN')
         idx_activite = col('Activité')
+        idx_id_lieu = col('ID du lieu')
         idx_email = col('Email du participant')
         idx_programme = col('Programme')
         idx_direction = col('Type mobilité')
@@ -100,6 +101,11 @@ class MobilityImportBmWizard(models.TransientModel):
                 )
                 if activity:
                     vals['activity_id'] = activity.id
+                    # Complète l'ID lieu s'il manque encore sur l'activité
+                    # partagée — ne l'écrase jamais si déjà renseigné.
+                    if (not activity.id_lieu and idx_id_lieu is not None
+                            and row[idx_id_lieu]):
+                        activity.id_lieu = row[idx_id_lieu]
 
             mobility = Mobility.search([('prn', '=', prn)], limit=1)
             if mobility:

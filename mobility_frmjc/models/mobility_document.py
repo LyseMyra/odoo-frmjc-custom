@@ -33,6 +33,7 @@ class MobilityDocument(models.Model):
         selection=[
             ('fiche_renseignement', 'Fiche renseignement'),
             ('convention_volontariat', 'Convention volontariat'),
+            ('avenant', 'Avenant'),
             ('visa', 'VISA'),
             ('attestation_hebergement', 'Attestation hébergement'),
             ('attestation_transport', 'Attestation transport'),

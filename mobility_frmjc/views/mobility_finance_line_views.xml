@@ -8,13 +8,36 @@
             <list string="Grand livre financier">
                 <field name="mobility_id"/>
                 <field name="date"/>
-                <field name="poste"/>
+                <field name="categorie"/>
+                <field name="subcategory_id"/>
                 <field name="nb_jours"/>
                 <field name="montant_prevu" sum="Total prévu"/>
                 <field name="montant_realise" sum="Total réalisé"/>
                 <field name="ecart" sum="Total écart"/>
                 <field name="statut_paiement"/>
+                <field name="statut_validation"/>
             </list>
+        </field>
+    </record>
+
+    <!-- Budget prévisionnel / réalisé : même liste de lignes, vue croisée
+         par catégorie > sous-catégorie, montant prévu vs réalisé en
+         mesures — et par mois via periode_du (regroupement natif du
+         pivot Odoo). Pour un suivi mensuel comme un budget réalisé, une
+         ligne par sous-catégorie et par mois est la convention à suivre
+         (pas une ligne unique couvrant toute la période). -->
+    <record id="view_mobility_finance_line_pivot" model="ir.ui.view">
+        <field name="name">mobility.finance.line.pivot</field>
+        <field name="model">mobility.finance.line</field>
+        <field name="arch" type="xml">
+            <pivot string="Budget prévisionnel / réalisé">
+                <field name="categorie" type="row"/>
+                <field name="subcategory_id" type="row"/>
+                <field name="periode_du" type="col" interval="month"/>
+                <field name="montant_prevu" type="measure" string="Prévu"/>
+                <field name="montant_realise" type="measure" string="Réalisé"/>
+                <field name="ecart" type="measure" string="Écart"/>
+            </pivot>
         </field>
     </record>
 
@@ -24,19 +47,30 @@
         <field name="arch" type="xml">
             <form string="Ligne financière">
                 <header>
-                    <button name="action_calculer" string="Calculer" type="object" class="oe_highlight"/>
+                    <button name="action_calculer" string="Recalculer" type="object" class="oe_highlight"
+                            invisible="not subcategory_calculable"/>
+                    <button name="action_valider" string="Valider" type="object" class="oe_highlight"
+                            invisible="statut_validation != 'brouillon' or nature not in ('recette', 'depense')"/>
+                    <button name="action_annuler_validation" string="Repasser en brouillon" type="object"
+                            invisible="statut_validation != 'validee'"/>
+                    <button name="action_generer_document" string="Générer facture / bon de commande"
+                            type="object" class="oe_highlight"
+                            invisible="statut_validation != 'validee'"/>
+                    <field name="statut_validation" widget="statusbar"
+                           invisible="nature not in ('recette', 'depense')"/>
                 </header>
                 <sheet>
                     <group>
                         <group>
                             <field name="mobility_id"/>
                             <field name="date"/>
-                            <field name="poste"/>
+                            <field name="subcategory_id"/>
+                            <field name="categorie" readonly="1"/>
                             <field name="nature"/>
                         </group>
                         <group>
-                            <field name="periode_du"/>
-                            <field name="periode_au"/>
+                            <field name="periode_du" readonly="subcategory_calculable"/>
+                            <field name="periode_au" readonly="subcategory_calculable"/>
                             <field name="nb_jours"/>
                         </group>
                     </group>
@@ -63,6 +97,10 @@
                             <field name="beneficiaire_partner_id"/>
                         </group>
                     </group>
+                    <group invisible="not invoice_id and not purchase_order_id">
+                        <field name="invoice_id" readonly="1"/>
+                        <field name="purchase_order_id" readonly="1"/>
+                    </group>
                     <group>
                         <field name="justificatif_id"/>
                         <field name="notes"/>
@@ -78,12 +116,14 @@
         <field name="arch" type="xml">
             <search string="Grand livre financier">
                 <field name="mobility_id"/>
-                <field name="poste"/>
+                <field name="subcategory_id"/>
                 <filter name="a_payer" string="À payer"
                         domain="[('statut_paiement', '=', 'a_payer')]"/>
                 <separator/>
-                <filter name="group_poste" string="Grouper par poste"
-                        context="{'group_by': 'poste'}"/>
+                <filter name="group_categorie" string="Grouper par catégorie"
+                        context="{'group_by': 'categorie'}"/>
+                <filter name="group_subcategory" string="Grouper par sous-catégorie"
+                        context="{'group_by': 'subcategory_id'}"/>
                 <filter name="group_statut" string="Grouper par statut"
                         context="{'group_by': 'statut_paiement'}"/>
             </search>
@@ -93,7 +133,7 @@
     <record id="action_mobility_finance_line" model="ir.actions.act_window">
         <field name="name">Grand livre financier</field>
         <field name="res_model">mobility.finance.line</field>
-        <field name="view_mode">list,form</field>
+        <field name="view_mode">list,pivot,form</field>
         <field name="search_view_id" ref="view_mobility_finance_line_search"/>
     </record>
 

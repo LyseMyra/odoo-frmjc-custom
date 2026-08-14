@@ -35,6 +35,8 @@
         'data/mobility_rate_country_data.xml',
         'data/mobility_rate_travel_data.xml',
         'data/mobility_finance_forfaits_data.xml',
+        'data/mobility_product_category_data.xml',
+        'data/mobility_finance_subcategory_data.xml',
 
         # Vues back-office
         'views/res_partner_views.xml',
@@ -45,10 +47,12 @@
         'views/mobility_activity_views.xml',
         'views/mobility_rate_country_views.xml',
         'views/mobility_rate_travel_views.xml',
+        'views/mobility_finance_subcategory_views.xml',
         'views/mobility_finance_line_views.xml',
         'views/mobility_mobility_views.xml',
         'views/mobility_export_bm_wizard_views.xml',
         'views/mobility_import_bm_wizard_views.xml',
+        'views/mobility_import_fiche_wizard_views.xml',
 
         # Portail public
         'views/portal_fiche_renseignement.xml',

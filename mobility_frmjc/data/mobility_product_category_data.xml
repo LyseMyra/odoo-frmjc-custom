@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Catégories produit (Inventaire) reflétant les 5 grandes catégories
+    budgétaires du module — un produit (service) par sous-catégorie
+    financière y sera rangé, créé à la demande (cf.
+    mobility.finance.subcategory._get_or_create_product).
+-->
+<odoo noupdate="1">
+
+    <record id="product_category_mobility_root" model="product.category">
+        <field name="name">Volontariat</field>
+    </record>
+
+    <record id="product_category_mobility_structures" model="product.category">
+        <field name="name">Structures</field>
+        <field name="parent_id" ref="product_category_mobility_root"/>
+    </record>
+
+    <record id="product_category_mobility_transport" model="product.category">
+        <field name="name">Transport</field>
+        <field name="parent_id" ref="product_category_mobility_root"/>
+    </record>
+
+    <record id="product_category_mobility_hebergement" model="product.category">
+        <field name="name">Hébergement</field>
+        <field name="parent_id" ref="product_category_mobility_root"/>
+    </record>
+
+    <record id="product_category_mobility_indemnites" model="product.category">
+        <field name="name">Indemnités</field>
+        <field name="parent_id" ref="product_category_mobility_root"/>
+    </record>
+
+    <record id="product_category_mobility_divers" model="product.category">
+        <field name="name">Divers</field>
+        <field name="parent_id" ref="product_category_mobility_root"/>
+    </record>
+
+    <record id="product_category_mobility_financement" model="product.category">
+        <field name="name">Financement</field>
+        <field name="parent_id" ref="product_category_mobility_root"/>
+    </record>
+
+</odoo>

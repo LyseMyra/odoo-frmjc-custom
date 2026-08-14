@@ -38,32 +38,33 @@
         <t t-call="website.layout">
             <div class="container py-5">
                 <div class="alert alert-success">
-                    <h4 class="alert-heading">Merci <t t-esc="mobility.participant_id.name"/> !</h4>
-                    <p class="mb-0">
-                        Votre fiche de renseignement pour la mobilité
-                        <strong><t t-esc="mobility.name"/></strong> a bien été
-                        enregistrée. L'équipe FRMJC / FDMJC22 va maintenant la
-                        vérifier avant de poursuivre les démarches de
-                        placement.
-                    </p>
+                    <h4 class="alert-heading">Merci <t t-esc="mobility.participant_id.name" /> !</h4>
+                    <p class="mb-0"> Votre fiche de renseignement pour la mobilité <strong>
+                            <t t-esc="mobility.name" />
+                        </strong> a bien été
+                        enregistrée. L'équipe FRMJC / FDMJC22 va maintenant la vérifier avant de
+                        poursuivre les démarches de placement. </p>
                 </div>
             </div>
         </t>
     </template>
 
     <!-- ═══════════════════════════════════════════════════════════════
-     Formulaire principal
+     Formulaire principal — rempli par la STRUCTURE D'ACCUEIL
 ═══════════════════════════════════════════════════════════════ -->
     <template id="portal_fiche_renseignement_form" name="Fiche de renseignement volontaire">
         <t t-call="website.layout">
             <div class="container py-5" style="max-width: 900px;">
                 <h1 class="mb-1">Fiche de renseignement volontaire</h1>
-                <p class="text-muted mb-4">
-                    Mobilité <strong><t t-esc="mobility.name"/></strong>
-                    <t t-if="mobility.reference_projet"> — Projet <t t-esc="mobility.reference_projet"/></t>
-                </p>
+                <p class="text-muted mb-4"> Mobilité <strong>
+                        <t t-esc="mobility.name" />
+                    </strong>
+                    <t
+                        t-if="mobility.reference_projet"> — Projet <t
+                            t-esc="mobility.reference_projet" /></t> — à compléter par la structure
+                    d'accueil. </p>
 
-                <t t-if="errors.get('email') or errors.get('date_naissance') or errors.get('declaration_acceptee')">
+                <t t-if="errors">
                     <div class="alert alert-danger">
                         Merci de corriger les champs signalés ci-dessous avant de valider.
                     </div>
@@ -72,54 +73,153 @@
                 <!-- Valeur affichée par champ : ce qui vient d'être soumis
                      (en cas d'erreur de validation) prime sur la valeur déjà
                      enregistrée sur la mobilité, qui prime sur le vide. -->
-                <t t-set="v_email" t-value="post.get('email', mobility.email or '')"/>
-                <t t-set="v_telephone" t-value="post.get('telephone', mobility.telephone or '')"/>
-                <t t-set="v_date_naissance" t-value="post.get('date_naissance', str(mobility.date_naissance) if mobility.date_naissance else '')"/>
-                <t t-set="v_nationalite_id" t-value="post.get('nationalite_id', str(mobility.nationalite_id.id) if mobility.nationalite_id else '')"/>
-                <t t-set="v_pays_residence_id" t-value="post.get('pays_residence_id', str(mobility.pays_residence_id.id) if mobility.pays_residence_id else '')"/>
-                <t t-set="v_ville_residence" t-value="post.get('ville_residence', mobility.ville_residence or '')"/>
-                <t t-set="v_id_document_numero" t-value="post.get('id_document_numero', mobility.id_document_numero or '')"/>
-                <t t-set="v_id_document_validite" t-value="post.get('id_document_validite', str(mobility.id_document_validite) if mobility.id_document_validite else '')"/>
-                <t t-set="v_besoins_particuliers" t-value="post.get('besoins_particuliers', mobility.besoins_particuliers or '')"/>
-                <t t-set="v_contact_urgence_nom" t-value="post.get('contact_urgence_nom', mobility.contact_urgence_nom or '')"/>
-                <t t-set="v_contact_urgence_lien" t-value="post.get('contact_urgence_lien', mobility.contact_urgence_lien or '')"/>
-                <t t-set="v_contact_urgence_adresse" t-value="post.get('contact_urgence_adresse', mobility.contact_urgence_adresse or '')"/>
-                <t t-set="v_contact_urgence_telephone" t-value="post.get('contact_urgence_telephone', mobility.contact_urgence_telephone or '')"/>
-                <t t-set="v_contact_urgence_email" t-value="post.get('contact_urgence_email', mobility.contact_urgence_email or '')"/>
-                <t t-set="v_sending_org_nom" t-value="post.get('sending_org_nom', mobility.sending_org_nom or '')"/>
-                <t t-set="v_sending_org_oid_saisi" t-value="post.get('sending_org_oid_saisi', mobility.sending_org_oid_saisi or '')"/>
-                <t t-set="v_sending_contact_nom" t-value="post.get('sending_contact_nom', mobility.sending_contact_nom or '')"/>
-                <t t-set="v_sending_contact_email" t-value="post.get('sending_contact_email', mobility.sending_contact_email or '')"/>
-                <t t-set="v_sending_contact_telephone" t-value="post.get('sending_contact_telephone', mobility.sending_contact_telephone or '')"/>
-                <t t-set="v_lieu_declaration" t-value="post.get('lieu_declaration', mobility.lieu_declaration or '')"/>
-                <t t-set="v_signature_nom" t-value="post.get('signature_nom', mobility.signature_nom or mobility.participant_id.name or '')"/>
+                <t t-set="v_participant_prenom"
+                    t-value="post.get('participant_prenom', mobility.participant_prenom or '')" />
+                <t t-set="v_participant_nom"
+                    t-value="post.get('participant_nom', mobility.participant_nom or '')" />
+                <t t-set="v_email" t-value="post.get('email', mobility.email or '')" />
+                <t t-set="v_telephone" t-value="post.get('telephone', mobility.telephone or '')" />
+                <t t-set="v_date_naissance"
+                    t-value="post.get('date_naissance', str(mobility.date_naissance) if mobility.date_naissance else '')" />
+                <t t-set="v_nationalite_id"
+                    t-value="post.get('nationalite_id', str(mobility.nationalite_id.id) if mobility.nationalite_id else '')" />
+                <t t-set="v_pays_residence_id"
+                    t-value="post.get('pays_residence_id', str(mobility.pays_residence_id.id) if mobility.pays_residence_id else '')" />
+                <t t-set="v_ville_residence"
+                    t-value="post.get('ville_residence', mobility.ville_residence or '')" />
+                <t t-set="v_id_document_numero"
+                    t-value="post.get('id_document_numero', mobility.id_document_numero or '')" />
+                <t t-set="v_id_document_validite"
+                    t-value="post.get('id_document_validite', str(mobility.id_document_validite) if mobility.id_document_validite else '')" />
+                <t t-set="v_besoins_particuliers"
+                    t-value="post.get('besoins_particuliers', mobility.besoins_particuliers or '')" />
+                <t t-set="v_contact_urgence_nom"
+                    t-value="post.get('contact_urgence_nom', mobility.contact_urgence_nom or '')" />
+                <t t-set="v_contact_urgence_lien"
+                    t-value="post.get('contact_urgence_lien', mobility.contact_urgence_lien or '')" />
+                <t t-set="v_contact_urgence_adresse"
+                    t-value="post.get('contact_urgence_adresse', mobility.contact_urgence_adresse or '')" />
+                <t t-set="v_contact_urgence_telephone"
+                    t-value="post.get('contact_urgence_telephone', mobility.contact_urgence_telephone or '')" />
+                <t t-set="v_contact_urgence_email"
+                    t-value="post.get('contact_urgence_email', mobility.contact_urgence_email or '')" />
+
+                <t t-set="v_country_id"
+                    t-value="post.get('country_id', str(mobility.country_id.id) if mobility.country_id else '')" />
+                <t t-set="v_city" t-value="post.get('city', mobility.city or '')" />
+
+                <t t-set="v_offer_code" t-value="post.get('offer_code', mobility.offer_code or '')" />
+                <t t-set="v_titre_offre"
+                    t-value="post.get('titre_offre', mobility.titre_offre or '')" />
+                <t t-set="v_date_publication_offre"
+                    t-value="post.get('date_publication_offre', str(mobility.date_publication_offre) if mobility.date_publication_offre else '')" />
+                <t t-set="v_date_selection_offre"
+                    t-value="post.get('date_selection_offre', str(mobility.date_selection_offre) if mobility.date_selection_offre else '')" />
+                <t t-set="v_date_debut_proposee"
+                    t-value="post.get('date_debut_proposee', str(mobility.date_debut_proposee) if mobility.date_debut_proposee else '')" />
+                <t t-set="v_date_fin_proposee"
+                    t-value="post.get('date_fin_proposee', str(mobility.date_fin_proposee) if mobility.date_fin_proposee else '')" />
+                <t t-set="v_source_offre"
+                    t-value="post.get('source_offre', mobility.source_offre or '')" />
+
+                <t t-set="v_sending_org_nom"
+                    t-value="post.get('sending_org_nom', mobility.sending_org_nom or '')" />
+                <t t-set="v_sending_org_oid_saisi"
+                    t-value="post.get('sending_org_oid_saisi', mobility.sending_org_oid_saisi or '')" />
+                <t t-set="v_sending_org_nom_legal"
+                    t-value="post.get('sending_org_nom_legal', mobility.sending_org_nom_legal or '')" />
+                <t t-set="v_sending_org_adresse"
+                    t-value="post.get('sending_org_adresse', mobility.sending_org_adresse or '')" />
+                <t t-set="v_sending_org_type_organisme"
+                    t-value="post.get('sending_org_type_organisme', mobility.sending_org_type_organisme or '')" />
+                <t t-set="v_sending_org_email"
+                    t-value="post.get('sending_org_email', mobility.sending_org_email or '')" />
+                <t t-set="v_sending_org_telephone"
+                    t-value="post.get('sending_org_telephone', mobility.sending_org_telephone or '')" />
+                <t t-set="v_sending_contact_nom"
+                    t-value="post.get('sending_contact_nom', mobility.sending_contact_nom or '')" />
+                <t t-set="v_sending_contact_email"
+                    t-value="post.get('sending_contact_email', mobility.sending_contact_email or '')" />
+                <t t-set="v_sending_contact_telephone"
+                    t-value="post.get('sending_contact_telephone', mobility.sending_contact_telephone or '')" />
+
+                <t t-set="v_hosting_org_nom"
+                    t-value="post.get('hosting_org_nom', mobility.hosting_org_nom or '')" />
+                <t t-set="v_hosting_org_oid_saisi"
+                    t-value="post.get('hosting_org_oid_saisi', mobility.hosting_org_oid_saisi or '')" />
+                <t t-set="v_hosting_org_nom_legal"
+                    t-value="post.get('hosting_org_nom_legal', mobility.hosting_org_nom_legal or '')" />
+                <t t-set="v_hosting_org_adresse"
+                    t-value="post.get('hosting_org_adresse', mobility.hosting_org_adresse or '')" />
+                <t t-set="v_hosting_org_type_organisme"
+                    t-value="post.get('hosting_org_type_organisme', mobility.hosting_org_type_organisme or '')" />
+                <t t-set="v_hosting_org_email"
+                    t-value="post.get('hosting_org_email', mobility.hosting_org_email or '')" />
+                <t t-set="v_hosting_org_telephone"
+                    t-value="post.get('hosting_org_telephone', mobility.hosting_org_telephone or '')" />
+                <t t-set="v_hosting_contact_nom"
+                    t-value="post.get('hosting_contact_nom', mobility.hosting_contact_nom or '')" />
+                <t t-set="v_hosting_contact_email"
+                    t-value="post.get('hosting_contact_email', mobility.hosting_contact_email or '')" />
+                <t t-set="v_hosting_contact_telephone"
+                    t-value="post.get('hosting_contact_telephone', mobility.hosting_contact_telephone or '')" />
+
+                <t t-set="v_lieu_declaration"
+                    t-value="post.get('lieu_declaration', mobility.lieu_declaration or '')" />
+                <t t-set="v_signature_nom"
+                    t-value="post.get('signature_nom', mobility.signature_nom or '')" />
 
                 <form method="POST" t-att-action="'/mobilite/fiche/' + token + '/enregistrer'">
-                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
 
                     <div class="card shadow-sm mb-4">
                         <div class="card-body p-4">
-                            <h4 class="card-title mb-4">Vos coordonnées</h4>
+                            <h4 class="card-title mb-4">Le volontaire</h4>
                             <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Prénom *</label>
+                                    <input type="text" name="participant_prenom"
+                                        class="form-control"
+                                        required="required" t-att-value="v_participant_prenom" />
+                                    <t t-if="errors.get('participant_prenom')">
+                                        <div class="text-danger small">
+                                            <t t-esc="errors['participant_prenom']" />
+                                        </div>
+                                    </t>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Nom *</label>
+                                    <input type="text" name="participant_nom" class="form-control"
+                                        required="required" t-att-value="v_participant_nom" />
+                                    <t t-if="errors.get('participant_nom')">
+                                        <div class="text-danger small">
+                                            <t t-esc="errors['participant_nom']" />
+                                        </div>
+                                    </t>
+                                </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Email *</label>
                                     <input type="email" name="email" class="form-control"
-                                           required="required" t-att-value="v_email"/>
+                                        required="required" t-att-value="v_email" />
                                     <t t-if="errors.get('email')">
-                                        <div class="text-danger small"><t t-esc="errors['email']"/></div>
+                                        <div class="text-danger small">
+                                            <t t-esc="errors['email']" />
+                                        </div>
                                     </t>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Téléphone</label>
                                     <input type="tel" name="telephone" class="form-control"
-                                           t-att-value="v_telephone"/>
+                                        t-att-value="v_telephone" />
                                 </div>
                                 <div class="col-md-4">
                                     <label class="form-label">Date de naissance *</label>
                                     <input type="date" name="date_naissance" class="form-control"
-                                           required="required" t-att-value="v_date_naissance"/>
+                                        required="required" t-att-value="v_date_naissance" />
                                     <t t-if="errors.get('date_naissance')">
-                                        <div class="text-danger small"><t t-esc="errors['date_naissance']"/></div>
+                                        <div class="text-danger small">
+                                            <t t-esc="errors['date_naissance']" />
+                                        </div>
                                     </t>
                                 </div>
                                 <div class="col-md-4">
@@ -128,8 +228,8 @@
                                         <option value="">— Choisir —</option>
                                         <t t-foreach="pays_list" t-as="pays">
                                             <option t-att-value="pays.id"
-                                                    t-att-selected="str(pays.id) == v_nationalite_id">
-                                                <t t-esc="pays.name"/>
+                                                t-att-selected="str(pays.id) == v_nationalite_id">
+                                                <t t-esc="pays.name" />
                                             </option>
                                         </t>
                                     </select>
@@ -140,8 +240,8 @@
                                         <option value="">— Choisir —</option>
                                         <t t-foreach="pays_list" t-as="pays">
                                             <option t-att-value="pays.id"
-                                                    t-att-selected="str(pays.id) == v_pays_residence_id">
-                                                <t t-esc="pays.name"/>
+                                                t-att-selected="str(pays.id) == v_pays_residence_id">
+                                                <t t-esc="pays.name" />
                                             </option>
                                         </t>
                                     </select>
@@ -149,21 +249,27 @@
                                 <div class="col-md-6">
                                     <label class="form-label">Ville de résidence</label>
                                     <input type="text" name="ville_residence" class="form-control"
-                                           t-att-value="v_ville_residence"/>
+                                        t-att-value="v_ville_residence" />
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">N° pièce d'identité / passeport</label>
-                                    <input type="text" name="id_document_numero" class="form-control"
-                                           t-att-value="v_id_document_numero"/>
+                                    <input type="text" name="id_document_numero"
+                                        class="form-control"
+                                        t-att-value="v_id_document_numero" />
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Validité de la pièce d'identité</label>
-                                    <input type="date" name="id_document_validite" class="form-control"
-                                           t-att-value="v_id_document_validite"/>
+                                    <input type="date" name="id_document_validite"
+                                        class="form-control"
+                                        t-att-value="v_id_document_validite" />
                                 </div>
                                 <div class="col-12">
-                                    <label class="form-label">Besoins particuliers (allergies, traitement médical, régime...)</label>
-                                    <textarea name="besoins_particuliers" class="form-control" rows="2"><t t-esc="v_besoins_particuliers"/></textarea>
+                                    <label class="form-label">Besoins particuliers (allergies,
+                                        traitement médical, régime...)</label>
+                                    <textarea name="besoins_particuliers" class="form-control"
+                                        rows="2">
+                                        <t t-esc="v_besoins_particuliers" />
+                                    </textarea>
                                 </div>
                             </div>
                         </div>
@@ -175,28 +281,104 @@
                             <div class="row g-3">
                                 <div class="col-md-6">
                                     <label class="form-label">Nom</label>
-                                    <input type="text" name="contact_urgence_nom" class="form-control"
-                                           t-att-value="v_contact_urgence_nom"/>
+                                    <input type="text" name="contact_urgence_nom"
+                                        class="form-control"
+                                        t-att-value="v_contact_urgence_nom" />
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label">Lien avec vous</label>
-                                    <input type="text" name="contact_urgence_lien" class="form-control"
-                                           t-att-value="v_contact_urgence_lien"/>
+                                    <label class="form-label">Lien avec le volontaire</label>
+                                    <input type="text" name="contact_urgence_lien"
+                                        class="form-control"
+                                        t-att-value="v_contact_urgence_lien" />
                                 </div>
                                 <div class="col-12">
                                     <label class="form-label">Adresse</label>
-                                    <input type="text" name="contact_urgence_adresse" class="form-control"
-                                           t-att-value="v_contact_urgence_adresse"/>
+                                    <input type="text" name="contact_urgence_adresse"
+                                        class="form-control"
+                                        t-att-value="v_contact_urgence_adresse" />
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Téléphone</label>
-                                    <input type="tel" name="contact_urgence_telephone" class="form-control"
-                                           t-att-value="v_contact_urgence_telephone"/>
+                                    <input type="tel" name="contact_urgence_telephone"
+                                        class="form-control"
+                                        t-att-value="v_contact_urgence_telephone" />
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Email</label>
-                                    <input type="email" name="contact_urgence_email" class="form-control"
-                                           t-att-value="v_contact_urgence_email"/>
+                                    <input type="email" name="contact_urgence_email"
+                                        class="form-control"
+                                        t-att-value="v_contact_urgence_email" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-body p-4">
+                            <h4 class="card-title mb-4">Lieu de mission</h4>
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label class="form-label">Pays de mission</label>
+                                    <select name="country_id" class="form-select">
+                                        <option value="">— Choisir —</option>
+                                        <t t-foreach="pays_list" t-as="pays">
+                                            <option t-att-value="pays.id"
+                                                t-att-selected="str(pays.id) == v_country_id">
+                                                <t t-esc="pays.name" />
+                                            </option>
+                                        </t>
+                                    </select>
+                                </div>
+                                <div class="col-md-8">
+                                    <label class="form-label">Ville de mission</label>
+                                    <input type="text" name="city" class="form-control"
+                                        t-att-value="v_city" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-body p-4">
+                            <h4 class="card-title mb-4">L'offre</h4>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">ID de l'offre</label>
+                                    <input type="text" name="offer_code" class="form-control"
+                                        t-att-value="v_offer_code" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Intitulé de l'offre</label>
+                                    <input type="text" name="titre_offre" class="form-control"
+                                        t-att-value="v_titre_offre" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Date de début proposée</label>
+                                    <input type="date" name="date_debut_proposee"
+                                        class="form-control"
+                                        t-att-value="v_date_debut_proposee" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Date de fin proposée</label>
+                                    <input type="date" name="date_fin_proposee" class="form-control"
+                                        t-att-value="v_date_fin_proposee" />
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Date de publication</label>
+                                    <input type="date" name="date_publication_offre"
+                                        class="form-control"
+                                        t-att-value="v_date_publication_offre" />
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Date de sélection</label>
+                                    <input type="date" name="date_selection_offre"
+                                        class="form-control"
+                                        t-att-value="v_date_selection_offre" />
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Source de l'offre</label>
+                                    <input type="text" name="source_offre" class="form-control"
+                                        t-att-value="v_source_offre" />
                                 </div>
                             </div>
                         </div>
@@ -207,29 +389,147 @@
                             <h4 class="card-title mb-4">Structure d'envoi</h4>
                             <div class="row g-3">
                                 <div class="col-md-6">
-                                    <label class="form-label">Nom de la structure</label>
+                                    <label class="form-label">Nom</label>
                                     <input type="text" name="sending_org_nom" class="form-control"
-                                           t-att-value="v_sending_org_nom"/>
+                                        t-att-value="v_sending_org_nom" />
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">OID (si connu)</label>
-                                    <input type="text" name="sending_org_oid_saisi" class="form-control"
-                                           t-att-value="v_sending_org_oid_saisi"/>
+                                    <input type="text" name="sending_org_oid_saisi"
+                                        class="form-control"
+                                        t-att-value="v_sending_org_oid_saisi" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Nom légal complet</label>
+                                    <input type="text" name="sending_org_nom_legal"
+                                        class="form-control"
+                                        t-att-value="v_sending_org_nom_legal" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Type d'organisme</label>
+                                    <select name="sending_org_type_organisme" class="form-select">
+                                        <option value="">— Choisir —</option>
+                                        <option value="eplus-ngo"
+                                            t-att-selected="v_sending_org_type_organisme == 'eplus-ngo'">ONG
+                                            (EPLUS-NGO)</option>
+                                        <option value="eplus-oth-type"
+                                            t-att-selected="v_sending_org_type_organisme == 'eplus-oth-type'">Autre
+                                            organisme (EPLUS-OTH-TYPE)</option>
+                                    </select>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Adresse légale complète</label>
+                                    <input type="text" name="sending_org_adresse"
+                                        class="form-control"
+                                        t-att-value="v_sending_org_adresse" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Email de la structure</label>
+                                    <input type="email" name="sending_org_email"
+                                        class="form-control"
+                                        t-att-value="v_sending_org_email" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Téléphone de la structure</label>
+                                    <input type="tel" name="sending_org_telephone"
+                                        class="form-control"
+                                        t-att-value="v_sending_org_telephone" />
                                 </div>
                                 <div class="col-md-4">
                                     <label class="form-label">Nom du coordinateur</label>
-                                    <input type="text" name="sending_contact_nom" class="form-control"
-                                           t-att-value="v_sending_contact_nom"/>
+                                    <input type="text" name="sending_contact_nom"
+                                        class="form-control"
+                                        t-att-value="v_sending_contact_nom" />
                                 </div>
                                 <div class="col-md-4">
                                     <label class="form-label">Email du coordinateur</label>
-                                    <input type="email" name="sending_contact_email" class="form-control"
-                                           t-att-value="v_sending_contact_email"/>
+                                    <input type="email" name="sending_contact_email"
+                                        class="form-control"
+                                        t-att-value="v_sending_contact_email" />
                                 </div>
                                 <div class="col-md-4">
                                     <label class="form-label">Téléphone du coordinateur</label>
-                                    <input type="tel" name="sending_contact_telephone" class="form-control"
-                                           t-att-value="v_sending_contact_telephone"/>
+                                    <input type="tel" name="sending_contact_telephone"
+                                        class="form-control"
+                                        t-att-value="v_sending_contact_telephone" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-body p-4">
+                            <h4 class="card-title mb-4">Structure d'accueil</h4>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Nom *</label>
+                                    <input type="text" name="hosting_org_nom" class="form-control"
+                                        required="required" t-att-value="v_hosting_org_nom" />
+                                    <t t-if="errors.get('hosting_org_nom')">
+                                        <div class="text-danger small">
+                                            <t t-esc="errors['hosting_org_nom']" />
+                                        </div>
+                                    </t>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">OID</label>
+                                    <input type="text" name="hosting_org_oid_saisi"
+                                        class="form-control"
+                                        t-att-value="v_hosting_org_oid_saisi" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Nom légal complet</label>
+                                    <input type="text" name="hosting_org_nom_legal"
+                                        class="form-control"
+                                        t-att-value="v_hosting_org_nom_legal" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Type d'organisme</label>
+                                    <select name="hosting_org_type_organisme" class="form-select">
+                                        <option value="">— Choisir —</option>
+                                        <option value="eplus-ngo"
+                                            t-att-selected="v_hosting_org_type_organisme == 'eplus-ngo'">ONG
+                                            (EPLUS-NGO)</option>
+                                        <option value="eplus-oth-type"
+                                            t-att-selected="v_hosting_org_type_organisme == 'eplus-oth-type'">Autre
+                                            organisme (EPLUS-OTH-TYPE)</option>
+                                    </select>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Adresse légale complète</label>
+                                    <input type="text" name="hosting_org_adresse"
+                                        class="form-control"
+                                        t-att-value="v_hosting_org_adresse" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Email de la structure</label>
+                                    <input type="email" name="hosting_org_email"
+                                        class="form-control"
+                                        t-att-value="v_hosting_org_email" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Téléphone de la structure</label>
+                                    <input type="tel" name="hosting_org_telephone"
+                                        class="form-control"
+                                        t-att-value="v_hosting_org_telephone" />
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Nom du référent</label>
+                                    <input type="text" name="hosting_contact_nom"
+                                        class="form-control"
+                                        t-att-value="v_hosting_contact_nom" />
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Email du référent</label>
+                                    <input type="email" name="hosting_contact_email"
+                                        class="form-control"
+                                        t-att-value="v_hosting_contact_email" />
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Téléphone du référent</label>
+                                    <input type="tel" name="hosting_contact_telephone"
+                                        class="form-control"
+                                        t-att-value="v_hosting_contact_telephone" />
                                 </div>
                             </div>
                         </div>
@@ -239,36 +539,41 @@
                         <div class="card-body p-4">
                             <h4 class="card-title mb-4">Déclaration sur l'honneur</h4>
                             <p class="small text-muted">
-                                Le soussigné certifie que toutes les informations
-                                contenues dans ce formulaire sont exactes.
+                                Le soussigné certifie que
+                                toutes les informations contenues dans ce
+                                formulaire sont exactes.
                             </p>
                             <div class="row g-3">
                                 <div class="col-md-6">
                                     <label class="form-label">Lieu</label>
                                     <input type="text" name="lieu_declaration" class="form-control"
-                                           t-att-value="v_lieu_declaration"/>
+                                        t-att-value="v_lieu_declaration" />
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Nom complet (signature)</label>
                                     <input type="text" name="signature_nom" class="form-control"
-                                           t-att-value="v_signature_nom"/>
+                                        t-att-value="v_signature_nom" />
                                 </div>
                                 <div class="col-12 form-check mt-2">
-                                    <input type="checkbox" class="form-check-input" id="declaration_acceptee"
-                                           name="declaration_acceptee" value="1"
-                                           t-att-checked="'checked' if post.get('declaration_acceptee') else None"/>
+                                    <input type="checkbox" class="form-check-input"
+                                        id="declaration_acceptee"
+                                        name="declaration_acceptee" value="1"
+                                        t-att-checked="'checked' if post.get('declaration_acceptee') else None" />
                                     <label class="form-check-label" for="declaration_acceptee">
-                                        Je certifie l'exactitude des informations fournies ci-dessus. *
+                                        Je certifie l'exactitude des informations fournies
+                                        ci-dessus. *
                                     </label>
                                     <t t-if="errors.get('declaration_acceptee')">
-                                        <div class="text-danger small"><t t-esc="errors['declaration_acceptee']"/></div>
+                                        <div class="text-danger small">
+                                            <t t-esc="errors['declaration_acceptee']" />
+                                        </div>
                                     </t>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-primary btn-lg">Envoyer ma fiche</button>
+                    <button type="submit" class="btn btn-primary btn-lg">Envoyer la fiche</button>
                 </form>
             </div>
         </t>

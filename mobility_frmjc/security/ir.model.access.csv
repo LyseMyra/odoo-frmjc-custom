@@ -6,7 +6,10 @@ access_mobility_habilitation_user,mobility.habilitation user,model_mobility_habi
 access_mobility_activity_user,mobility.activity user,model_mobility_activity,base.group_user,1,1,1,0
 access_mobility_mobility_user,mobility.mobility user,model_mobility_mobility,base.group_user,1,1,1,0
 access_mobility_finance_line_user,mobility.finance.line user,model_mobility_finance_line,base.group_user,1,1,1,1
+access_mobility_finance_subcategory_user,mobility.finance.subcategory user,model_mobility_finance_subcategory,base.group_user,1,1,1,0
 access_mobility_rate_country_user,mobility.rate.country user,model_mobility_rate_country,base.group_user,1,1,1,0
 access_mobility_rate_travel_user,mobility.rate.travel user,model_mobility_rate_travel,base.group_user,1,1,1,0
 access_mobility_export_bm_wizard_user,mobility.export.bm.wizard user,model_mobility_export_bm_wizard,base.group_user,1,1,1,1
 access_mobility_import_bm_wizard_user,mobility.import.bm.wizard user,model_mobility_import_bm_wizard,base.group_user,1,1,1,1
+access_mobility_avenant_user,mobility.avenant user,model_mobility_avenant,base.group_user,1,1,1,1
+access_mobility_import_fiche_wizard_user,mobility.import.fiche.wizard user,model_mobility_import_fiche_wizard,base.group_user,1,1,1,1
