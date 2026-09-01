@@ -8,6 +8,8 @@ from . import training_week_line
 from . import training_document
 from . import training_trainer
 from . import training_inscription
+from . import training_inscription_experience
+from . import training_inscription_document
 from . import training_alternance
 from . import training_attendance
 from . import training_formateur_jour

@@ -752,9 +752,10 @@ class PortalStagiaire(http.Controller):
 
             # ── Champs inscription ──────────────────────────────────
             vals_insc = {}
-            for f in ('statut_emploi', 'type_contrat', 'employeur_nom',
+            for f in ('statut_emploi', 'type_contrat', 'rqth', 'employeur_nom',
                        'employeur_adresse', 'mode_stagiaire', 'type_financement',
-                       'sous_type_financement', 'structure_accueil', 'fonction_visee'):
+                       'sous_type_financement', 'structure_accueil', 'fonction_visee',
+                       'email_pro'):
                 if f in kwargs:
                     vals_insc[f] = kwargs[f] or False
             for f in ('remuneration_mensuelle', 'volume_horaire_semaine'):

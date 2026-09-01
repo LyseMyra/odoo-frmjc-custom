@@ -41,7 +41,7 @@
                                         </p>
                                     </t>
                                     <t t-if="inscriptions.get(session.id)">
-                                        <t t-set="insc" t-value="inscriptions[session.id]"/>
+                                        <t t-set="insc" t-value="inscriptions[session.id]" />
 
                                         <!-- Badge selon statut -->
                                         <t t-if="insc.statut in ('brouillon', 'en_cours')">
@@ -51,7 +51,8 @@
                                             <span class="badge bg-primary mb-2">Dossier soumis ✓</span>
                                         </t>
                                         <t t-elif="insc.statut == 'en_attente_pieces'">
-                                            <span class="badge bg-warning text-dark mb-2">⚠ Pièces manquantes</span>
+                                            <span class="badge bg-warning text-dark mb-2">⚠ Pièces
+                                                manquantes</span>
                                         </t>
                                         <t t-elif="insc.statut == 'complet'">
                                             <span class="badge bg-info mb-2">Dossier complet</span>
@@ -68,26 +69,29 @@
 
                                         <!-- Bouton selon statut -->
                                         <t t-if="insc.statut in ('brouillon', 'en_cours')">
-                                            <a t-att-href="'/formation/dossier/' + insc.portal_token"
-                                               class="btn btn-primary btn-sm d-block">
+                                            <a
+                                                t-att-href="'/formation/dossier/' + insc.portal_token"
+                                                class="btn btn-primary btn-sm d-block">
                                                 Reprendre mon dossier →
                                             </a>
                                         </t>
                                         <t t-elif="insc.statut == 'en_attente_pieces'">
-                                            <a t-att-href="'/formation/dossier/' + insc.portal_token"
-                                               class="btn btn-warning btn-sm d-block text-dark">
+                                            <a
+                                                t-att-href="'/formation/dossier/' + insc.portal_token"
+                                                class="btn btn-warning btn-sm d-block text-dark">
                                                 Compléter mon dossier →
                                             </a>
                                         </t>
                                         <t t-elif="insc.statut == 'accepte'">
                                             <a t-att-href="'/espace-stagiaire/' + insc.portal_token"
-                                               class="btn btn-success btn-sm d-block fw-bold">
+                                                class="btn btn-success btn-sm d-block fw-bold">
                                                 🎓 Mon espace stagiaire →
                                             </a>
                                         </t>
                                         <t t-else="">
-                                            <a t-att-href="'/formation/dossier/' + insc.portal_token + '/confirme'"
-                                               class="btn btn-outline-secondary btn-sm d-block">
+                                            <a
+                                                t-att-href="'/formation/dossier/' + insc.portal_token + '/confirme'"
+                                                class="btn btn-outline-secondary btn-sm d-block">
                                                 Voir mon dossier
                                             </a>
                                         </t>
@@ -136,13 +140,11 @@
                                 </t>
                                 <t t-if="error == 'email_inconnu'">
                                     <div class="alert alert-warning">
-                                        <strong>Accès non autorisé.</strong><br/>
-                                        Cette adresse email ne correspond à aucun dossier
-                                        d'inscription ni à un compte stagiaire FRMJC.
-                                        Si vous souhaitez vous inscrire à une formation,
-                                        rendez-vous sur la
-                                        <a href="/formation/inscription">page des sessions</a>.
-                                    </div>
+                                        <strong>Accès non autorisé.</strong><br /> Cette adresse
+                                        email ne correspond à aucun dossier d'inscription ni à un
+                                        compte stagiaire FRMJC. Si vous souhaitez vous inscrire à
+                                        une formation, rendez-vous sur la <a
+                                            href="/formation/inscription">page des sessions</a>. </div>
                                 </t>
                                 <t t-if="error == 'envoi_echoue'">
                                     <div class="alert alert-danger">
@@ -282,39 +284,42 @@
                 <!-- Barre de progression -->
                 <div class="mb-4">
                     <div class="d-flex justify-content-between small text-muted mb-1">
-                        <span>Étape <t t-esc="etape" /> / 10</span>
-                        <span><t t-esc="etape * 10" />%</span>
+                        <span>Étape <t t-esc="etape" /> / 8</span>
+                        <span><t t-esc="int(round(etape * 100 / 8))" />%</span>
                     </div>
                     <div class="progress" style="height:8px;">
                         <div class="progress-bar bg-primary"
-                            t-att-style="'width:' + str(etape * 10) + '%'"></div>
+                            t-att-style="'width:' + str(int(round(etape * 100 / 8))) + '%'"></div>
                     </div>
                     <!-- Noms des étapes cliquables -->
                     <div class="d-none d-md-flex justify-content-between mt-2"
                         style="font-size:0.72em;">
-                        <t t-foreach="[
-                            (1,'Identité'),(2,'Coordonnées'),(3,'Emploi'),
-                            (4,'Formation'),(5,'Expériences'),(6,'Motivations'),
-                            (7,'Projet'),(8,'Documents'),(9,'Déclaration'),(10,'Récap')
-                        ]" t-as="step">
+                        <t
+                            t-foreach="[
+                            (1,'État civil'),(2,'Coordonnées'),(3,'Emploi'),
+                            (4,'Prérequis'),(5,'Projet'),
+                            (6,'Documents'),(7,'Déclaration'),(8,'Récap')
+                        ]"
+                            t-as="step">
                             <!-- Étape courante -->
                             <t t-if="etape == step[0]">
                                 <span class="fw-bold text-primary border-bottom border-primary pb-1">
-                                    <t t-esc="step[1]"/>
+                                    <t t-esc="step[1]" />
                                 </span>
                             </t>
                             <!-- Étape déjà visitée → lien cliquable -->
                             <t t-elif="step[0] &lt; etape or step[0] &lt;= insc.etape_portal">
-                                <a t-att-href="'/formation/dossier/' + token + '/etape/' + str(step[0])"
-                                   class="text-success text-decoration-none"
-                                   t-att-title="'Revenir à : ' + step[1]">
-                                    <t t-esc="step[1]"/>
+                                <a
+                                    t-att-href="'/formation/dossier/' + token + '/etape/' + str(step[0])"
+                                    class="text-success text-decoration-none"
+                                    t-att-title="'Revenir à : ' + step[1]">
+                                    <t t-esc="step[1]" />
                                 </a>
                             </t>
                             <!-- Étape non encore atteinte → grisée -->
                             <t t-else="">
                                 <span class="text-muted" style="opacity:0.45;">
-                                    <t t-esc="step[1]"/>
+                                    <t t-esc="step[1]" />
                                 </span>
                             </t>
                         </t>
@@ -331,7 +336,7 @@
                 <!-- ── Formulaire ── -->
                 <form method="POST"
                     t-att-action="'/formation/dossier/' + token + '/etape/' + str(etape)"
-                    t-att-enctype="'multipart/form-data' if etape == 8 else 'application/x-www-form-urlencoded'">
+                    t-att-enctype="'multipart/form-data' if etape == 6 else 'application/x-www-form-urlencoded'">
                     <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
 
                     <div class="card shadow-sm">
@@ -340,48 +345,68 @@
                             <!-- ── ÉTAPE 1 : Identité ───────────────────────────────────────── -->
                             <t t-if="etape == 1">
                                 <h4 class="card-title mb-4">1. État civil</h4>
-                                <!-- _rname = nom réel uniquement si ce n'est pas l'email placeholder -->
-                                <t t-set="_rname" t-value="'' if ('@' in (partner.name or '')) else (partner.name or '')"/>
+                                <!-- _rname = nom réel uniquement si ce n'est pas l'email
+                                placeholder -->
+                                <t t-set="_rname"
+                                    t-value="'' if ('@' in (partner.name or '')) else (partner.name or '')" />
                                 <div class="row g-3">
                                     <div class="col-md-6">
-                                        <label class="form-label">Prénom *</label>
+                                        <label class="form-label">Prénom <span class="text-danger">*</span></label>
                                         <input type="text" name="prenom" class="form-control"
                                             required="required"
                                             t-att-value="_rname.split(' ')[0] if _rname else ''" />
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="form-label">Nom de famille *</label>
+                                        <label class="form-label">Nom de famille <span
+                                                class="text-danger">*</span></label>
                                         <input type="text" name="nom" class="form-control"
                                             required="required"
                                             t-att-value="' '.join(_rname.split(' ')[1:]) if _rname else ''" />
                                     </div>
                                     <div class="col-md-4">
-                                        <label class="form-label">Sexe</label>
-                                        <select name="sexe" class="form-select">
+                                        <label class="form-label">Civilité <span class="text-danger">
+                                            *</span></label>
+                                        <select name="sexe" class="form-select"
+                                            required="required">
                                             <option value="">— Choisir —</option>
                                             <option value="m" t-att-selected="partner.sexe == 'm'">
-                                                Homme</option>
+                                                Monsieur</option>
                                             <option value="f" t-att-selected="partner.sexe == 'f'">
-                                                Femme</option>
+                                                Madame</option>
                                             <option value="autre"
                                                 t-att-selected="partner.sexe == 'autre'">Non précisé</option>
                                         </select>
                                     </div>
                                     <div class="col-md-4">
-                                        <label class="form-label">Date de naissance</label>
+                                        <label class="form-label">Date de naissance <span
+                                                class="text-danger">*</span></label>
                                         <input type="date" name="date_naissance"
+                                            required="required"
                                             class="form-control"
                                             t-att-value="str(partner.date_naissance) if partner.date_naissance else ''" />
                                     </div>
                                     <div class="col-md-4">
-                                        <label class="form-label">Lieu de naissance</label>
+                                        <label class="form-label">Lieu de naissance <span
+                                                class="text-danger">*</span></label>
                                         <input type="text" name="lieu_naissance"
+                                            required="required"
                                             class="form-control"
                                             t-att-value="partner.lieu_naissance or ''" />
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="form-label">Nationalité</label>
-                                        <select name="nationalite_id" class="form-select">
+                                        <label class="form-label"> N° de sécurité sociale <span
+                                                class="text-danger">*</span>
+                                        </label>
+                                        <input type="text" name="numero_secu" class="form-control"
+                                            maxlength="15" placeholder="1 XX XX XX XXX XXX XX"
+                                            required="required"
+                                            t-att-value="partner.numero_secu or ''" />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Nationalité <span
+                                                class="text-danger">*</span></label>
+                                        <select name="nationalite_id" class="form-select"
+                                            required="required">
                                             <option value="">— Choisir —</option>
                                             <t t-foreach="pays_list" t-as="pays">
                                                 <option t-att-value="pays.id"
@@ -391,6 +416,24 @@
                                             </t>
                                         </select>
                                     </div>
+                                    <div class="col-12">
+                                        <div class="alert alert-light border mt-2">
+                                            <div class="form-check">
+                                                <input type="checkbox" name="conditions_acceptees"
+                                                    id="rgpd" required="required"
+                                                    class="form-check-input" value="on"
+                                                    t-att-checked="insc.conditions_acceptees" />
+                                                <label class="form-check-label" for="rgpd">
+                                                    J'ai été informé(e) et j'accepte que les données
+                                                    personnelles renseignées dans ce dossier soient
+                                                    collectées et traitées par la FRMJC dans le
+                                                    cadre
+                                                    de la gestion de mon inscription et du suivi de
+                                                    mon parcours de formation.
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </t>
 
@@ -399,28 +442,36 @@
                                 <h4 class="card-title mb-4">2. Coordonnées</h4>
                                 <div class="row g-3">
                                     <div class="col-12">
-                                        <label class="form-label">Adresse</label>
+                                        <label class="form-label">Adresse <span class="text-danger">
+                                            *</span></label>
                                         <input type="text" name="street" class="form-control"
+                                            required="required"
                                             t-att-value="partner.street or ''" />
                                     </div>
                                     <div class="col-md-3">
-                                        <label class="form-label">Code postal</label>
+                                        <label class="form-label">Code postal <span
+                                                class="text-danger">*</span></label>
                                         <input type="text" name="zip" class="form-control"
+                                            required="required"
                                             t-att-value="partner.zip or ''" />
                                     </div>
                                     <div class="col-md-9">
-                                        <label class="form-label">Ville</label>
+                                        <label class="form-label">Ville <span class="text-danger">*</span></label>
                                         <input type="text" name="city" class="form-control"
+                                            required="required"
                                             t-att-value="partner.city or ''" />
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="form-label">Téléphone</label>
+                                        <label class="form-label">Téléphone <span
+                                                class="text-danger">*</span></label>
                                         <input type="tel" name="phone" class="form-control"
+                                            required="required"
                                             t-att-value="partner.phone or ''" />
                                     </div>
-                                    <div class="col-12">
-                                        <label class="form-label">Email</label>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Email <span class="text-danger">*</span></label>
                                         <input type="email" class="form-control" readonly="readonly"
+                                            required="required"
                                             t-att-value="partner.email or ''" />
                                         <div class="form-text">L'email ne peut pas être modifié ici.</div>
                                     </div>
@@ -431,14 +482,16 @@
                             <t t-if="etape == 3">
                                 <h4 class="card-title mb-4">3. Situation professionnelle</h4>
                                 <div class="row g-3">
-                                    <div class="col-md-6">
-                                        <label class="form-label">Statut d'emploi actuel</label>
-                                        <select name="statut_emploi" class="form-select">
+                                    <div class="col-md-4">
+                                        <label class="form-label">Statut d'emploi actuel <span
+                                                class="text-danger">*</span></label>
+                                        <select name="statut_emploi" class="form-select"
+                                            required="required">
                                             <option value="">— Choisir —</option>
                                             <t
                                                 t-foreach="[
-                    ('salarie_cdi','Salarié CDI'),('salarie_cdd','Salarié CDD'),
-                    ('independant','Travailleur indépendant'),
+                    ('salarie','Salarié'),
+                    ('independant','Indépendant'),
                     ('demandeur_emploi','Demandeur d\'emploi'),
                     ('etudiant','Étudiant'),('benevole','Bénévole'),('autre','Autre')
                 ]"
@@ -450,15 +503,16 @@
                                             </t>
                                         </select>
                                     </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label">Type de contrat</label>
-                                        <select name="type_contrat" class="form-select">
+                                    <div class="col-md-4">
+                                        <label class="form-label">Type de contrat <span
+                                                class="text-danger">*</span></label>
+                                        <select name="type_contrat" class="form-select"
+                                            required="required">
                                             <option value="">— Choisir —</option>
                                             <t
                                                 t-foreach="[
-                    ('cdi','CDI'),('cdd','CDD'),('interim','Intérim'),
-                    ('independant','Indépendant'),('benevole','Bénévole'),('autre','Autre')
-                ]"
+                    ('cdi','CDI'),('cdd','CDD'),('interim','Intérim'),('apprentissage','Apprentissage'),
+                    ('professionnalisation','Professionnalisation'),('sanscontract','Pas de contrat')]"
                                                 t-as="opt">
                                                 <option t-att-value="opt[0]"
                                                     t-att-selected="insc.type_contrat == opt[0]">
@@ -467,54 +521,57 @@
                                             </t>
                                         </select>
                                     </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label">Employeur</label>
+
+                                    <div class="col-md-4">
+                                        <label class="form-label">Employeur <span
+                                                class="text-danger">*</span></label>
                                         <input type="text" name="employeur_nom" class="form-control"
+                                            required="required"
                                             t-att-value="insc.employeur_nom or ''" />
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="form-label">Adresse de l'employeur</label>
+                                        <label class="form-label">Adresse de l'employeur <span
+                                                class="text-danger">*</span></label>
                                         <input type="text" name="employeur_adresse"
+                                            required="required"
                                             class="form-control"
                                             t-att-value="insc.employeur_adresse or ''" />
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Reconnaissance qualité de
+                                            travailleur handicapé (RQTH) <span class="text-danger">*</span></label>
+                                        <select name="rqth" class="form-select" required="required">
+                                            <option value="">— Choisir —</option>
+                                            <option value="oui" t-att-selected="insc.rqth == 'oui'">
+                                                Oui</option>
+                                            <option value="non" t-att-selected="insc.rqth == 'non'">
+                                                Non</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
                                         <label class="form-label">Rémunération brute mensuelle (€)</label>
                                         <input type="number" name="remuneration_mensuelle"
                                             class="form-control"
                                             step="0.01" min="0"
                                             t-att-value="insc.remuneration_mensuelle or ''" />
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-6">
                                         <label class="form-label">Volume horaire / semaine (h)</label>
                                         <input type="number" name="volume_horaire_semaine"
                                             class="form-control"
                                             step="0.5" min="0"
                                             t-att-value="insc.volume_horaire_semaine or ''" />
                                     </div>
+
+
                                     <div class="col-md-6">
-                                        <label class="form-label">Type de stagiaire</label>
-                                        <select name="mode_stagiaire" class="form-select">
+                                        <label class="form-label">Type de financement <span
+                                                class="text-danger">*</span></label>
+                                        <select name="type_financement" class="form-select"
+                                            required="required">
                                             <option value="">— Sélectionner —</option>
-                                            <t t-foreach="[
-                                                ('a', 'Salarié(e) d\'un employeur privé (hors apprenti)'),
-                                                ('b', 'Apprenti(e)'),
-                                                ('c', 'Personne en recherche d\'emploi'),
-                                                ('d', 'Particulier à mes propres frais'),
-                                                ('e', 'Autre'),
-                                            ]" t-as="opt">
-                                                <option t-att-value="opt[0]"
-                                                        t-att-selected="insc.mode_stagiaire == opt[0]">
-                                                    <t t-esc="opt[1]"/>
-                                                </option>
-                                            </t>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label">Type de financement</label>
-                                        <select name="type_financement" class="form-select">
-                                            <option value="">— Sélectionner —</option>
-                                            <t t-foreach="[
+                                            <t
+                                                t-foreach="[
                                                 ('1',  'Mon employeur finance ma formation'),
                                                 ('2',  'Organisme paritaire (OPCO, CPF, apprentissage…)'),
                                                 ('3',  'Pouvoir public — agents publics'),
@@ -526,19 +583,21 @@
                                                 ('9',  'Contrat individuel — à mes propres frais'),
                                                 ('10', 'Autre organisme de formation / CFA'),
                                                 ('11', 'Autre'),
-                                            ]" t-as="opt">
+                                            ]"
+                                                t-as="opt">
                                                 <option t-att-value="opt[0]"
-                                                        t-att-selected="insc.type_financement == opt[0]">
-                                                    <t t-esc="opt[1]"/>
+                                                    t-att-selected="insc.type_financement == opt[0]">
+                                                    <t t-esc="opt[1]" />
                                                 </option>
                                             </t>
                                         </select>
                                     </div>
-                                    <div class="col-12">
+                                    <div class="col-md-6">
                                         <label class="form-label">Précision (si organisme paritaire)</label>
                                         <select name="sous_type_financement" class="form-select">
                                             <option value="">— Si applicable —</option>
-                                            <t t-foreach="[
+                                            <t
+                                                t-foreach="[
                                                 ('a', 'Contrat d\'apprentissage'),
                                                 ('b', 'Contrat de professionnalisation'),
                                                 ('c', 'Promotion / reconversion par alternance (Pro-A)'),
@@ -547,10 +606,11 @@
                                                 ('f', 'Dispositif pour demandeurs d\'emploi'),
                                                 ('g', 'Dispositif pour travailleurs non-salariés'),
                                                 ('h', 'Plan de développement des compétences / autre'),
-                                            ]" t-as="opt">
+                                            ]"
+                                                t-as="opt">
                                                 <option t-att-value="opt[0]"
-                                                        t-att-selected="insc.sous_type_financement == opt[0]">
-                                                    <t t-esc="opt[1]"/>
+                                                    t-att-selected="insc.sous_type_financement == opt[0]">
+                                                    <t t-esc="opt[1]" />
                                                 </option>
                                             </t>
                                         </select>
@@ -558,13 +618,15 @@
                                 </div>
                             </t>
 
-                            <!-- ── ÉTAPE 4 : Formation initiale ─────────────────────────────── -->
+                            <!-- ── ÉTAPE 4 : Prérequis  ─────────────────────── -->
                             <t t-if="etape == 4">
-                                <h4 class="card-title mb-4">4. Formation initiale</h4>
+                                <h4 class="card-title mb-4">4. Prérequis à l'entrée en formation</h4>
                                 <div class="row g-3">
                                     <div class="col-md-6">
-                                        <label class="form-label">Niveau d'études</label>
-                                        <select name="niveau_etudes" class="form-select">
+                                        <label class="form-label">Niveau d'études <span
+                                                class="text-danger">*</span></label>
+                                        <select name="niveau_etudes" class="form-select"
+                                            required="required">
                                             <option value="">— Choisir —</option>
                                             <t
                                                 t-foreach="[
@@ -581,79 +643,160 @@
                                         </select>
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="form-label">Dernier diplôme obtenu</label>
+                                        <label class="form-label">Dernier diplôme obtenu <span
+                                                class="text-danger">*</span></label>
                                         <input type="text" name="dernier_diplome"
+                                            required="required"
                                             class="form-control"
                                             t-att-value="insc.dernier_diplome or ''" />
                                     </div>
                                     <div class="col-md-4">
-                                        <label class="form-label">Année d'obtention</label>
+                                        <label class="form-label">Année d'obtention <span
+                                                class="text-danger">*</span></label>
                                         <input type="number" name="annee_obtention"
+                                            required="required"
                                             class="form-control"
                                             min="1950" max="2030"
                                             t-att-value="insc.annee_obtention or ''" />
                                     </div>
                                     <div class="col-md-8">
-                                        <label class="form-label">Établissement</label>
+                                        <label class="form-label">Établissement <span
+                                                class="text-danger">*</span></label>
                                         <input type="text" name="etablissement_formation"
+                                            required="required"
                                             class="form-control"
                                             t-att-value="insc.etablissement_formation or ''" />
                                     </div>
                                 </div>
-                            </t>
 
-                            <!-- ── ÉTAPE 5 : Expériences ────────────────────────────────────── -->
-                            <t t-if="etape == 5">
-                                <h4 class="card-title mb-4">5. Expériences professionnelles et
-                                    bénévoles</h4>
-                                <div class="row g-3">
-                                    <div class="col-12">
-                                        <label class="form-label">
-                                            Décrivez vos expériences (dates, structures, fonctions,
-                                            publics)
-                                        </label>
-                                        <textarea name="experiences_pro" class="form-control"
-                                            rows="8"
-                                            placeholder="Ex : 2018–2022 — Animateur BPJEPS à la MJC de Rennes...">
-                                            <t t-esc="insc.experiences_pro or ''" />
-                                        </textarea>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label">Années d'expérience en animation /
-                                            sport</label>
-                                        <input type="number" name="experience_animation"
-                                            class="form-control"
-                                            step="0.5" min="0"
-                                            t-att-value="insc.experience_animation or ''" />
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label">Années d'expérience en encadrement
-                                            / management</label>
-                                        <input type="number" name="experience_encadrement"
-                                            class="form-control"
-                                            step="0.5" min="0"
-                                            t-att-value="insc.experience_encadrement or ''" />
+                                <hr class="my-4" />
+
+                                <h6 class="text-uppercase text-muted small fw-bold mb-2">Expériences
+                                    professionnelles et bénévoles</h6>
+                                <p class="text-muted small mb-3">
+                                    Ajoutez chacune de vos expériences significatives.
+                                </p>
+
+                                <div id="exp-list">
+                                    <t t-foreach="insc.experience_ids" t-as="exp">
+                                        <div class="exp-item border rounded p-3 mb-3">
+                                            <div class="row g-2">
+                                                <div class="col-md-3">
+                                                    <label class="form-label small">Année / Période <span
+                                                            class="text-danger">*</span></label>
+                                                    <input type="text" name="exp_annee_periode[]"
+                                                        class="form-control form-control-sm"
+                                                        required="required"
+                                                        t-att-value="exp.annee_periode or ''" />
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label class="form-label small">Nombre d'heures <span
+                                                            class="text-danger">*</span></label>
+                                                    <input type="number" name="exp_heures[]"
+                                                        class="form-control form-control-sm"
+                                                        step="0.5" min="0.5" required="required"
+                                                        t-att-value="exp.heures or ''" />
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="form-label small">Nom de la
+                                                        structure <span class="text-danger">*</span></label>
+                                                    <input type="text" name="exp_structure[]"
+                                                        class="form-control form-control-sm"
+                                                        required="required"
+                                                        t-att-value="exp.structure or ''" />
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label class="form-label small">Fonction <span
+                                                            class="text-danger">*</span></label>
+                                                    <input type="text" name="exp_fonction[]"
+                                                        class="form-control form-control-sm"
+                                                        required="required"
+                                                        t-att-value="exp.fonction or ''" />
+                                                </div>
+                                            </div>
+                                            <div class="text-end mt-2">
+                                                <button type="button"
+                                                    class="btn btn-outline-danger btn-sm exp-remove">
+                                                    🗑 Supprimer
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </t>
+                                </div>
+
+                                <button type="button" class="btn btn-outline-primary btn-sm"
+                                    id="exp-add">
+                                    Ajouter une expérience
+                                </button>
+
+                                <div id="exp-template-wrap" class="d-none">
+                                    <div class="exp-item border rounded p-3 mb-3">
+                                        <div class="row g-2">
+                                            <div class="col-md-3">
+                                                <label class="form-label small">Année / Période <span
+                                                        class="text-danger">*</span></label>
+                                                <input type="text" name="exp_annee_periode[]"
+                                                    class="form-control form-control-sm" />
+                                            </div>
+                                            <div class="col-md-2">
+                                                <label class="form-label small">Nombre d'heures <span
+                                                        class="text-danger">*</span></label>
+                                                <input type="number" name="exp_heures[]"
+                                                    class="form-control form-control-sm"
+                                                    step="0.5" min="0.5" />
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="form-label small">Nom de la structure <span
+                                                        class="text-danger">*</span></label>
+                                                <input type="text" name="exp_structure[]"
+                                                    class="form-control form-control-sm" />
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label class="form-label small">Fonction <span
+                                                        class="text-danger">*</span></label>
+                                                <input type="text" name="exp_fonction[]"
+                                                    class="form-control form-control-sm" />
+                                            </div>
+                                        </div>
+                                        <div class="text-end mt-2">
+                                            <button type="button"
+                                                class="btn btn-outline-danger btn-sm exp-remove">
+                                                🗑 Supprimer
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
+
+                                <script type="text/javascript">
+                                    (function () {
+                                        var list = document.getElementById('exp-list');
+                                        var wrap = document.getElementById('exp-template-wrap');
+                                        var addBtn = document.getElementById('exp-add');
+                                        if (!list || !wrap || !addBtn) { return; }
+                                        function bindRemove(scope) {
+                                            scope.querySelectorAll('.exp-remove').forEach(function (btn) {
+                                                btn.onclick = function () {
+                                                    var item = btn.closest('.exp-item');
+                                                    if (item) { item.remove(); }
+                                                };
+                                            });
+                                        }
+                                        addBtn.addEventListener('click', function () {
+                                            var node = wrap.firstElementChild.cloneNode(true);
+                                            node.querySelectorAll('input').forEach(function (inp) {
+                                                inp.setAttribute('required', 'required');
+                                            });
+                                            list.appendChild(node);
+                                            bindRemove(node);
+                                        });
+                                        bindRemove(list);
+                                    })();
+                                </script>
                             </t>
 
-                            <!-- ── ÉTAPE 6 : Motivations ────────────────────────────────────── -->
-                            <t t-if="etape == 6">
-                                <h4 class="card-title mb-4">6. Motivations</h4>
-                                <p class="text-muted mb-3">
-                                    Expliquez pourquoi vous souhaitez suivre cette formation et ce
-                                    qui vous a
-                                    amené à candidater au DEJEPS / DESJEPS de la FRMJC.
-                                </p>
-                                <textarea name="motivations" class="form-control" rows="12"
-                                    placeholder="Décrivez vos motivations...">
-                                    <t t-esc="insc.motivations or ''" />
-                                </textarea>
-                            </t>
-
-                            <!-- ── ÉTAPE 7 : Projet professionnel ───────────────────────────── -->
-                            <t t-if="etape == 7">
-                                <h4 class="card-title mb-4">7. Projet professionnel</h4>
+                            <!-- ── ÉTAPE 5 : Projet professionnel ───────────────────────────── -->
+                            <t t-if="etape == 5">
+                                <h4 class="card-title mb-4">5. Projet professionnel</h4>
                                 <div class="row g-3">
                                     <div class="col-12">
                                         <label class="form-label">
@@ -683,9 +826,9 @@
                                 </div>
                             </t>
 
-                            <!-- ── ÉTAPE 8 : Documents ──────────────────────────────────────── -->
-                            <t t-if="etape == 8">
-                                <h4 class="card-title mb-4">8. Pièces justificatives</h4>
+                            <!-- ── ÉTAPE 6 : Documents ──────────────────────────────────────── -->
+                            <t t-if="etape == 6">
+                                <h4 class="card-title mb-4">6. Pièces justificatives</h4>
                                 <p class="text-muted mb-3">
                                     Formats acceptés : PDF, DOCX, JPG, PNG. Taille max : 5 Mo par
                                     fichier.
@@ -693,12 +836,12 @@
                                 <div class="row g-3">
                                     <t
                                         t-foreach="[
-            ('cv', 'CV (obligatoire)', True, insc.cv_filename),
-            ('lettre_motivation_doc', 'Lettre de motivation', False, insc.lettre_motivation_filename),
-            ('diplome_doc', 'Copie du diplôme / attestation de niveau', False, insc.diplome_filename),
-            ('justificatif_emploi', 'Justificatif de situation professionnelle', False, insc.justificatif_emploi_filename),
-            ('autre_document', 'Autre document', False, insc.autre_document_filename),
-        ]"
+                                            ('photo_identite', &quot;Photo d'identité&quot;, True, insc.photo_identite_filename),
+                                            ('justificatif_identite', &quot;Justificatif d'identité valide&quot;, True, insc.justificatif_identite_filename),
+                                            ('diplome_doc', 'Copie du diplôme / attestation de niveau', True, insc.diplome_filename),                  
+                                            ('cv', 'CV', True, insc.cv_filename),
+                                            ('lettre_motivation_doc', 'Lettre de motivation', True, insc.lettre_motivation_filename),
+                                        ] + ([('attestation_rqth', 'Attestation RQTH', True, insc.attestation_rqth_filename)] if insc.rqth == 'oui' else [])"
                                         t-as="doc">
                                         <div class="col-12">
                                             <label class="form-label">
@@ -720,44 +863,114 @@
                                         </div>
                                     </t>
                                 </div>
+
+                                <hr class="my-4" />
+
+                                <h6 class="text-uppercase text-muted small fw-bold mb-2">Autres
+                                    documents justificatifs</h6>
+                                <p class="text-muted small mb-3">
+                                    Tout document permettant de justifier votre situation
+                                    professionnelle, votre expérience, etc. Indiquez la nature de
+                                    chaque document et joignez le fichier correspondant.
+                                </p>
+
+                                <t t-if="insc.document_ids">
+                                    <ul class="list-group mb-3" id="autre-doc-existing">
+                                        <t t-foreach="insc.document_ids" t-as="d">
+                                            <li
+                                                class="list-group-item d-flex justify-content-between align-items-center">
+                                                <span>
+                                                    <strong>
+                                                        <t t-esc="d.name" />
+                                                    </strong>
+                                                    <span class="text-muted small ms-2">
+                                                        <t t-esc="d.fichier_filename or ''" />
+                                                    </span>
+                                                </span>
+                                                <span>
+                                                    <input type="hidden" name="autre_doc_keep[]"
+                                                        t-att-value="d.id" />
+                                                    <button type="button"
+                                                        class="btn btn-outline-danger btn-sm autre-doc-remove-existing">
+                                                        🗑 Retirer
+                                                    </button>
+                                                </span>
+                                            </li>
+                                        </t>
+                                    </ul>
+                                </t>
+
+                                <div id="autre-doc-list" />
+
+                                <button type="button" class="btn btn-outline-primary btn-sm"
+                                    id="autre-doc-add">
+                                    Ajouter un document
+                                </button>
+
+                                <div id="autre-doc-template-wrap" class="d-none">
+                                    <div class="autre-doc-item border rounded p-3 mb-3">
+                                        <div class="row g-2">
+                                            <div class="col-md-5">
+                                                <label class="form-label small">Nature du
+                                                    document *</label>
+                                                <input type="text" name="autre_doc_nom[]"
+                                                    class="form-control form-control-sm" />
+                                            </div>
+                                            <div class="col-md-5">
+                                                <label class="form-label small">Fichier *</label>
+                                                <input type="file" name="autre_doc_fichier[]"
+                                                    class="form-control form-control-sm"
+                                                    accept="application/pdf,application/msword,image/*" />
+                                            </div>
+                                            <div class="col-md-2 d-flex align-items-end">
+                                                <button type="button"
+                                                    class="btn btn-outline-danger btn-sm autre-doc-remove">
+                                                    🗑
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <script type="text/javascript">
+                                    (function () {
+                                        var list = document.getElementById('autre-doc-list');
+                                        var wrap = document.getElementById('autre-doc-template-wrap');
+                                        var addBtn = document.getElementById('autre-doc-add');
+                                        if (!list || !wrap || !addBtn) { return; }
+                                        function bindRemove(scope) {
+                                            scope.querySelectorAll('.autre-doc-remove').forEach(function (btn) {
+                                                btn.onclick = function () {
+                                                    var item = btn.closest('.autre-doc-item');
+                                                    if (item) { item.remove(); }
+                                                };
+                                            });
+                                        }
+                                        addBtn.addEventListener('click', function () {
+                                            var node = wrap.firstElementChild.cloneNode(true);
+                                            list.appendChild(node);
+                                            bindRemove(node);
+                                        });
+                                        var existing = document.getElementById('autre-doc-existing');
+                                        if (existing) {
+                                            existing.querySelectorAll('.autre-doc-remove-existing').forEach(function (btn) {
+                                                btn.onclick = function () {
+                                                    var li = btn.closest('.list-group-item');
+                                                    if (li) { li.remove(); }
+                                                };
+                                            });
+                                        }
+                                    })();
+                                </script>
                             </t>
 
-                            <!-- ── ÉTAPE 9 : Renseignements complémentaires + Déclaration ───── -->
-                            <t t-if="etape == 9">
-                                <h4 class="card-title mb-4">9. Renseignements complémentaires</h4>
+                            <!-- ── ÉTAPE 7 : Renseignements complémentaires + Déclaration ───── -->
+                            <t t-if="etape == 7">
+                                <h4 class="card-title mb-4">7. Déclaration et informations
+                                    complémentaires</h4>
                                 <div class="row g-3">
-                                    <div class="col-md-6">
-                                        <label class="form-label">
-                                            N° de sécurité sociale <span class="text-danger">*</span>
-                                        </label>
-                                        <input type="text" name="numero_secu" class="form-control"
-                                            maxlength="15" placeholder="1 XX XX XX XXX XXX XX"
-                                            required="required"
-                                            t-att-value="partner.numero_secu or ''" />
-                                    </div>
-                                    <div class="col-md-3">
-                                        <label class="form-label">Situation familiale</label>
-                                        <select name="situation_familiale" class="form-select">
-                                            <option value="">—</option>
-                                            <t
-                                                t-foreach="[
-                    ('celibataire','Célibataire'),('marie','Marié(e)/Pacsé(e)'),
-                    ('divorce','Divorcé(e)'),('veuf','Veuf/Veuve')
-                ]"
-                                                t-as="opt">
-                                                <option t-att-value="opt[0]"
-                                                    t-att-selected="partner.situation_familiale == opt[0]">
-                                                    <t t-esc="opt[1]" />
-                                                </option>
-                                            </t>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <label class="form-label">Enfants à charge</label>
-                                        <input type="number" name="nombre_enfants"
-                                            class="form-control"
-                                            min="0" t-att-value="partner.nombre_enfants or 0" />
-                                    </div>
+
+
                                     <div class="col-12">
                                         <label class="form-label">Informations complémentaires</label>
                                         <textarea name="notes_candidat" class="form-control"
@@ -769,19 +982,15 @@
                                     <div class="col-12">
                                         <div class="alert alert-light border mt-2">
                                             <div class="form-check">
-                                                <input type="checkbox" name="conditions_acceptees"
-                                                    id="conditions"
+                                                <input type="checkbox" name="attestation_exactitude"
+                                                    id="attestation"
                                                     class="form-check-input" value="on"
-                                                    t-att-checked="insc.conditions_acceptees" />
+                                                    t-att-checked="insc.date_declaration" />
                                                 <label class="form-check-label fw-semibold"
-                                                    for="conditions">
+                                                    for="attestation">
                                                     Je certifie sur l'honneur l'exactitude des
                                                     informations fournies
                                                     et m'engage à fournir les originaux sur demande.
-                                                    J'ai pris connaissance des conditions de la
-                                                    formation et j'accepte
-                                                    que mes données soient utilisées dans le cadre
-                                                    de mon inscription.
                                                 </label>
                                             </div>
                                         </div>
@@ -789,85 +998,380 @@
                                 </div>
                             </t>
 
-                            <!-- ── ÉTAPE 10 : Récapitulatif ─────────────────────────────────── -->
-                            <t t-if="etape == 10">
-                                <h4 class="card-title mb-4">10. Récapitulatif — Vérification avant
+                            <!-- ── ÉTAPE 8 : Récapitulatif ──────────────────────────────────── -->
+                            <t t-if="etape == 8">
+                                <h4 class="card-title mb-4">8. Récapitulatif — Vérification avant
                                     soumission</h4>
 
-                                <t t-set="sections"
-                                    t-value="[
-        ('Identité', [
-            ('Nom', partner.name),
-            ('Date de naissance', str(partner.date_naissance) if partner.date_naissance else '—'),
-            ('Lieu de naissance', partner.lieu_naissance or '—'),
-            ('Nationalité', partner.nationalite_id.name if partner.nationalite_id else '—'),
-        ]),
-        ('Coordonnées', [
-            ('Adresse', (partner.street or '') + ' ' + (partner.zip or '') + ' ' + (partner.city or '')),
-            ('Téléphone', partner.phone or '—'),
-            ('Email', partner.email or '—'),
-        ]),
-        ('Situation professionnelle', [
-            ('Statut', dict(insc._fields['statut_emploi'].selection or []).get(insc.statut_emploi, '—')),
-            ('Employeur', insc.employeur_nom or '—'),
-            ('Type de stagiaire', dict(insc._fields['mode_stagiaire'].selection or []).get(insc.mode_stagiaire, '—')),
-            ('Financement', dict(insc._fields['type_financement'].selection or []).get(insc.type_financement, '—')),
-        ]),
-        ('Formation', [
-            ('Niveau', dict(insc._fields['niveau_etudes'].selection or []).get(insc.niveau_etudes, '—')),
-            ('Diplôme', insc.dernier_diplome or '—'),
-            ('Établissement', insc.etablissement_formation or '—'),
-        ]),
-        ('Documents', [
-            ('CV', '✓ ' + (insc.cv_filename or '') if insc.cv else '⚠ Non fourni'),
-            ('Lettre motivation', '✓ ' + (insc.lettre_motivation_filename or '') if insc.lettre_motivation_doc else 'Non fourni'),
-            ('Diplôme', '✓ ' + (insc.diplome_filename or '') if insc.diplome_doc else 'Non fourni'),
-        ]),
-    ]">
-                                </t>
+                                <t t-set="_sexe"
+                                    t-value="dict(partner._fields['sexe'].selection or []).get(partner.sexe, '—')" />
 
                                 <div class="accordion mb-4" id="recap">
-                                    <t t-foreach="sections" t-as="sec">
-                                        <div class="accordion-item">
-                                            <h2 class="accordion-header">
-                                                <button class="accordion-button collapsed"
-                                                    type="button"
-                                                    data-bs-toggle="collapse"
-                                                    t-att-data-bs-target="'#sec' + str(sec_index)">
-                                                    <t t-esc="sec[0]" />
-                                                </button>
-                                            </h2>
-                                            <div t-att-id="'sec' + str(sec_index)"
-                                                class="accordion-collapse collapse">
-                                                <div class="accordion-body">
-                                                    <dl class="row mb-0">
-                                                        <t t-foreach="sec[1]" t-as="item">
-                                                            <dt class="col-sm-4">
-                                                                <t t-esc="item[0]" />
-                                                            </dt>
-                                                            <dd class="col-sm-8">
-                                                                <t t-esc="item[1]" />
-                                                            </dd>
-                                                        </t>
-                                                    </dl>
-                                                </div>
+
+                                    <!-- 1. État civil -->
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header">
+                                            <button class="accordion-button collapsed" type="button"
+                                                data-bs-toggle="collapse" data-bs-target="#rc-etat">
+                                                État civil
+                                            </button>
+                                        </h2>
+                                        <div id="rc-etat" class="accordion-collapse collapse">
+                                            <div class="accordion-body">
+                                                <dl class="row mb-0">
+                                                    <dt class="col-sm-4">Nom complet</dt>
+                                                    <dd class="col-sm-8">
+                                                        <t t-esc="partner.name or '—'" />
+                                                    </dd>
+                                                    <dt class="col-sm-4">Civilité</dt>
+                                                    <dd class="col-sm-8">
+                                                        <t t-esc="_sexe" />
+                                                    </dd>
+                                                    <dt class="col-sm-4">Date de naissance</dt>
+                                                    <dd class="col-sm-8">
+                                                        <t
+                                                            t-esc="str(partner.date_naissance) if partner.date_naissance else '—'" />
+                                                    </dd>
+                                                    <dt class="col-sm-4">Lieu de naissance</dt>
+                                                    <dd class="col-sm-8">
+                                                        <t t-esc="partner.lieu_naissance or '—'" />
+                                                    </dd>
+                                                    <dt class="col-sm-4">N° de sécurité sociale</dt>
+                                                    <dd class="col-sm-8">
+                                                        <t t-esc="partner.numero_secu or '—'" />
+                                                    </dd>
+                                                    <dt class="col-sm-4">Nationalité</dt>
+                                                    <dd class="col-sm-8">
+                                                        <t
+                                                            t-esc="partner.nationalite_id.name if partner.nationalite_id else '—'" />
+                                                    </dd>
+                                                </dl>
                                             </div>
                                         </div>
-                                    </t>
+                                    </div>
+
+                                    <!-- 2. Coordonnées -->
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header">
+                                            <button class="accordion-button collapsed" type="button"
+                                                data-bs-toggle="collapse" data-bs-target="#rc-coord">
+                                                Coordonnées
+                                            </button>
+                                        </h2>
+                                        <div id="rc-coord" class="accordion-collapse collapse">
+                                            <div class="accordion-body">
+                                                <dl class="row mb-0">
+                                                    <dt class="col-sm-4">Adresse</dt>
+                                                    <dd class="col-sm-8">
+                                                        <t t-esc="partner.street or '—'" />
+                                                    </dd>
+                                                    <dt class="col-sm-4">Code postal</dt>
+                                                    <dd class="col-sm-8">
+                                                        <t t-esc="partner.zip or '—'" />
+                                                    </dd>
+                                                    <dt class="col-sm-4">Ville</dt>
+                                                    <dd class="col-sm-8">
+                                                        <t t-esc="partner.city or '—'" />
+                                                    </dd>
+                                                    <dt class="col-sm-4">Téléphone</dt>
+                                                    <dd class="col-sm-8">
+                                                        <t t-esc="partner.phone or '—'" />
+                                                    </dd>
+                                                    <dt class="col-sm-4">Email</dt>
+                                                    <dd class="col-sm-8">
+                                                        <t t-esc="partner.email or '—'" />
+                                                    </dd>
+                                                </dl>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 3. Situation professionnelle -->
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header">
+                                            <button class="accordion-button collapsed" type="button"
+                                                data-bs-toggle="collapse"
+                                                data-bs-target="#rc-sitpro">
+                                                Situation professionnelle
+                                            </button>
+                                        </h2>
+                                        <div id="rc-sitpro" class="accordion-collapse collapse">
+                                            <div class="accordion-body">
+                                                <dl class="row mb-0">
+                                                    <dt class="col-sm-4">Statut d'emploi</dt>
+                                                    <dd class="col-sm-8">
+                                                        <t
+                                                            t-esc="dict(insc._fields['statut_emploi'].selection or []).get(insc.statut_emploi, '—')" />
+                                                    </dd>
+                                                    <dt class="col-sm-4">Type de contrat</dt>
+                                                    <dd class="col-sm-8">
+                                                        <t
+                                                            t-esc="dict(insc._fields['type_contrat'].selection or []).get(insc.type_contrat, '—')" />
+                                                    </dd>
+                                                    <dt class="col-sm-4">RQTH</dt>
+                                                    <dd class="col-sm-8">
+                                                        <t
+                                                            t-esc="dict(insc._fields['rqth'].selection or []).get(insc.rqth, '—')" />
+                                                    </dd>
+                                                    <dt class="col-sm-4">Employeur</dt>
+                                                    <dd class="col-sm-8">
+                                                        <t t-esc="insc.employeur_nom or '—'" />
+                                                    </dd>
+                                                    <dt class="col-sm-4">Adresse de l'employeur</dt>
+                                                    <dd class="col-sm-8">
+                                                        <t t-esc="insc.employeur_adresse or '—'" />
+                                                    </dd>
+                                                    <dt class="col-sm-4">Rémunération brute
+                                                        mensuelle</dt>
+                                                    <dd class="col-sm-8">
+                                                        <t
+                                                            t-esc="('%.2f €' % insc.remuneration_mensuelle) if insc.remuneration_mensuelle else '—'" />
+                                                    </dd>
+                                                    <dt class="col-sm-4">Volume horaire hebdomadaire</dt>
+                                                    <dd class="col-sm-8">
+                                                        <t
+                                                            t-esc="('%g h' % insc.volume_horaire_semaine) if insc.volume_horaire_semaine else '—'" />
+                                                    </dd>
+                                                    <dt class="col-sm-4">Type de financement</dt>
+                                                    <dd class="col-sm-8">
+                                                        <t
+                                                            t-esc="dict(insc._fields['type_financement'].selection or []).get(insc.type_financement, '—')" />
+                                                    </dd>
+                                                    <dt class="col-sm-4">Sous-type de financement</dt>
+                                                    <dd class="col-sm-8">
+                                                        <t
+                                                            t-esc="dict(insc._fields['sous_type_financement'].selection or []).get(insc.sous_type_financement, '—')" />
+                                                    </dd>
+                                                </dl>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 4. Prérequis & expériences -->
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header">
+                                            <button class="accordion-button collapsed" type="button"
+                                                data-bs-toggle="collapse"
+                                                data-bs-target="#rc-prereq">
+                                                Prérequis
+                                            </button>
+                                        </h2>
+                                        <div id="rc-prereq" class="accordion-collapse collapse">
+                                            <div class="accordion-body">
+                                                <dl class="row mb-0">
+                                                    <dt class="col-sm-4">Niveau d'études</dt>
+                                                    <dd class="col-sm-8">
+                                                        <t
+                                                            t-esc="dict(insc._fields['niveau_etudes'].selection or []).get(insc.niveau_etudes, '—')" />
+                                                    </dd>
+                                                    <dt class="col-sm-4">Dernier diplôme obtenu</dt>
+                                                    <dd class="col-sm-8">
+                                                        <t t-esc="insc.dernier_diplome or '—'" />
+                                                    </dd>
+                                                    <dt class="col-sm-4">Année d'obtention</dt>
+                                                    <dd class="col-sm-8">
+                                                        <t t-esc="insc.annee_obtention or '—'" />
+                                                    </dd>
+                                                    <dt class="col-sm-4">Établissement</dt>
+                                                    <dd class="col-sm-8">
+                                                        <t
+                                                            t-esc="insc.etablissement_formation or '—'" />
+                                                    </dd>
+                                                </dl>
+                                                <hr class="my-3" />
+                                                <p class="fw-semibold mb-2">Expériences déclarées</p>
+                                                <t t-if="insc.experience_ids">
+                                                    <div class="table-responsive">
+                                                        <table class="table table-sm mb-0">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Année / Période</th>
+                                                                    <th>Heures</th>
+                                                                    <th>Structure</th>
+                                                                    <th>Fonction</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <t t-foreach="insc.experience_ids"
+                                                                    t-as="exp">
+                                                                    <tr>
+                                                                        <td>
+                                                                            <t
+                                                                                t-esc="exp.annee_periode" />
+                                                                        </td>
+                                                                        <td>
+                                                                            <t t-esc="exp.heures" />
+                                                                        </td>
+                                                                        <td>
+                                                                            <t t-esc="exp.structure" />
+                                                                        </td>
+                                                                        <td>
+                                                                            <t t-esc="exp.fonction" />
+                                                                        </td>
+                                                                    </tr>
+                                                                </t>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </t>
+                                                <t t-else="">
+                                                    <p class="text-muted mb-0">Aucune expérience
+                                                        déclarée</p>
+                                                </t>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 5. Projet professionnel -->
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header">
+                                            <button class="accordion-button collapsed" type="button"
+                                                data-bs-toggle="collapse"
+                                                data-bs-target="#rc-projet">
+                                                Projet professionnel
+                                            </button>
+                                        </h2>
+                                        <div id="rc-projet" class="accordion-collapse collapse">
+                                            <div class="accordion-body">
+                                                <dl class="row mb-2">
+                                                    <dt class="col-sm-4">Structure d'accueil en
+                                                        alternance</dt>
+                                                    <dd class="col-sm-8">
+                                                        <t t-esc="insc.structure_accueil or '—'" />
+                                                    </dd>
+                                                    <dt class="col-sm-4">Fonction visée</dt>
+                                                    <dd class="col-sm-8">
+                                                        <t t-esc="insc.fonction_visee or '—'" />
+                                                    </dd>
+                                                </dl>
+                                                <p class="fw-semibold mb-1">Projet professionnel</p>
+                                                <p style="white-space:pre-line;" class="mb-0">
+                                                    <t t-esc="insc.projet_professionnel or '—'" />
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 6. Documents -->
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header">
+                                            <button class="accordion-button collapsed" type="button"
+                                                data-bs-toggle="collapse" data-bs-target="#rc-docs">
+                                                Documents
+                                            </button>
+                                        </h2>
+                                        <div id="rc-docs" class="accordion-collapse collapse">
+                                            <div class="accordion-body">
+                                                <ul class="list-unstyled mb-0">
+                                                    <t
+                                                        t-foreach="[
+                            ('CV', insc.cv, insc.cv_filename),
+                            ('Lettre de motivation', insc.lettre_motivation_doc, insc.lettre_motivation_filename),
+                            ('Copie du diplôme / attestation de niveau', insc.diplome_doc, insc.diplome_filename),
+                            (&quot;Justificatif d'identité valide&quot;, insc.justificatif_identite, insc.justificatif_identite_filename),
+                            (&quot;Photo d'identité&quot;, insc.photo_identite, insc.photo_identite_filename),
+                        ] + ([('Attestation RQTH', insc.attestation_rqth, insc.attestation_rqth_filename)] if insc.rqth == 'oui' else [])"
+                                                        t-as="doc">
+                                                        <li class="mb-1">
+                                                            <t t-if="doc[1]">
+                                                                <span class="text-success me-1">✓</span>
+                                                                <strong>
+                                                                    <t t-esc="doc[0]" />
+                                                                </strong>
+                                                                <span class="text-muted small ms-1">
+                                                                    (<t
+                                                                        t-esc="doc[2] or 'fichier'" />
+                                                                    )</span>
+                                                            </t>
+                                                            <t t-else="">
+                                                                <span class="text-muted me-1">–</span>
+                                                                <t t-esc="doc[0]" />
+                                                                <span class="text-muted small ms-1">non
+                                                                    fourni</span>
+                                                            </t>
+                                                        </li>
+                                                    </t>
+                                                </ul>
+                                                <hr class="my-2" />
+                                                <p class="fw-semibold mb-1">Autres documents
+                                                    justificatifs</p>
+                                                <t t-if="insc.document_ids">
+                                                    <ul class="list-unstyled mb-0">
+                                                        <t t-foreach="insc.document_ids" t-as="d">
+                                                            <li class="mb-1">
+                                                                <span class="text-success me-1">✓</span>
+                                                                <strong>
+                                                                    <t t-esc="d.name" />
+                                                                </strong>
+                                                                <span class="text-muted small ms-1">
+                                                                    (<t
+                                                                        t-esc="d.fichier_filename or 'fichier'" />
+                                                                    )</span>
+                                                            </li>
+                                                        </t>
+                                                    </ul>
+                                                </t>
+                                                <t t-else="">
+                                                    <p class="text-muted mb-0">Aucun</p>
+                                                </t>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 7. Déclaration -->
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header">
+                                            <button class="accordion-button collapsed" type="button"
+                                                data-bs-toggle="collapse" data-bs-target="#rc-decl">
+                                                Déclaration &amp; informations complémentaires
+                                            </button>
+                                        </h2>
+                                        <div id="rc-decl" class="accordion-collapse collapse">
+                                            <div class="accordion-body">
+                                                <p class="fw-semibold mb-1">Informations
+                                                    complémentaires</p>
+                                                <p style="white-space:pre-line;" class="mb-3">
+                                                    <t t-esc="insc.notes_candidat or '—'" />
+                                                </p>
+                                                <dl class="row mb-0">
+                                                    <dt class="col-sm-4">Consentement RGPD</dt>
+                                                    <dd class="col-sm-8">
+                                                        <t
+                                                            t-esc="'Accepté' if insc.conditions_acceptees else 'Non accepté'" />
+                                                    </dd>
+                                                    <dt class="col-sm-4">Attestation sur l'honneur</dt>
+                                                    <dd class="col-sm-8">
+                                                        <t
+                                                            t-esc="('Certifiée le ' + str(insc.date_declaration)) if insc.date_declaration else 'Non certifiée'" />
+                                                    </dd>
+                                                </dl>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                 </div>
 
                                 <t t-if="not insc.conditions_acceptees">
                                     <div class="alert alert-warning"> ⚠ Vous n'avez pas encore
-                                        accepté les conditions à l'étape 9. <a
-                                            t-att-href="'/formation/dossier/' + token + '/etape/9'">
-                                        Retourner à l'étape 9
+                                        accepté la collecte et le traitement de vos données
+                                        personnelles à l'étape 1. <a
+                                            t-att-href="'/formation/dossier/' + token + '/etape/1'">
+                                        Retourner à l'étape 1
                                         </a>
                                     </div>
                                 </t>
-                                <t t-else="">
+                                <t t-if="not insc.date_declaration">
+                                    <div class="alert alert-warning"> ⚠ Vous n'avez pas encore
+                                        certifié sur l'honneur l'exactitude des informations à
+                                        l'étape 7. <a
+                                            t-att-href="'/formation/dossier/' + token + '/etape/7'">
+                                        Retourner à l'étape 7
+                                        </a>
+                                    </div>
+                                </t>
+                                <t t-if="insc.conditions_acceptees and insc.date_declaration">
                                     <div class="alert alert-success"> ✓ Déclaration sur l'honneur
-                                        acceptée le <t
-                                            t-esc="str(insc.date_declaration) if insc.date_declaration else '?'" />
+                                        acceptée le <t t-esc="str(insc.date_declaration)" />
                                     </div>
                                 </t>
 
@@ -892,14 +1396,14 @@
                             <span />
                         </t>
 
-                        <t t-if="etape &lt; 10">
+                        <t t-if="etape &lt; 8">
                             <button type="submit" class="btn btn-primary">
                                 Enregistrer et continuer →
                             </button>
                         </t>
                         <t t-else="">
                             <button type="submit" class="btn btn-success btn-lg"
-                                t-att-disabled="not insc.conditions_acceptees">
+                                t-att-disabled="not (insc.conditions_acceptees and insc.date_declaration)">
                                 ✉ Soumettre mon dossier
                             </button>
                         </t>
@@ -925,20 +1429,22 @@
                         <t t-if="insc.statut == 'soumis'">
                             <div class="mb-3" style="font-size:3em;">📬</div>
                             <h1 class="h3 mb-1">Dossier soumis</h1>
-                            <p class="text-muted">
-                                Votre dossier <strong><t t-esc="insc.reference"/></strong>
-                                a bien été reçu. Notre équipe reviendra vers vous dans les plus brefs délais.
-                            </p>
+                            <p class="text-muted"> Votre dossier <strong>
+                                    <t t-esc="insc.reference" />
+                                </strong>
+                                a bien été reçu. Notre équipe reviendra vers vous dans les plus
+                                brefs délais. </p>
                         </t>
                         <t t-elif="insc.statut == 'en_attente_pieces'">
                             <div class="mb-3" style="font-size:3em;">📎</div>
                             <h1 class="h3 mb-1 text-warning">Pièces manquantes</h1>
-                            <p class="text-muted">
-                                Votre dossier <strong><t t-esc="insc.reference"/></strong>
-                                est incomplet. Vous avez reçu un email précisant les pièces à fournir.
-                            </p>
-                            <a t-att-href="'/formation/dossier/' + token + '/etape/8'"
-                               class="btn btn-warning btn-sm mb-3">
+                            <p class="text-muted"> Votre dossier <strong>
+                                    <t t-esc="insc.reference" />
+                                </strong>
+                                est incomplet. Vous avez reçu un email précisant les pièces à
+                                fournir. </p>
+                            <a t-att-href="'/formation/dossier/' + token + '/etape/6'"
+                                class="btn btn-warning btn-sm mb-3">
                                 Déposer les pièces manquantes →
                             </a>
                         </t>
@@ -946,32 +1452,31 @@
                             <div class="mb-3" style="font-size:3em;">✅</div>
                             <h1 class="h3 mb-1 text-success">Dossier complet</h1>
                             <p class="text-muted">
-                                Votre dossier est complet. Une décision vous sera communiquée prochainement.
+                                Votre dossier est complet. Une décision vous sera communiquée
+                                prochainement.
                             </p>
                         </t>
                         <t t-elif="insc.statut == 'accepte'">
                             <div class="mb-3" style="font-size:3em;">🎉</div>
                             <h1 class="h3 mb-1 text-success">Félicitations — Candidature acceptée !</h1>
-                            <p class="text-muted">
-                                Votre candidature pour
-                                <strong><t t-esc="insc.formation_id.display_name"/></strong>
-                                a été acceptée. Accédez à votre espace stagiaire pour consulter
-                                vos conventions et documents de formation.
-                            </p>
+                            <p class="text-muted"> Votre candidature pour <strong>
+                                    <t t-esc="insc.formation_id.display_name" />
+                                </strong>
+                                a été acceptée. Accédez à votre espace stagiaire pour consulter vos
+                                conventions et documents de formation. </p>
                             <a t-att-href="'/espace-stagiaire/' + token"
-                               class="btn btn-success btn-lg mb-3 fw-bold">
+                                class="btn btn-success btn-lg mb-3 fw-bold">
                                 🎓 Accéder à mon espace stagiaire →
                             </a>
                         </t>
                         <t t-elif="insc.statut == 'refuse'">
                             <div class="mb-3" style="font-size:3em;">📩</div>
                             <h1 class="h3 mb-1">Candidature non retenue</h1>
-                            <p class="text-muted">
-                                Nous avons étudié votre dossier
-                                <strong><t t-esc="insc.reference"/></strong>
-                                avec attention. Malheureusement, nous ne sommes pas en mesure
-                                de donner une suite favorable à votre candidature.
-                            </p>
+                            <p class="text-muted"> Nous avons étudié votre dossier <strong>
+                                    <t t-esc="insc.reference" />
+                                </strong>
+                                avec attention. Malheureusement, nous ne sommes pas en mesure de
+                                donner une suite favorable à votre candidature. </p>
                         </t>
                         <t t-else="">
                             <h1 class="h3 mb-1">Mon dossier</h1>
@@ -982,19 +1487,40 @@
                             <div class="card-body py-2">
                                 <dl class="row mb-0 small">
                                     <dt class="col-5">Référence</dt>
-                                    <dd class="col-7 mb-1"><t t-esc="insc.reference"/></dd>
+                                    <dd class="col-7 mb-1">
+                                        <t t-esc="insc.reference" />
+                                    </dd>
                                     <dt class="col-5">Formation</dt>
-                                    <dd class="col-7 mb-1"><t t-esc="insc.formation_id.display_name"/></dd>
+                                    <dd class="col-7 mb-1">
+                                        <t t-esc="insc.formation_id.display_name" />
+                                    </dd>
                                     <dt class="col-5">Candidat</dt>
-                                    <dd class="col-7 mb-1"><t t-esc="insc.partner_id.name"/></dd>
+                                    <dd class="col-7 mb-1">
+                                        <t t-esc="insc.partner_id.name" />
+                                    </dd>
                                     <dt class="col-5">Statut</dt>
                                     <dd class="col-7 mb-0">
-                                        <t t-if="insc.statut == 'soumis'"><span class="badge bg-primary">Soumis</span></t>
-                                        <t t-elif="insc.statut == 'en_attente_pieces'"><span class="badge bg-warning text-dark">Pièces manquantes</span></t>
-                                        <t t-elif="insc.statut == 'complet'"><span class="badge bg-info">Complet</span></t>
-                                        <t t-elif="insc.statut == 'accepte'"><span class="badge bg-success">Accepté</span></t>
-                                        <t t-elif="insc.statut == 'refuse'"><span class="badge bg-danger">Non retenu</span></t>
-                                        <t t-else=""><span class="badge bg-secondary"><t t-esc="insc.statut"/></span></t>
+                                        <t t-if="insc.statut == 'soumis'">
+                                            <span class="badge bg-primary">Soumis</span>
+                                        </t>
+                                        <t t-elif="insc.statut == 'en_attente_pieces'">
+                                            <span class="badge bg-warning text-dark">Pièces
+                                                manquantes</span>
+                                        </t>
+                                        <t t-elif="insc.statut == 'complet'">
+                                            <span class="badge bg-info">Complet</span>
+                                        </t>
+                                        <t t-elif="insc.statut == 'accepte'">
+                                            <span class="badge bg-success">Accepté</span>
+                                        </t>
+                                        <t t-elif="insc.statut == 'refuse'">
+                                            <span class="badge bg-danger">Non retenu</span>
+                                        </t>
+                                        <t t-else="">
+                                            <span class="badge bg-secondary">
+                                                <t t-esc="insc.statut" />
+                                            </span>
+                                        </t>
                                     </dd>
                                 </dl>
                             </div>
@@ -1009,7 +1535,8 @@
                 <!-- ── Récapitulatif du dossier ── -->
                 <div class="row justify-content-center">
                     <div class="col-lg-9">
-                        <h5 class="mb-3 text-muted border-bottom pb-2">Récapitulatif de votre dossier</h5>
+                        <h5 class="mb-3 text-muted border-bottom pb-2">Récapitulatif de votre
+                            dossier</h5>
 
                         <div class="accordion" id="accordionDossier">
 
@@ -1017,21 +1544,40 @@
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
                                     <button class="accordion-button" type="button"
-                                            data-bs-toggle="collapse" data-bs-target="#sec-identite">
-                                        1. Identité
+                                        data-bs-toggle="collapse" data-bs-target="#sec-identite">
+                                        1. État civil
                                     </button>
                                 </h2>
                                 <div id="sec-identite" class="accordion-collapse collapse show">
                                     <div class="accordion-body">
                                         <dl class="row mb-0">
                                             <dt class="col-sm-4">Nom complet</dt>
-                                            <dd class="col-sm-8"><t t-esc="insc.partner_id.name or '—'"/></dd>
+                                            <dd class="col-sm-8">
+                                                <t t-esc="insc.partner_id.name or '—'" />
+                                            </dd>
+                                            <dt class="col-sm-4">Civilité</dt>
+                                            <dd class="col-sm-8">
+                                                <t
+                                                    t-esc="dict(insc.partner_id._fields['sexe'].selection or []).get(insc.partner_id.sexe, '—')" />
+                                            </dd>
                                             <dt class="col-sm-4">Date de naissance</dt>
-                                            <dd class="col-sm-8"><t t-esc="str(insc.partner_id.date_naissance) if insc.partner_id.date_naissance else '—'"/></dd>
+                                            <dd class="col-sm-8">
+                                                <t
+                                                    t-esc="str(insc.partner_id.date_naissance) if insc.partner_id.date_naissance else '—'" />
+                                            </dd>
                                             <dt class="col-sm-4">Lieu de naissance</dt>
-                                            <dd class="col-sm-8"><t t-esc="insc.partner_id.lieu_naissance or '—'"/></dd>
+                                            <dd class="col-sm-8">
+                                                <t t-esc="insc.partner_id.lieu_naissance or '—'" />
+                                            </dd>
+                                            <dt class="col-sm-4">N° de sécurité sociale</dt>
+                                            <dd class="col-sm-8">
+                                                <t t-esc="insc.partner_id.numero_secu or '—'" />
+                                            </dd>
                                             <dt class="col-sm-4">Nationalité</dt>
-                                            <dd class="col-sm-8"><t t-esc="insc.partner_id.nationalite_id.name if insc.partner_id.nationalite_id else '—'"/></dd>
+                                            <dd class="col-sm-8">
+                                                <t
+                                                    t-esc="insc.partner_id.nationalite_id.name if insc.partner_id.nationalite_id else '—'" />
+                                            </dd>
                                         </dl>
                                     </div>
                                 </div>
@@ -1041,7 +1587,7 @@
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
                                     <button class="accordion-button collapsed" type="button"
-                                            data-bs-toggle="collapse" data-bs-target="#sec-coords">
+                                        data-bs-toggle="collapse" data-bs-target="#sec-coords">
                                         2. Coordonnées
                                     </button>
                                 </h2>
@@ -1050,15 +1596,28 @@
                                         <dl class="row mb-0">
                                             <dt class="col-sm-4">Adresse</dt>
                                             <dd class="col-sm-8">
-                                                <t t-esc="insc.partner_id.street or ''"/>
-                                                <t t-if="insc.partner_id.zip or insc.partner_id.city">
-                                                    <br/><t t-esc="(insc.partner_id.zip or '') + ' ' + (insc.partner_id.city or '')"/>
+                                                <t t-esc="insc.partner_id.street or ''" />
+                                                <t
+                                                    t-if="insc.partner_id.zip or insc.partner_id.city">
+                                                    <br />
+                                                    <t
+                                                        t-esc="(insc.partner_id.zip or '') + ' ' + (insc.partner_id.city or '')" />
                                                 </t>
                                             </dd>
                                             <dt class="col-sm-4">Téléphone</dt>
-                                            <dd class="col-sm-8"><t t-esc="insc.partner_id.phone or '—'"/></dd>
+                                            <dd class="col-sm-8">
+                                                <t t-esc="insc.partner_id.phone or '—'" />
+                                            </dd>
                                             <dt class="col-sm-4">Email</dt>
-                                            <dd class="col-sm-8"><t t-esc="insc.partner_id.email or '—'"/></dd>
+                                            <dd class="col-sm-8">
+                                                <t t-esc="insc.partner_id.email or '—'" />
+                                            </dd>
+                                            <t t-if="insc.email_pro">
+                                                <dt class="col-sm-4">Email professionnel</dt>
+                                                <dd class="col-sm-8">
+                                                    <t t-esc="insc.email_pro" />
+                                                </dd>
+                                            </t>
                                         </dl>
                                     </div>
                                 </div>
@@ -1068,82 +1627,132 @@
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
                                     <button class="accordion-button collapsed" type="button"
-                                            data-bs-toggle="collapse" data-bs-target="#sec-emploi">
+                                        data-bs-toggle="collapse" data-bs-target="#sec-emploi">
                                         3. Situation professionnelle
                                     </button>
                                 </h2>
                                 <div id="sec-emploi" class="accordion-collapse collapse">
                                     <div class="accordion-body">
                                         <dl class="row mb-0">
-                                            <dt class="col-sm-4">Statut</dt>
-                                            <dd class="col-sm-8"><t t-esc="insc.statut_emploi or '—'"/></dd>
-                                            <dt class="col-sm-4">Employeur</dt>
-                                            <dd class="col-sm-8"><t t-esc="insc.employeur_nom or '—'"/></dd>
+                                            <dt class="col-sm-4">Statut d'emploi</dt>
+                                            <dd class="col-sm-8">
+                                                <t
+                                                    t-esc="dict(insc._fields['statut_emploi'].selection or []).get(insc.statut_emploi, '—')" />
+                                            </dd>
                                             <dt class="col-sm-4">Type de contrat</dt>
-                                            <dd class="col-sm-8"><t t-esc="insc.type_contrat or '—'"/></dd>
+                                            <dd class="col-sm-8">
+                                                <t
+                                                    t-esc="dict(insc._fields['type_contrat'].selection or []).get(insc.type_contrat, '—')" />
+                                            </dd>
+                                            <dt class="col-sm-4">RQTH</dt>
+                                            <dd class="col-sm-8">
+                                                <t
+                                                    t-esc="dict(insc._fields['rqth'].selection or []).get(insc.rqth, '—')" />
+                                            </dd>
+                                            <dt class="col-sm-4">Employeur</dt>
+                                            <dd class="col-sm-8">
+                                                <t t-esc="insc.employeur_nom or '—'" />
+                                            </dd>
+                                            <dt class="col-sm-4">Adresse de l'employeur</dt>
+                                            <dd class="col-sm-8">
+                                                <t t-esc="insc.employeur_adresse or '—'" />
+                                            </dd>
+                                            <dt class="col-sm-4">Rémunération brute mensuelle</dt>
+                                            <dd class="col-sm-8">
+                                                <t
+                                                    t-esc="('%.2f €' % insc.remuneration_mensuelle) if insc.remuneration_mensuelle else '—'" />
+                                            </dd>
+                                            <dt class="col-sm-4">Volume horaire hebdomadaire</dt>
+                                            <dd class="col-sm-8">
+                                                <t
+                                                    t-esc="('%g h' % insc.volume_horaire_semaine) if insc.volume_horaire_semaine else '—'" />
+                                            </dd>
                                             <dt class="col-sm-4">Type de stagiaire</dt>
-                                            <dd class="col-sm-8"><t t-esc="dict(insc._fields['mode_stagiaire'].selection or []).get(insc.mode_stagiaire, '—')"/></dd>
-                                            <dt class="col-sm-4">Financement</dt>
-                                            <dd class="col-sm-8"><t t-esc="dict(insc._fields['type_financement'].selection or []).get(insc.type_financement, '—')"/></dd>
+                                            <dd class="col-sm-8">
+                                                <t
+                                                    t-esc="dict(insc._fields['mode_stagiaire'].selection or []).get(insc.mode_stagiaire, '—')" />
+                                            </dd>
+                                            <dt class="col-sm-4">Type de financement</dt>
+                                            <dd class="col-sm-8">
+                                                <t
+                                                    t-esc="dict(insc._fields['type_financement'].selection or []).get(insc.type_financement, '—')" />
+                                            </dd>
+                                            <dt class="col-sm-4">Sous-type de financement</dt>
+                                            <dd class="col-sm-8">
+                                                <t
+                                                    t-esc="dict(insc._fields['sous_type_financement'].selection or []).get(insc.sous_type_financement, '—')" />
+                                            </dd>
                                         </dl>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- Formation initiale -->
+                            <!-- Prérequis & expériences -->
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
                                     <button class="accordion-button collapsed" type="button"
-                                            data-bs-toggle="collapse" data-bs-target="#sec-formation">
-                                        4. Formation initiale
+                                        data-bs-toggle="collapse" data-bs-target="#sec-formation">
+                                        4. Prérequis &amp; expériences
                                     </button>
                                 </h2>
                                 <div id="sec-formation" class="accordion-collapse collapse">
                                     <div class="accordion-body">
                                         <dl class="row mb-0">
                                             <dt class="col-sm-4">Niveau d'études</dt>
-                                            <dd class="col-sm-8"><t t-esc="insc.niveau_etudes or '—'"/></dd>
-                                            <dt class="col-sm-4">Diplôme</dt>
-                                            <dd class="col-sm-8"><t t-esc="insc.dernier_diplome or '—'"/></dd>
+                                            <dd class="col-sm-8">
+                                                <t
+                                                    t-esc="dict(insc._fields['niveau_etudes'].selection or []).get(insc.niveau_etudes, '—')" />
+                                            </dd>
+                                            <dt class="col-sm-4">Dernier diplôme obtenu</dt>
+                                            <dd class="col-sm-8">
+                                                <t t-esc="insc.dernier_diplome or '—'" />
+                                            </dd>
+                                            <dt class="col-sm-4">Année d'obtention</dt>
+                                            <dd class="col-sm-8">
+                                                <t t-esc="insc.annee_obtention or '—'" />
+                                            </dd>
                                             <dt class="col-sm-4">Établissement</dt>
-                                            <dd class="col-sm-8"><t t-esc="insc.etablissement_formation or '—'"/></dd>
+                                            <dd class="col-sm-8">
+                                                <t t-esc="insc.etablissement_formation or '—'" />
+                                            </dd>
                                         </dl>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Expériences -->
-                            <div class="accordion-item">
-                                <h2 class="accordion-header">
-                                    <button class="accordion-button collapsed" type="button"
-                                            data-bs-toggle="collapse" data-bs-target="#sec-exp">
-                                        5. Expériences
-                                    </button>
-                                </h2>
-                                <div id="sec-exp" class="accordion-collapse collapse">
-                                    <div class="accordion-body">
-                                        <t t-if="insc.experiences_pro">
-                                            <p style="white-space:pre-line;"><t t-esc="insc.experiences_pro"/></p>
+                                        <t t-if="insc.experience_ids">
+                                            <div class="table-responsive mt-3">
+                                                <table class="table table-sm mb-0">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Année / Période</th>
+                                                            <th>Heures</th>
+                                                            <th>Structure</th>
+                                                            <th>Fonction</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <t t-foreach="insc.experience_ids"
+                                                            t-as="exp">
+                                                            <tr>
+                                                                <td>
+                                                                    <t t-esc="exp.annee_periode" />
+                                                                </td>
+                                                                <td>
+                                                                    <t t-esc="exp.heures" />
+                                                                </td>
+                                                                <td>
+                                                                    <t t-esc="exp.structure" />
+                                                                </td>
+                                                                <td>
+                                                                    <t t-esc="exp.fonction" />
+                                                                </td>
+                                                            </tr>
+                                                        </t>
+                                                    </tbody>
+                                                </table>
+                                            </div>
                                         </t>
-                                        <t t-else=""><p class="text-muted">—</p></t>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Motivations -->
-                            <div class="accordion-item">
-                                <h2 class="accordion-header">
-                                    <button class="accordion-button collapsed" type="button"
-                                            data-bs-toggle="collapse" data-bs-target="#sec-motiv">
-                                        6. Motivations
-                                    </button>
-                                </h2>
-                                <div id="sec-motiv" class="accordion-collapse collapse">
-                                    <div class="accordion-body">
-                                        <t t-if="insc.motivations">
-                                            <p style="white-space:pre-line;"><t t-esc="insc.motivations"/></p>
+                                        <t t-else="">
+                                            <p class="text-muted mt-3 mb-0">Aucune expérience
+                                                déclarée</p>
                                         </t>
-                                        <t t-else=""><p class="text-muted">—</p></t>
                                     </div>
                                 </div>
                             </div>
@@ -1152,20 +1761,26 @@
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
                                     <button class="accordion-button collapsed" type="button"
-                                            data-bs-toggle="collapse" data-bs-target="#sec-projet">
-                                        7. Projet professionnel
+                                        data-bs-toggle="collapse" data-bs-target="#sec-projet">
+                                        5. Projet professionnel
                                     </button>
                                 </h2>
                                 <div id="sec-projet" class="accordion-collapse collapse">
                                     <div class="accordion-body">
                                         <dl class="row mb-2">
                                             <dt class="col-sm-4">Structure d'accueil</dt>
-                                            <dd class="col-sm-8"><t t-esc="insc.structure_accueil or '—'"/></dd>
+                                            <dd class="col-sm-8">
+                                                <t t-esc="insc.structure_accueil or '—'" />
+                                            </dd>
                                             <dt class="col-sm-4">Fonction visée</dt>
-                                            <dd class="col-sm-8"><t t-esc="insc.fonction_visee or '—'"/></dd>
+                                            <dd class="col-sm-8">
+                                                <t t-esc="insc.fonction_visee or '—'" />
+                                            </dd>
                                         </dl>
                                         <t t-if="insc.projet_professionnel">
-                                            <p style="white-space:pre-line;"><t t-esc="insc.projet_professionnel"/></p>
+                                            <p style="white-space:pre-line;">
+                                                <t t-esc="insc.projet_professionnel" />
+                                            </p>
                                         </t>
                                     </div>
                                 </div>
@@ -1175,39 +1790,98 @@
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
                                     <button class="accordion-button collapsed" type="button"
-                                            data-bs-toggle="collapse" data-bs-target="#sec-docs">
-                                        8. Documents fournis
+                                        data-bs-toggle="collapse" data-bs-target="#sec-docs">
+                                        6. Documents fournis
                                     </button>
                                 </h2>
                                 <div id="sec-docs" class="accordion-collapse collapse">
                                     <div class="accordion-body">
                                         <ul class="list-unstyled mb-0">
-                                            <t t-foreach="[
+                                            <t
+                                                t-foreach="[
                                                 ('CV', insc.cv, insc.cv_filename),
                                                 ('Lettre de motivation', insc.lettre_motivation_doc, insc.lettre_motivation_filename),
                                                 ('Diplôme', insc.diplome_doc, insc.diplome_filename),
-                                                ('Justificatif emploi', insc.justificatif_emploi, insc.justificatif_emploi_filename),
-                                                ('Autre', insc.autre_document, insc.autre_document_filename),
-                                            ]" t-as="doc">
+                                                (&quot;Justificatif d'identité valide&quot;, insc.justificatif_identite, insc.justificatif_identite_filename),
+                                                (&quot;Photo d'identité&quot;, insc.photo_identite, insc.photo_identite_filename),
+                                            ] + ([('Attestation RQTH', insc.attestation_rqth, insc.attestation_rqth_filename)] if insc.rqth == 'oui' else [])"
+                                                t-as="doc">
                                                 <li class="mb-1">
                                                     <t t-if="doc[1]">
                                                         <span class="text-success me-1">✓</span>
-                                                        <strong><t t-esc="doc[0]"/></strong>
-                                                        <span class="text-muted small ms-1">(<t t-esc="doc[2] or 'fichier'"/>)</span>
+                                                        <strong>
+                                                            <t t-esc="doc[0]" />
+                                                        </strong>
+                                                        <span class="text-muted small ms-1">(<t
+                                                                t-esc="doc[2] or 'fichier'" />)</span>
                                                     </t>
                                                     <t t-else="">
                                                         <span class="text-muted me-1">–</span>
-                                                        <t t-esc="doc[0]"/>
-                                                        <span class="text-muted small ms-1">non fourni</span>
+                                                        <t t-esc="doc[0]" />
+                                                        <span class="text-muted small ms-1">non
+                                                            fourni</span>
                                                     </t>
                                                 </li>
                                             </t>
                                         </ul>
+
+                                        <hr class="my-2" />
+                                        <p class="fw-semibold mb-1">Autres documents
+                                            justificatifs</p>
+                                        <t t-if="insc.document_ids">
+                                            <ul class="list-unstyled mb-0">
+                                                <t t-foreach="insc.document_ids" t-as="d">
+                                                    <li class="mb-1">
+                                                        <span class="text-success me-1">✓</span>
+                                                        <strong>
+                                                            <t t-esc="d.name" />
+                                                        </strong>
+                                                        <span class="text-muted small ms-1">(<t
+                                                                t-esc="d.fichier_filename or 'fichier'" />
+                                                            )</span>
+                                                    </li>
+                                                </t>
+                                            </ul>
+                                        </t>
+                                        <t t-else="">
+                                            <p class="text-muted mb-0">Aucun</p>
+                                        </t>
                                     </div>
                                 </div>
                             </div>
 
-                        </div><!-- /.accordion -->
+                            <!-- Déclaration -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button"
+                                        data-bs-toggle="collapse" data-bs-target="#sec-decl">
+                                        7. Déclaration &amp; informations complémentaires
+                                    </button>
+                                </h2>
+                                <div id="sec-decl" class="accordion-collapse collapse">
+                                    <div class="accordion-body">
+                                        <p class="fw-semibold mb-1">Informations complémentaires</p>
+                                        <p style="white-space:pre-line;" class="mb-3">
+                                            <t t-esc="insc.notes_candidat or '—'" />
+                                        </p>
+                                        <dl class="row mb-0">
+                                            <dt class="col-sm-4">Consentement RGPD</dt>
+                                            <dd class="col-sm-8">
+                                                <t
+                                                    t-esc="'Accepté' if insc.conditions_acceptees else 'Non accepté'" />
+                                            </dd>
+                                            <dt class="col-sm-4">Attestation sur l'honneur</dt>
+                                            <dd class="col-sm-8">
+                                                <t
+                                                    t-esc="('Certifiée le ' + str(insc.date_declaration)) if insc.date_declaration else 'Non certifiée'" />
+                                            </dd>
+                                        </dl>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div><!--
+                        /.accordion -->
                     </div>
                 </div>
 

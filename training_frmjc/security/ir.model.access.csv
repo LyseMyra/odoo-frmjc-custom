@@ -9,6 +9,8 @@ access_training_week_line_user,training.week.line user,model_training_week_line,
 access_training_document_user,training.document user,model_training_document,base.group_user,1,1,1,0
 access_training_trainer_user,training.trainer user,model_training_trainer,base.group_user,1,1,1,0
 access_training_inscription_user,training.inscription user,model_training_inscription,base.group_user,1,1,1,0
+access_training_inscription_experience_user,training.inscription.experience user,model_training_inscription_experience,base.group_user,1,1,1,1
+access_training_inscription_document_user,training.inscription.document user,model_training_inscription_document,base.group_user,1,1,1,1
 access_training_dropout_user,training.dropout user,model_training_dropout,base.group_user,1,1,1,0
 access_training_otp_user,training.otp user,model_training_otp,base.group_user,1,1,1,1
 access_training_session_user,training.session user,model_training_session,base.group_user,1,1,1,0

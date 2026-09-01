@@ -78,6 +78,9 @@
                     <group string="Coordonnées du candidat">
                         <group>
                             <field name="partner_email" widget="email"/>
+                            <field name="email_pro" widget="email"
+                                   readonly="statut != 'accepte'"
+                                   placeholder="Renseignable une fois le dossier accepté"/>
                             <field name="partner_phone" widget="phone"/>
                         </group>
                         <group>
@@ -92,6 +95,7 @@
                                 <group>
                                     <field name="statut_emploi"/>
                                     <field name="type_contrat"/>
+                                    <field name="rqth"/>
                                 </group>
                                 <group>
                                     <field name="employeur_nom"/>
@@ -133,20 +137,19 @@
                                     <field name="annee_obtention"/>
                                     <field name="etablissement_formation"/>
                                 </group>
-                                <group string="Expériences">
-                                    <field name="experience_animation"/>
-                                    <field name="experience_encadrement"/>
-                                </group>
                             </group>
-                            <group string="Détail des expériences">
-                                <field name="experiences_pro" nolabel="1"/>
-                            </group>
+                            <separator string="Expériences déclarées"/>
+                            <field name="experience_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="annee_periode"/>
+                                    <field name="heures"/>
+                                    <field name="structure"/>
+                                    <field name="fonction"/>
+                                </list>
+                            </field>
                         </page>
                         <page string="Projet">
-                            <group>
-                                <field name="motivations" nolabel="1"
-                                       placeholder="Motivations du candidat…"/>
-                            </group>
                             <separator string="Projet professionnel"/>
                             <group>
                                 <group>
@@ -177,19 +180,36 @@
                                            filename="diplome_filename" widget="binary"/>
                                     <field name="diplome_filename" invisible="1"/>
                                 </group>
-                                <group string="Justificatif emploi">
-                                    <field name="justificatif_emploi"
-                                           filename="justificatif_emploi_filename"
+                                <group string="Justificatif d'identité valide">
+                                    <field name="justificatif_identite"
+                                           filename="justificatif_identite_filename"
                                            widget="binary"/>
-                                    <field name="justificatif_emploi_filename" invisible="1"/>
+                                    <field name="justificatif_identite_filename" invisible="1"/>
                                 </group>
-                                <group string="Autre">
-                                    <field name="autre_document"
-                                           filename="autre_document_filename"
+                                <group string="Photo d'identité">
+                                    <field name="photo_identite"
+                                           filename="photo_identite_filename"
                                            widget="binary"/>
-                                    <field name="autre_document_filename" invisible="1"/>
+                                    <field name="photo_identite_filename" invisible="1"/>
+                                </group>
+                                <group string="Attestation RQTH"
+                                       invisible="rqth != 'oui'">
+                                    <field name="attestation_rqth"
+                                           filename="attestation_rqth_filename"
+                                           widget="binary"/>
+                                    <field name="attestation_rqth_filename" invisible="1"/>
                                 </group>
                             </group>
+                            <separator string="Autres documents justificatifs"/>
+                            <field name="document_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="fichier" filename="fichier_filename"
+                                           widget="binary"/>
+                                    <field name="fichier_filename" invisible="1"/>
+                                </list>
+                            </field>
                         </page>
                         <page string="Déclaration">
                             <group>

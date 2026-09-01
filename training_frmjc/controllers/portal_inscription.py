@@ -228,7 +228,7 @@ class PortalInscription(http.Controller):
         if insc.statut in ('soumis', 'complet', 'refuse', 'abandon'):
             return request.redirect(f'/formation/dossier/{token}/confirme')
 
-        etape = max(1, min(etape, 10))
+        etape = max(1, min(etape, 8))
 
         if request.httprequest.method == 'POST':
             return self._traiter_etape(insc, etape, token)
@@ -285,6 +285,8 @@ class PortalInscription(http.Controller):
                     partner_vals['nationalite_id'] = int(p['nationalite_id'])
                 except (TypeError, ValueError):
                     pass
+            # Consentement RGPD (collecte et traitement des données)
+            vals['conditions_acceptees'] = p.get('conditions_acceptees') == 'on'
 
         elif etape == 2:
             partner_vals.update({
@@ -300,6 +302,7 @@ class PortalInscription(http.Controller):
                 'employeur_nom': p.get('employeur_nom', ''),
                 'employeur_adresse': p.get('employeur_adresse', ''),
                 'type_contrat': p.get('type_contrat', ''),
+                'rqth': p.get('rqth', ''),
                 'mode_stagiaire': p.get('mode_stagiaire', ''),
                 'type_financement': p.get('type_financement', ''),
                 'sous_type_financement': p.get('sous_type_financement', ''),
@@ -320,32 +323,59 @@ class PortalInscription(http.Controller):
                 vals['annee_obtention'] = int(p.get('annee_obtention') or 0)
             except ValueError:
                 pass
+            # ── Expériences (liste dynamique) ──────────────────────
+            form = request.httprequest.form
+            lignes = zip(
+                form.getlist('exp_annee_periode[]'),
+                form.getlist('exp_heures[]'),
+                form.getlist('exp_structure[]'),
+                form.getlist('exp_fonction[]'),
+            )
+            commands = [(5, 0, 0)]
+            for annee, heures, structure, fonction in lignes:
+                annee = (annee or '').strip()
+                heures = (heures or '').strip()
+                structure = (structure or '').strip()
+                fonction = (fonction or '').strip()
+                if not any((annee, heures, structure, fonction)):
+                    continue  # ligne entièrement vide → ignorée
+                try:
+                    heures_val = float(heures)
+                except ValueError:
+                    heures_val = 0.0
+                if not (annee and structure and fonction) or heures_val <= 0:
+                    pays_list = request.env['res.country'].sudo().search([], order='name')
+                    return request.render('training_frmjc.portal_inscription_form', {
+                        'insc': insc, 'partner': insc.partner_id,
+                        'session': insc.session_id, 'etape': 4,
+                        'token': token, 'pays_list': pays_list,
+                        'errors': {'global': "Chaque expérience doit être entièrement "
+                                             "renseignée : année/période, nombre d'heures, "
+                                             "nom de la structure et fonction."},
+                    })
+                commands.append((0, 0, {
+                    'annee_periode': annee,
+                    'heures': heures_val,
+                    'structure': structure,
+                    'fonction': fonction,
+                }))
+            vals['experience_ids'] = commands
 
         elif etape == 5:
-            vals['experiences_pro'] = p.get('experiences_pro', '')
-            for flt in ('experience_animation', 'experience_encadrement'):
-                try:
-                    vals[flt] = float(p.get(flt) or 0)
-                except ValueError:
-                    pass
-
-        elif etape == 6:
-            vals['motivations'] = p.get('motivations', '')
-
-        elif etape == 7:
             vals.update({
                 'projet_professionnel': p.get('projet_professionnel', ''),
                 'structure_accueil': p.get('structure_accueil', ''),
                 'fonction_visee': p.get('fonction_visee', ''),
             })
 
-        elif etape == 8:
+        elif etape == 6:
             doc_fields = {
                 'cv': 'cv_filename',
                 'lettre_motivation_doc': 'lettre_motivation_filename',
                 'diplome_doc': 'diplome_filename',
-                'justificatif_emploi': 'justificatif_emploi_filename',
-                'autre_document': 'autre_document_filename',
+                'justificatif_identite': 'justificatif_identite_filename',
+                'photo_identite': 'photo_identite_filename',
+                'attestation_rqth': 'attestation_rqth_filename',
             }
             for field_name, fname_field in doc_fields.items():
                 uploaded = files.get(field_name)
@@ -355,7 +385,44 @@ class PortalInscription(http.Controller):
                         vals[field_name] = base64.b64encode(data)
                         vals[fname_field] = uploaded.filename
 
-        elif etape == 9:
+            # ── Autres documents justificatifs (liste dynamique) ───
+            form = request.httprequest.form
+            kept_ids = set()
+            for raw in form.getlist('autre_doc_keep[]'):
+                try:
+                    kept_ids.add(int(raw))
+                except (TypeError, ValueError):
+                    pass
+            commands = [
+                (2, doc.id, 0)
+                for doc in insc.document_ids if doc.id not in kept_ids
+            ]
+            noms = form.getlist('autre_doc_nom[]')
+            fichiers = files.getlist('autre_doc_fichier[]')
+            for nom, fichier in zip(noms, fichiers):
+                nom = (nom or '').strip()
+                a_un_fichier = bool(fichier and fichier.filename)
+                if not nom and not a_un_fichier:
+                    continue  # ligne vide → ignorée
+                data = fichier.read() if a_un_fichier else b''
+                if not nom or not data:
+                    pays_list = request.env['res.country'].sudo().search([], order='name')
+                    return request.render('training_frmjc.portal_inscription_form', {
+                        'insc': insc, 'partner': insc.partner_id,
+                        'session': insc.session_id, 'etape': 6,
+                        'token': token, 'pays_list': pays_list,
+                        'errors': {'global': "Chaque document complémentaire doit avoir "
+                                             "une nature renseignée et un fichier joint."},
+                    })
+                commands.append((0, 0, {
+                    'name': nom,
+                    'fichier': base64.b64encode(data),
+                    'fichier_filename': fichier.filename,
+                }))
+            if commands:
+                vals['document_ids'] = commands
+
+        elif etape == 7:
             partner_vals.update({
                 'numero_secu': p.get('numero_secu', ''),
                 'situation_familiale': p.get('situation_familiale', ''),
@@ -364,30 +431,32 @@ class PortalInscription(http.Controller):
                 partner_vals['nombre_enfants'] = int(p.get('nombre_enfants') or 0)
             except ValueError:
                 pass
-            vals.update({
-                'conditions_acceptees': p.get('conditions_acceptees') == 'on',
-                'notes_candidat': p.get('notes_candidat', ''),
-            })
-            if vals.get('conditions_acceptees'):
+            vals['notes_candidat'] = p.get('notes_candidat', '')
+            # Attestation sur l'honneur de l'exactitude des informations
+            if p.get('attestation_exactitude') == 'on':
                 import datetime
                 vals['date_declaration'] = datetime.date.today()
+            else:
+                vals['date_declaration'] = False
 
-        elif etape == 10:
+        elif etape == 8:
             if p.get('action') == 'soumettre':
-                if not insc.conditions_acceptees:
+                if not insc.conditions_acceptees or not insc.date_declaration:
                     pays_list = request.env['res.country'].sudo().search([], order='name')
                     return request.render('training_frmjc.portal_inscription_form', {
                         'insc': insc, 'partner': insc.partner_id,
-                        'session': insc.session_id, 'etape': 10,
+                        'session': insc.session_id, 'etape': 8,
                         'token': token, 'pays_list': pays_list,
-                        'errors': {'global': "Vous devez accepter les conditions à l'étape 9."},
+                        'errors': {'global': "Vous devez accepter la collecte de vos données "
+                                             "personnelles (étape 1) et certifier sur l'honneur "
+                                             "l'exactitude des informations (étape 7)."},
                     })
                 insc.sudo().write({'statut': 'soumis'})
                 self._envoyer_confirmation(insc)
                 return request.redirect(f'/formation/dossier/{token}/confirme')
 
         # Enregistrer et avancer
-        next_etape = etape + 1 if etape < 10 else 10
+        next_etape = etape + 1 if etape < 8 else 8
         vals['etape_portal'] = max(insc.etape_portal or 1, next_etape)
         insc.sudo().write(vals)
         if partner_vals:

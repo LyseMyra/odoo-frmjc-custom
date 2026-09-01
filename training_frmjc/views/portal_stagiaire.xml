@@ -793,6 +793,12 @@
                                     <input type="tel" name="phone" class="form-control"
                                            t-att-value="partner.phone or ''"/>
                                 </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Email professionnel</label>
+                                    <input type="email" name="email_pro" class="form-control"
+                                           t-att-value="insc.email_pro or ''"
+                                           placeholder="prenom.nom@structure.fr"/>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -838,8 +844,7 @@
                                     <select name="statut_emploi" class="form-select">
                                         <option value="">—</option>
                                         <t t-foreach="[
-                                            ('salarie_cdi','Salarié CDI'),
-                                            ('salarie_cdd','Salarié CDD'),
+                                            ('salarie','Salarié'),
                                             ('independant','Indépendant'),
                                             ('demandeur_emploi','Demandeur d\'emploi'),
                                             ('etudiant','Étudiant'),
@@ -860,9 +865,9 @@
                                         <t t-foreach="[
                                             ('cdi','CDI'),('cdd','CDD'),
                                             ('interim','Intérim'),
-                                            ('independant','Indépendant'),
-                                            ('benevole','Bénévole'),
-                                            ('autre','Autre'),
+                                            ('apprentissage','Apprentissage'),
+                                            ('professionnalisation','Professionnalisation'),
+                                            ('sanscontract','Pas de contrat'),
                                         ]" t-as="opt">
                                             <option t-att-value="opt[0]"
                                                     t-att-selected="insc.type_contrat == opt[0]">
@@ -880,6 +885,14 @@
                                     <label class="form-label">Adresse de l'employeur</label>
                                     <input type="text" name="employeur_adresse" class="form-control"
                                            t-att-value="insc.employeur_adresse or ''"/>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Reconnaissance de la Qualité de Travailleur Handicapé (RQTH)</label>
+                                    <select name="rqth" class="form-select">
+                                        <option value="">—</option>
+                                        <option value="oui" t-att-selected="insc.rqth == 'oui'">Oui</option>
+                                        <option value="non" t-att-selected="insc.rqth == 'non'">Non</option>
+                                    </select>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Type de stagiaire</label>

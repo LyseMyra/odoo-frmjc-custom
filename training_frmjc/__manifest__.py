@@ -1,6 +1,6 @@
 {
     'name': 'Formations FRMJC',
-    'version': '19.0.1.0.0',
+    'version': '19.0.2.3.0',
     'summary': 'Gestion des formations DEJEPS - FRMJC Bretagne Pays de la Loire',
     'description': """
         Module de gestion des formations professionnelles de la FRMJC.

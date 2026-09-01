@@ -51,9 +51,8 @@ class TrainingInscription(models.Model):
 
     # ── Étape 3 : Situation professionnelle ────────────────────────
     statut_emploi = fields.Selection([
-        ('salarie_cdi', 'Salarié CDI'),
-        ('salarie_cdd', 'Salarié CDD'),
-        ('independant', 'Travailleur indépendant'),
+        ('salarie', 'Salarié'),
+        ('independant', 'Indépendant'),
         ('demandeur_emploi', "Demandeur d'emploi"),
         ('etudiant', 'Étudiant'),
         ('benevole', 'Bénévole'),
@@ -62,11 +61,19 @@ class TrainingInscription(models.Model):
     employeur_nom = fields.Char(string='Employeur')
     employeur_adresse = fields.Char(string='Adresse employeur')
     type_contrat = fields.Selection([
-        ('cdi', 'CDI'), ('cdd', 'CDD'), ('interim', 'Intérim'),
-        ('independant', 'Indépendant'), ('benevole', 'Bénévole'), ('autre', 'Autre'),
+        ('cdi', 'CDI'),
+        ('cdd', 'CDD'),
+        ('interim', 'Intérim'),
+        ('apprentissage', 'Apprentissage'),
+        ('professionnalisation', 'Professionnalisation'),
+        ('sanscontract', 'Pas de contrat'),
     ], string='Type de contrat')
     remuneration_mensuelle = fields.Float(string='Rémunération brute mensuelle (€)')
     volume_horaire_semaine = fields.Float(string='Volume horaire hebdomadaire (h)')
+    rqth = fields.Selection([
+        ('oui', 'Oui'),
+        ('non', 'Non'),
+    ], string='RQTH (Reconnaissance de la Qualité de Travailleur Handicapé)')
     # ── Classification BPF (Bilan Pédagogique et Financier) ────────
     mode_stagiaire = fields.Selection([
         ('a', 'a — Salariés d\'employeurs privés hors apprentis'),
@@ -113,15 +120,12 @@ class TrainingInscription(models.Model):
     annee_obtention = fields.Integer(string="Année d'obtention")
     etablissement_formation = fields.Char(string='Établissement')
 
-    # ── Étape 5 : Expériences ──────────────────────────────────────
-    experiences_pro = fields.Text(string='Expériences professionnelles et bénévoles')
-    experience_animation = fields.Float(string="Années d'expérience en animation / sport")
-    experience_encadrement = fields.Float(string="Années d'expérience en encadrement")
+    # ── Expériences (fusionné avec l'étape Prérequis) ──────────────
+    experience_ids = fields.One2many(
+        'training.inscription.experience', 'inscription_id', string='Expériences',
+    )
 
-    # ── Étape 6 : Motivations ──────────────────────────────────────
-    motivations = fields.Text(string='Motivations pour cette formation')
-
-    # ── Étape 7 : Projet professionnel ─────────────────────────────
+    # ── Projet professionnel ──────────────────────────────────────
     projet_professionnel = fields.Text(string='Projet professionnel')
     structure_accueil = fields.Char(string="Structure d'accueil (saisie libre)")
     structure_accueil_id = fields.Many2one(
@@ -131,19 +135,25 @@ class TrainingInscription(models.Model):
     )
     fonction_visee = fields.Char(string='Fonction visée')
 
-    # ── Étape 8 : Documents ────────────────────────────────────────
+    # ── Documents ─────────────────────────────────────────────────
     cv = fields.Binary(string='CV', attachment=True)
     cv_filename = fields.Char()
     lettre_motivation_doc = fields.Binary(string='Lettre de motivation', attachment=True)
     lettre_motivation_filename = fields.Char()
     diplome_doc = fields.Binary(string='Copie de diplôme / attestation', attachment=True)
     diplome_filename = fields.Char()
-    justificatif_emploi = fields.Binary(string='Justificatif de situation professionnelle', attachment=True)
-    justificatif_emploi_filename = fields.Char()
-    autre_document = fields.Binary(string='Autre document', attachment=True)
-    autre_document_filename = fields.Char()
+    justificatif_identite = fields.Binary(string="Justificatif d'identité valide", attachment=True)
+    justificatif_identite_filename = fields.Char()
+    photo_identite = fields.Binary(string="Photo d'identité", attachment=True)
+    photo_identite_filename = fields.Char()
+    attestation_rqth = fields.Binary(string='Attestation RQTH', attachment=True)
+    attestation_rqth_filename = fields.Char()
+    document_ids = fields.One2many(
+        'training.inscription.document', 'inscription_id',
+        string='Autres documents justificatifs',
+    )
 
-    # ── Étape 9 : Déclaration ──────────────────────────────────────
+    # ── Déclaration ──────────────────────────────────────────────
     conditions_acceptees = fields.Boolean(string='Conditions acceptées')
     date_declaration = fields.Date(string='Date de la déclaration sur l\'honneur')
     notes_candidat = fields.Text(string='Informations complémentaires (candidat)')
@@ -155,6 +165,13 @@ class TrainingInscription(models.Model):
     motif_refus = fields.Text(string='Motif de refus')
     date_derniere_relance = fields.Date(string='Dernière relance envoyée')
     nb_relances = fields.Integer(string='Nb relances', default=0)
+
+    # ── Contact post-acceptation ─────────────────────────────────
+    email_pro = fields.Char(
+        string='Email professionnel',
+        help="Renseignable uniquement pour un dossier accepté, "
+             "depuis le portail stagiaire ou le back-office.",
+    )
 
     # ── Coordonnées candidat (related) ────────────────────────────
     partner_email = fields.Char(related='partner_id.email', readonly=True, string='Email')
@@ -295,9 +312,11 @@ class TrainingInscription(models.Model):
     # ── Workflow actions ───────────────────────────────────────────
     def action_soumettre(self):
         for rec in self:
-            if not rec.conditions_acceptees:
+            if not rec.conditions_acceptees or not rec.date_declaration:
                 raise ValidationError(
-                    "Le candidat doit accepter les conditions avant soumission."
+                    "Le candidat doit accepter la collecte et le traitement de ses "
+                    "données personnelles et certifier sur l'honneur l'exactitude "
+                    "des informations avant soumission."
                 )
             rec.write({'statut': 'soumis'})
 
