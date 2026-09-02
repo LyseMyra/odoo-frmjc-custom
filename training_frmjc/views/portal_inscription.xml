@@ -1404,7 +1404,7 @@
                         <t t-else="">
                             <button type="submit" class="btn btn-success btn-lg"
                                 t-att-disabled="not (insc.conditions_acceptees and insc.date_declaration)">
-                                ✉ Soumettre mon dossier
+                                Soumettre mon dossier
                             </button>
                         </t>
                     </div>
