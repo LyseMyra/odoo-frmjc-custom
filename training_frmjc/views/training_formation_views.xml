@@ -41,6 +41,7 @@
                             <field name="specialite"/>
                             <field name="mention"/>
                             <field name="reference_arrete"/>
+                            <field name="responsable_pedagogique_id"/>
                         </group>
                         <group string="Volumes et capacité">
                             <field name="volume_centre"/>

@@ -7,56 +7,59 @@
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">training_frmjc.tmpl_attestation_mensuelle</field>
         <field name="report_file">training_frmjc.tmpl_attestation_mensuelle</field>
-        <field name="binding_model_id" ref="model_training_monthly_report"/>
+        <field name="binding_model_id" ref="model_training_monthly_report" />
         <field name="binding_type">report</field>
-        <field name="paperformat_id" ref="training_frmjc.paperformat_frmjc_a4"/>
+        <field name="paperformat_id" ref="training_frmjc.paperformat_frmjc_a4" />
     </record>
 
     <template id="tmpl_attestation_mensuelle">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="doc">
-                <t t-set="mois_fr_min" t-value="{1:'janvier',2:'février',3:'mars',4:'avril',5:'mai',6:'juin',7:'juillet',8:'août',9:'septembre',10:'octobre',11:'novembre',12:'décembre'}"/>
-                <t t-set="mois_fr_maj" t-value="{1:'Janvier',2:'Février',3:'Mars',4:'Avril',5:'Mai',6:'Juin',7:'Juillet',8:'Août',9:'Septembre',10:'Octobre',11:'Novembre',12:'Décembre'}"/>
-                <t t-set="hab" t-value="doc.session_id.habilitation_id"/>
-                <t t-set="company" t-value="doc.env.company"/>
-                <t t-set="semaines" t-value="doc.get_semaines_calendrier()"/>
-                <t t-set="tot_global_stage" t-value="sum(s['tot_stage'] for s in semaines)"/>
-                <t t-set="tot_global_centre" t-value="sum(s['tot_centre'] for s in semaines)"/>
+                <t t-set="mois_fr_min"
+                    t-value="{1:'janvier',2:'février',3:'mars',4:'avril',5:'mai',6:'juin',7:'juillet',8:'août',9:'septembre',10:'octobre',11:'novembre',12:'décembre'}" />
+                <t t-set="mois_fr_maj"
+                    t-value="{1:'Janvier',2:'Février',3:'Mars',4:'Avril',5:'Mai',6:'Juin',7:'Juillet',8:'Août',9:'Septembre',10:'Octobre',11:'Novembre',12:'Décembre'}" />
+                <t t-set="hab" t-value="doc.session_id.habilitation_id" />
+                <t t-set="company" t-value="doc.env.company" />
+                <t t-set="semaines" t-value="doc.get_semaines_calendrier()" />
+                <t t-set="tot_global_stage" t-value="sum(s['tot_stage'] for s in semaines)" />
+                <t t-set="tot_global_centre" t-value="sum(s['tot_centre'] for s in semaines)" />
 
-                <div style="font-family:Arial, Helvetica, sans-serif; font-size:9pt; width:100%; padding:0; margin:0;">
+                <div
+                    style="font-family:Arial, Helvetica, sans-serif; font-size:9pt; width:100%; padding:0; margin:0;">
 
                     <!-- ════════════════════════════════════════════════ -->
-                    <!-- Conteneur principal 2 colonnes                  -->
+                    <!-- Conteneur principal 2 colonnes                   -->
                     <!-- ════════════════════════════════════════════════ -->
                     <div style="display:flex; gap:1cm; align-items:flex-start;">
 
                         <!-- ── COLONNE GAUCHE ─────────────────────────── -->
-                        <div style="width:5.5cm; flex-shrink:0; display:flex; flex-direction:column; gap:0.5cm;">
+                        <div
+                            style="width:5.5cm; flex-shrink:0; display:flex; flex-direction:column; gap:0.5cm;">
 
                             <!-- Logo -->
                             <div>
                                 <img t-att-src="'/web/image/res.company/%d/logo' % company.id"
-                                     style="max-width:4.5cm; max-height:3cm; display:block;"/>
+                                    style="max-width:4.5cm; max-height:3cm; display:block;" />
                             </div>
 
                             <!-- Dates de la formation -->
-                            <p style="margin:0; font-size:8.5pt;">
-                                Formation du
-                                <t t-esc="doc.session_id.date_debut.strftime('%d/%m/%Y') if doc.session_id.date_debut else '—'"/>
-                                au
-                                <t t-esc="doc.session_id.date_fin.strftime('%d/%m/%Y') if doc.session_id.date_fin else '—'"/>
+                            <p style="margin:0; font-size:8.5pt;"> Formation du <t
+                                    t-esc="doc.session_id.date_debut.strftime('%d/%m/%Y') if doc.session_id.date_debut else '—'" />
+                                au <t
+                                    t-esc="doc.session_id.date_fin.strftime('%d/%m/%Y') if doc.session_id.date_fin else '—'" />
                             </p>
 
                             <!-- Mois en gros -->
                             <p style="font-size:20pt; font-weight:bold; margin:0.3cm 0;">
-                                <t t-esc="mois_fr_maj.get(doc.mois, str(doc.mois))"/>
-                                <t t-esc="doc.annee"/>
+                                <t t-esc="mois_fr_maj.get(doc.mois, str(doc.mois))" />
+                                <t t-esc="doc.annee" />
                             </p>
 
                             <!-- Stagiaire -->
-                            <p style="margin:0;">
-                                Stagiaire :
-                                <strong><t t-esc="doc.partner_id.name"/></strong>
+                            <p style="margin:0;"> Stagiaire : <strong>
+                                    <t t-esc="doc.partner_id.name" />
+                                </strong>
                             </p>
 
                             <!-- Espace poussant les signatures vers le bas -->
@@ -90,80 +93,101 @@
                         <div style="flex:1; min-width:0;">
 
                             <!-- Titre -->
-                            <h2 style="text-align:center; font-size:13pt; font-weight:bold; margin:0 0 0.15cm 0;">
+                            <h2
+                                style="text-align:center; font-size:13pt; font-weight:bold; margin:0 0 0.15cm 0;">
                                 Attestation mensuelle de présence
                             </h2>
 
                             <!-- Informations formation -->
                             <p style="text-align:center; font-weight:bold; margin:0; font-size:9pt;">
-                                <t t-esc="(hab.type_formation or '').upper()"/>
-                                <t t-if="hab.specialite"> - <t t-esc="hab.specialite"/></t>
+                                <t t-esc="(hab.type_formation or '').upper()" />
+                                <t t-if="hab.specialite"> - <t t-esc="hab.specialite" /></t>
                             </p>
                             <t t-if="hab.mention">
-                                <p style="text-align:center; font-style:italic; margin:0; font-size:8.5pt;">
-                                    MENTION :
-                                    <t t-esc="hab.mention"/>
+                                <p
+                                    style="text-align:center; font-style:italic; margin:0; font-size:8.5pt;">
+                                    MENTION : <t t-esc="hab.mention" />
                                 </p>
                             </t>
                             <p style="text-align:center; margin:0 0 0.5cm 0; font-size:8.5pt;">
-                                Habilitation :
-                                <t t-esc="hab.numero or hab.display_name or '—'"/>
+                                Habilitation : <t t-esc="hab.numero or hab.display_name or '—'" />
                             </p>
 
                             <!-- ── Tableaux semaine par semaine ─────── -->
                             <t t-foreach="semaines" t-as="sem">
-                                <table style="width:100%; border-collapse:collapse; margin-bottom:0.35cm; font-size:8pt;">
+                                <table
+                                    style="width:100%; border-collapse:collapse; margin-bottom:0.35cm; font-size:8pt;">
                                     <thead>
                                         <tr>
-                                            <th rowspan="2" style="border:1px solid #333; padding:2px 4px; text-align:center; width:0.6cm;">Jour</th>
-                                            <th rowspan="2" style="border:1px solid #333; padding:2px 4px; text-align:center; width:2.2cm;">Date</th>
-                                            <th colspan="2" style="border:1px solid #333; padding:2px 4px; text-align:center;">Heures de présence</th>
-                                            <th rowspan="2" style="border:1px solid #333; padding:2px 4px; text-align:center;">Motif des absences</th>
+                                            <th rowspan="2"
+                                                style="border:1px solid #333; padding:2px 4px; text-align:center; width:0.6cm;">
+                                                Jour</th>
+                                            <th rowspan="2"
+                                                style="border:1px solid #333; padding:2px 4px; text-align:center; width:2.2cm;">
+                                                Date</th>
+                                            <th colspan="2"
+                                                style="border:1px solid #333; padding:2px 4px; text-align:center;">Heures
+                                                de présence</th>
+                                            <th rowspan="2"
+                                                style="border:1px solid #333; padding:2px 4px; text-align:center;">Motif
+                                                des absences</th>
                                         </tr>
                                         <tr>
-                                            <th style="border:1px solid #333; padding:2px 4px; text-align:center; width:2cm; font-size:7.5pt;">Stage en<br/>entreprise</th>
-                                            <th style="border:1px solid #333; padding:2px 4px; text-align:center; width:2cm; font-size:7.5pt;">Formation en<br/>centre</th>
+                                            <th
+                                                style="border:1px solid #333; padding:2px 4px; text-align:center; width:2cm; font-size:7.5pt;">Stage
+                                                en<br />entreprise</th>
+                                            <th
+                                                style="border:1px solid #333; padding:2px 4px; text-align:center; width:2cm; font-size:7.5pt;">Formation
+                                                en<br />centre</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <t t-foreach="sem['jours']" t-as="jour">
                                             <tr>
                                                 <!-- Code jour (L M M J V S) -->
-                                                <td style="border:1px solid #ccc; padding:2px 4px; text-align:center; font-weight:bold;">
-                                                    <t t-esc="jour['code']"/>
+                                                <td
+                                                    style="border:1px solid #ccc; padding:2px 4px; text-align:center; font-weight:bold;">
+                                                    <t t-esc="jour['code']" />
                                                 </td>
                                                 <!-- Date -->
-                                                <td style="border:1px solid #ccc; padding:2px 4px; text-align:center;">
+                                                <td
+                                                    style="border:1px solid #ccc; padding:2px 4px; text-align:center;">
                                                     <t t-if="jour['date']">
-                                                        <t t-esc="jour['date'].strftime('%d/%m/%Y')"/>
+                                                        <t t-esc="jour['date'].strftime('%d/%m/%Y')" />
                                                     </t>
                                                 </td>
                                                 <!-- Stage en entreprise -->
-                                                <td style="border:1px solid #ccc; padding:2px 4px; text-align:center;">
+                                                <td
+                                                    style="border:1px solid #ccc; padding:2px 4px; text-align:center;">
                                                     <t t-if="jour['h_stage'] is not None">
-                                                        <t t-esc="int(jour['h_stage'])"/>
+                                                        <t t-esc="int(jour['h_stage'])" />
                                                     </t>
                                                 </td>
                                                 <!-- Formation en centre -->
-                                                <td style="border:1px solid #ccc; padding:2px 4px; text-align:center;">
+                                                <td
+                                                    style="border:1px solid #ccc; padding:2px 4px; text-align:center;">
                                                     <t t-if="jour['h_centre'] is not None">
-                                                        <t t-esc="int(jour['h_centre'])"/>
+                                                        <t t-esc="int(jour['h_centre'])" />
                                                     </t>
                                                 </td>
                                                 <!-- Motif -->
                                                 <td style="border:1px solid #ccc; padding:2px 6px;">
-                                                    <t t-esc="jour['motif']"/>
+                                                    <t t-esc="jour['motif']" />
                                                 </td>
                                             </tr>
                                         </t>
                                         <!-- Ligne TOT -->
                                         <tr>
-                                            <td colspan="2" style="border:1px solid #333; padding:2px 4px; text-align:center; font-weight:bold;">TOT</td>
-                                            <td style="border:1px solid #333; padding:2px 4px; text-align:center; font-weight:bold;">
-                                                <t t-esc="int(sem['tot_stage'])"/>
+                                            <td colspan="2"
+                                                style="border:1px solid #333; padding:2px 4px; text-align:center; font-weight:bold;">
+                                                TOT</td>
+                                            <td
+                                                style="border:1px solid #333; padding:2px 4px; text-align:center; font-weight:bold;">
+                                                <t t-esc="int(sem['tot_stage'])" />
                                             </td>
-                                            <td style="border:1px solid #333; padding:2px 4px; text-align:center; font-weight:bold;">
-                                                <t t-esc="int(sem['tot_centre'])"/>
+                                            <td
+                                                style="border:1px solid #333; padding:2px 4px; text-align:center; font-weight:bold;">
+                                                <t t-esc="int(sem['tot_centre'])" />
                                             </td>
                                             <td style="border:1px solid #333;"></td>
                                         </tr>
@@ -174,16 +198,20 @@
                             <!-- ── Ligne TOTAL ─────────────────────── -->
                             <table style="width:100%; border-collapse:collapse; margin-top:0.3cm;">
                                 <tr>
-                                    <td colspan="2" style="border:1.5px solid #333; padding:3px 6px; text-align:center; font-weight:bold;">
+                                    <td colspan="2"
+                                        style="border:1.5px solid #333; padding:3px 6px; text-align:center; font-weight:bold;">
                                         TOTAL
                                     </td>
-                                    <td style="border:1.5px solid #333; padding:3px 6px; text-align:center; font-weight:bold; width:2cm;">
-                                        <t t-esc="int(tot_global_stage)"/>
+                                    <td
+                                        style="border:1.5px solid #333; padding:3px 6px; text-align:center; font-weight:bold; width:2cm;">
+                                        <t t-esc="int(tot_global_stage)" />
                                     </td>
-                                    <td style="border:1.5px solid #333; padding:3px 6px; text-align:center; font-weight:bold; width:2cm;">
-                                        <t t-esc="int(tot_global_centre)"/>
+                                    <td
+                                        style="border:1.5px solid #333; padding:3px 6px; text-align:center; font-weight:bold; width:2cm;">
+                                        <t t-esc="int(tot_global_centre)" />
                                     </td>
-                                    <td style="border:1.5px solid #333; padding:3px 6px; font-weight:bold;">
+                                    <td
+                                        style="border:1.5px solid #333; padding:3px 6px; font-weight:bold;">
                                         heures
                                     </td>
                                 </tr>
@@ -195,17 +223,21 @@
                     </div>
 
                     <!-- ── Pied de page ────────────────────────────────── -->
-                    <div style="margin-top:1cm; border-top:1px solid #555; padding-top:0.3cm; text-align:center; font-size:7.5pt; color:#333;">
-                        <strong><t t-esc="company.name"/></strong><br/>
+                    <div
+                        style="margin-top:1cm; border-top:1px solid #555; padding-top:0.3cm; text-align:center; font-size:7.5pt; color:#333;">
+                        <strong>
+                            <t t-esc="company.name" />
+                        </strong>
+                        <br />
                         <t t-if="company.street">
-                            <t t-esc="company.street"/>
+                            <t t-esc="company.street" />
                             <t t-if="company.zip or company.city">
-                                <t t-esc="(company.zip or '') + ' ' + (company.city or '')"/>
+                                <t t-esc="(company.zip or '') + ' ' + (company.city or '')" />
                             </t>
                         </t>
-                        <t t-if="company.vat"> - SIRET <t t-esc="company.vat"/></t>
-                        <t t-if="company.phone"> - <t t-esc="company.phone"/></t>
-                        <t t-if="company.email"> - <t t-esc="company.email"/></t>
+                        <t t-if="company.vat"> - SIRET <t t-esc="company.vat" /></t>
+                        <t t-if="company.phone"> - <t t-esc="company.phone" /></t>
+                        <t t-if="company.email"> - <t t-esc="company.email" /></t>
                     </div>
 
                 </div>

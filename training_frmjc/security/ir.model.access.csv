@@ -5,7 +5,7 @@ access_training_bloc_user,training.bloc user,model_training_bloc,base.group_user
 access_training_module_user,training.module user,model_training_module,base.group_user,1,1,1,0
 access_training_module_repartition_user,training.module.repartition user,model_training_module_repartition,base.group_user,1,1,1,1
 access_training_week_user,training.week user,model_training_week,base.group_user,1,1,1,1
-access_training_week_line_user,training.week.line user,model_training_week_line,base.group_user,1,1,1,0
+access_training_week_line_user,training.week.line user,model_training_week_line,base.group_user,1,1,1,1
 access_training_document_user,training.document user,model_training_document,base.group_user,1,1,1,0
 access_training_trainer_user,training.trainer user,model_training_trainer,base.group_user,1,1,1,0
 access_training_inscription_user,training.inscription user,model_training_inscription,base.group_user,1,1,1,0

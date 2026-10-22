@@ -133,6 +133,16 @@ class TrainingInscription(models.Model):
         domain=[('is_structure_accueil', '=', True)],
         help="Lier à une fiche structure pour les conventions",
     )
+    tuteur_id = fields.Many2one(
+        'res.partner', string='Tuteur / conseiller·ère',
+        help="Personne qui accompagne le stagiaire au quotidien dans la "
+             "structure d'accueil (distinct du représentant légal).",
+    )
+    representant_structure_id = fields.Many2one(
+        'res.partner', string='Représentant de la structure',
+        help="Personne habilitée à signer la convention au nom de la "
+             "structure d'accueil (ex. directeur·rice).",
+    )
     fonction_visee = fields.Char(string='Fonction visée')
 
     # ── Documents ─────────────────────────────────────────────────

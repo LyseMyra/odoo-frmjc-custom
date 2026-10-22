@@ -42,7 +42,6 @@ class TrainingSession(models.Model):
         string='Responsable pédagogique',
         required=True,
         tracking=True,
-        domain=[('is_company', '=', False)],
     )
     responsable_email = fields.Char(
         related='responsable_id.email',

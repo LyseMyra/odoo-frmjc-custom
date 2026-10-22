@@ -155,6 +155,8 @@
                                 <group>
                                     <field name="structure_accueil"/>
                                     <field name="structure_accueil_id"/>
+                                    <field name="tuteur_id"/>
+                                    <field name="representant_structure_id"/>
                                     <field name="fonction_visee"/>
                                 </group>
                             </group>

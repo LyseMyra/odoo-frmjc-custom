@@ -57,6 +57,13 @@ class TrainingFormation(models.Model):
         string='Référence de l\'arrêté de création',
     )
 
+    # ── Coordination pédagogique ────────────────────────────────────
+    responsable_pedagogique_id = fields.Many2one(
+        'res.partner', string='Responsable pédagogique',
+        help="Coordinateur·rice pédagogique de la formation, mentionné·e "
+             "dans les conventions (nom, téléphone, email).",
+    )
+
     # ── Relations ──────────────────────────────────────────────────
     bloc_ids = fields.One2many(
         'training.bloc',

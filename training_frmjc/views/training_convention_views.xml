@@ -83,10 +83,9 @@
 
                     <group>
                         <group string="Parties">
-                            <field name="structure_accueil_id"
-                                   invisible="type_convention == 'formation_continue'"/>
-                            <field name="tuteur_id"
-                                   invisible="type_convention == 'formation_continue'"/>
+                            <field name="structure_accueil_id"/>
+                            <field name="tuteur_id"/>
+                            <field name="representant_structure_id"/>
                             <field name="representant_frmjc_id"/>
                         </group>
                     </group>
@@ -109,6 +108,12 @@
                                     <field name="pourcentage" readonly="1"/>
                                 </list>
                             </field>
+                            <separator string="Frais d'inscription"/>
+                            <group>
+                                <field name="frais_inscription_montant"/>
+                                <field name="frais_inscription_pris_en_charge"/>
+                                <field name="frais_inscription_date_reglement"/>
+                            </group>
                         </page>
 
                         <!-- Documents -->
@@ -274,8 +279,8 @@
             </notebook>
             <!-- Checkbox is_structure_accueil dans le header du form -->
             <field name="company_type" position="after">
-                <field name="is_structure_accueil" widget="boolean_toggle"
-                       string="Structure d'accueil FRMJC"/>
+                <label for="is_structure_accueil" string="Structure d'accueil FRMJC"/>
+                <field name="is_structure_accueil" widget="boolean_toggle" nolabel="1"/>
             </field>
         </field>
     </record>

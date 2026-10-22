@@ -47,6 +47,11 @@ class TrainingConvention(models.Model):
     tuteur_id = fields.Many2one(
         'res.partner', string="Tuteur / Maître d'apprentissage",
     )
+    representant_structure_id = fields.Many2one(
+        'res.partner', string='Représentant de la structure',
+        help="Personne habilitée à signer la convention au nom de la "
+             "structure d'accueil (ex. directeur·rice).",
+    )
     representant_frmjc_id = fields.Many2one(
         'res.partner', string='Représentant FRMJC',
     )
@@ -66,6 +71,18 @@ class TrainingConvention(models.Model):
     )
     ecart_financement = fields.Float(
         compute='_compute_total_finance', store=True, string='Écart (€)', digits=(10, 2),
+    )
+
+    # ── Frais d'inscription ──────────────────────────────────────────
+    frais_inscription_montant = fields.Float(
+        string="Frais d'inscription (€)", digits=(10, 2), default=50.0,
+    )
+    frais_inscription_pris_en_charge = fields.Selection([
+        ('structure', "La structure d'accueil"),
+        ('stagiaire', 'Le stagiaire'),
+    ], string="Frais d'inscription pris en charge par")
+    frais_inscription_date_reglement = fields.Date(
+        string="Date de règlement des frais d'inscription",
     )
 
     # ── Workflow ───────────────────────────────────────────────────
