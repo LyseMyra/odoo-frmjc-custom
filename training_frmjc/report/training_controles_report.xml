@@ -6,7 +6,6 @@
         <field name="model">training.formation</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">training_frmjc.report_controles_template</field>
-        <field name="report_file">training_frmjc.report_controles_template</field>
         <field name="binding_model_id" ref="model_training_formation"/>
         <field name="binding_type">report</field>
     </record>

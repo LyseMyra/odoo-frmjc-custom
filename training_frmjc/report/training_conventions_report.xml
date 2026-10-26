@@ -8,7 +8,6 @@
         <field name="model">training.convention</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">training_frmjc.report_convention_alternance</field>
-        <field name="report_file">training_frmjc.report_convention_alternance</field>
         <field name="print_report_name">'Convention_alternance_' + object.numero</field>
         <field name="binding_model_id" ref="model_training_convention"/>
         <field name="binding_type">report</field>
@@ -20,7 +19,6 @@
         <field name="model">training.convention</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">training_frmjc.report_convention_formation</field>
-        <field name="report_file">training_frmjc.report_convention_formation</field>
         <field name="print_report_name">'Convention_formation_' + object.numero</field>
         <field name="binding_model_id" ref="model_training_convention"/>
         <field name="binding_type">report</field>
@@ -32,7 +30,6 @@
         <field name="model">training.convention</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">training_frmjc.report_convention_cefa</field>
-        <field name="report_file">training_frmjc.report_convention_cefa</field>
         <field name="print_report_name">'Fiche_CEFA_' + object.numero</field>
         <field name="binding_model_id" ref="model_training_convention"/>
         <field name="paperformat_id" ref="training_frmjc.paperformat_frmjc_a4"/>

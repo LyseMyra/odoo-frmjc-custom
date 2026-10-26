@@ -1,6 +1,6 @@
 {
     'name': 'Volontariat / Mobilités FRMJC',
-    'version': '19.0.1.0.0',
+    'version': '20.0.1.0.0',
     'summary': 'Pilotage des mobilités internationales (SC, CES, VSI) - FRMJC Bretagne Pays de la Loire',
     'description': """
         Module de pilotage opérationnel, pédagogique et financier des mobilités
@@ -27,7 +27,7 @@
     'data': [
         # Sécurité — en premier (groupes avant les modèles qui y référencent)
         'security/mobility_security.xml',
-        'security/ir.model.access.csv',
+        'security/ir.access.csv',
 
         # Données de référence
         'data/mobility_structure_role_data.xml',

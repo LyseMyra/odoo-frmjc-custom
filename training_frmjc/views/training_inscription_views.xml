@@ -315,16 +315,16 @@
                             </div>
                             <div class="mt-1">
                                 <span class="badge bg-secondary">
-                                    <t t-esc="record.reference.value"/>
+                                    <t t-out="record.reference.value"/>
                                 </span>
                                 <t t-if="record.statut.raw_value == 'en_cours'">
                                     <span class="ms-1 text-muted small">
-                                        Étape <t t-esc="record.etape_portal.value"/>/10
+                                        Étape <t t-out="record.etape_portal.value"/>/10
                                     </span>
                                 </t>
                             </div>
                             <div class="text-muted small mt-1">
-                                <t t-esc="record.date_inscription.value"/>
+                                <t t-out="record.date_inscription.value"/>
                             </div>
                         </div>
                     </t>

@@ -10,7 +10,6 @@
         <field name="model">training.jury.session</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">training_frmjc.tmpl_convocation_jury</field>
-        <field name="report_file">training_frmjc.tmpl_convocation_jury</field>
         <field name="binding_model_id" ref="model_training_jury_session"/>
         <field name="binding_type">report</field>
         <field name="paperformat_id" ref="training_frmjc.paperformat_frmjc_a4"/>
@@ -180,7 +179,6 @@
         <field name="model">training.certification</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">training_frmjc.tmpl_convocation_candidat_b</field>
-        <field name="report_file">training_frmjc.tmpl_convocation_candidat_b</field>
         <field name="binding_model_id" ref="model_training_certification"/>
         <field name="binding_type">report</field>
         <field name="paperformat_id" ref="training_frmjc.paperformat_frmjc_a4"/>

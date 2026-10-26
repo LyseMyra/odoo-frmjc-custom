@@ -7,7 +7,6 @@
         <field name="model">training.depense.intervenant</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">training_frmjc.report_contrat_prestation</field>
-        <field name="report_file">training_frmjc.report_contrat_prestation</field>
         <field name="binding_model_id" ref="model_training_depense_intervenant"/>
         <field name="binding_type">report</field>
         <field name="paperformat_id" ref="training_frmjc.paperformat_frmjc_a4"/>

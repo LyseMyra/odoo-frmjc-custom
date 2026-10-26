@@ -278,7 +278,7 @@
                 </page>
             </notebook>
             <!-- Checkbox is_structure_accueil dans le header du form -->
-            <field name="company_type" position="after">
+            <field name="category_id" position="after">
                 <label for="is_structure_accueil" string="Structure d'accueil FRMJC"/>
                 <field name="is_structure_accueil" widget="boolean_toggle" nolabel="1"/>
             </field>

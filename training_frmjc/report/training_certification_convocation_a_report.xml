@@ -7,7 +7,6 @@
         <field name="model">training.certification</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">training_frmjc.tmpl_convocation_a</field>
-        <field name="report_file">training_frmjc.tmpl_convocation_a</field>
         <field name="binding_model_id" ref="model_training_certification"/>
         <field name="binding_type">report</field>
         <field name="paperformat_id" ref="training_frmjc.paperformat_frmjc_a4"/>

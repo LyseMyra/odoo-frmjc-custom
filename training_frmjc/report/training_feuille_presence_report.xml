@@ -6,7 +6,6 @@
         <field name="model">training.formateur.demi_journee</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">training_frmjc.tmpl_feuille_presence_dj</field>
-        <field name="report_file">training_frmjc.tmpl_feuille_presence_dj</field>
         <field name="binding_model_id" ref="model_training_formateur_demi_journee"/>
         <field name="binding_type">report</field>
         <field name="paperformat_id" ref="training_frmjc.paperformat_frmjc_a4"/>
