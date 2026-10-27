@@ -40,21 +40,21 @@
                             <tr style="background:#eaf0fb;">
                                 <td style="padding:.25cm .4cm; width:25%; color:#555;">Session :</td>
                                 <td style="padding:.25cm .4cm; font-weight:bold; width:40%;">
-                                    <t t-esc="session.name or '—'"/>
+                                    <t t-out="session.name or '—'"/>
                                 </td>
                                 <td style="padding:.25cm .4cm; width:15%; color:#555;">Date :</td>
                                 <td style="padding:.25cm .4cm; font-weight:bold; width:20%;">
-                                    <t t-esc="doc.date.strftime('%d/%m/%Y') if doc.date else '—'"/>
+                                    <t t-out="doc.date.strftime('%d/%m/%Y') if doc.date else '—'"/>
                                 </td>
                             </tr>
                             <tr>
                                 <td style="padding:.25cm .4cm; color:#555;">Intervenant :</td>
                                 <td style="padding:.25cm .4cm; font-weight:bold;">
-                                    <t t-esc="intervenant.name or '—'"/>
+                                    <t t-out="intervenant.name or '—'"/>
                                 </td>
                                 <td style="padding:.25cm .4cm; color:#555;">Demi-journee :</td>
                                 <td style="padding:.25cm .4cm; font-weight:bold;">
-                                    <t t-esc="dj_label"/>
+                                    <t t-out="dj_label"/>
                                 </td>
                             </tr>
                         </table>
@@ -81,7 +81,7 @@
                                         <td style="padding:.25cm .4cm;
                                                    border-bottom:1px solid #dee2e6;
                                                    font-weight:500; vertical-align:middle;">
-                                            <t t-esc="att.partner_id.name or '—'"/>
+                                            <t t-out="att.partner_id.name or '—'"/>
                                         </td>
                                         <td style="padding:.25cm .4cm;
                                                    border-bottom:1px solid #dee2e6;
@@ -124,7 +124,7 @@
                                             Signature de l'organisme de formation
                                         </p>
                                         <p style="font-size:8.5pt; color:#555; margin:0 0 .3cm 0;">
-                                            <t t-esc="env.company.name"/>
+                                            <t t-out="env.company.name"/>
                                         </p>
                                         <p style="font-size:8.5pt; margin:0;">Date :</p>
                                         <div style="height:2cm;"></div>
@@ -137,7 +137,7 @@
                                             Signature de l'intervenant
                                         </p>
                                         <p style="font-size:8.5pt; color:#555; margin:0 0 .2cm 0;">
-                                            <t t-esc="intervenant.name or ''"/>
+                                            <t t-out="intervenant.name or ''"/>
                                         </p>
                                         <t t-if="doc.statut == 'signe' and doc.signature">
                                             <div style="text-align:center; margin-top:.2cm;">
@@ -148,7 +148,7 @@
                                             <p style="font-size:7.5pt; color:#888;
                                                       text-align:center; margin:.1cm 0 0 0;">
                                                 Signe le
-                                                <t t-esc="doc.signe_le.strftime('%d/%m/%Y a %H:%M') if doc.signe_le else '—'"/>
+                                                <t t-out="doc.signe_le.strftime('%d/%m/%Y a %H:%M') if doc.signe_le else '—'"/>
                                             </p>
                                         </t>
                                         <t t-else="">

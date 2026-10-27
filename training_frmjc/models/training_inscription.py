@@ -348,7 +348,7 @@ class TrainingInscription(models.Model):
         for rec in self:
             rec.write({'statut': 'accepte', 'date_decision': fields.Date.today()})
             if rec.partner_id.email:
-                base_url = rec.env['ir.config_parameter'].sudo().get_param('web.base.url')
+                base_url = rec.env['ir.config_parameter'].sudo().get_str('web.base.url')
                 espace_url = f'{base_url}/espace-stagiaire/{rec.portal_token}'
                 try:
                     rec.env['mail.mail'].sudo().create({
@@ -405,7 +405,7 @@ class TrainingInscription(models.Model):
 
     def action_ouvrir_portail(self):
         self.ensure_one()
-        base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        base_url = self.env['ir.config_parameter'].sudo().get_str('web.base.url')
         return {
             'type': 'ir.actions.act_url',
             'url': f'{base_url}/formation/dossier/{self.portal_token}',
@@ -450,7 +450,7 @@ class TrainingInscription(models.Model):
                         <p>Votre dossier d\'inscription <strong>{insc.reference}</strong>
                         pour la formation <strong>{insc.formation_id.display_name}</strong>
                         est en attente de votre part (statut : <em>{insc.statut}</em>).</p>
-                        <p><a href="{self.env['ir.config_parameter'].sudo().get_param('web.base.url')}/formation/dossier/{insc.portal_token}">
+                        <p><a href="{self.env['ir.config_parameter'].sudo().get_str('web.base.url')}/formation/dossier/{insc.portal_token}">
                         Accéder à mon dossier</a></p>
                         <p>L'équipe FRMJC</p>
                     """,

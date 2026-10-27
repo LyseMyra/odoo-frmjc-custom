@@ -74,7 +74,7 @@ class TrainingRubanImportWizard(models.TransientModel):
         if not self.fichier:
             raise UserError("Veuillez sélectionner un fichier Excel (.xlsx).")
 
-        data = base64.b64decode(self.fichier)
+        data = bytes(self.fichier)
         try:
             wb = openpyxl.load_workbook(io.BytesIO(data), data_only=True)
         except Exception as e:

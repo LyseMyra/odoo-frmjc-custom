@@ -173,7 +173,7 @@ class TrainingMonthlyReport(models.Model):
         nom = (self.partner_id.name or 'stagiaire').replace(' ', '_')
         filename = f'Convocation_{mois_label}_{self.annee}_{nom}.pdf'
         self.write({
-            'convocation_pdf': base64.b64encode(pdf_content),
+            'convocation_pdf': base64.b64encode(pdf_content).decode('ascii'),
             'convocation_pdf_filename': filename,
         })
 
@@ -190,7 +190,7 @@ class TrainingMonthlyReport(models.Model):
         nom = (self.partner_id.name or 'stagiaire').replace(' ', '_')
         filename = f'Attestation_{self.periode}_{nom}.pdf'
         self.write({
-            'attestation_pdf': base64.b64encode(pdf_content),
+            'attestation_pdf': base64.b64encode(pdf_content).decode('ascii'),
             'attestation_pdf_filename': filename,
             'statut': 'attestation_generee',
         })
@@ -205,7 +205,7 @@ class TrainingMonthlyReport(models.Model):
             try:
                 attachment = self.env['ir.attachment'].create({
                     'name': rec.convocation_pdf_filename or 'convocation.pdf',
-                    'datas': rec.convocation_pdf,
+                    'raw': rec.convocation_pdf,
                     'mimetype': 'application/pdf',
                     'res_model': self._name,
                     'res_id': rec.id,

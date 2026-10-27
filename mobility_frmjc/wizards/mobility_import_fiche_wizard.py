@@ -189,7 +189,7 @@ class MobilityImportFicheWizard(models.TransientModel):
         filename = f"fiche_{mobility.name.replace('/', '-')}.xlsx"
         attachment = self.env['ir.attachment'].create({
             'name': filename,
-            'datas': base64.b64encode(output.read()),
+            'raw': output.read(),
             'res_model': 'mobility.import.fiche.wizard',
             'res_id': self.id,
             'mimetype': (
@@ -225,7 +225,7 @@ class MobilityImportFicheWizard(models.TransientModel):
             raise UserError("La bibliothèque openpyxl est requise. pip install openpyxl")
 
         wb = openpyxl.load_workbook(
-            io.BytesIO(base64.b64decode(self.file)), data_only=True,
+            io.BytesIO(bytes(self.file)), data_only=True,
         )
         ws = wb['Fiche renseignement'] if 'Fiche renseignement' in wb.sheetnames else wb.active
 

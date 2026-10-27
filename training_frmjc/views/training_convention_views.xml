@@ -235,7 +235,6 @@
                       invisible="not is_structure_accueil">
                     <group>
                         <field name="is_structure_accueil"/>
-                        <field name="siret"/>
                         <field name="code_naf"/>
                         <field name="convention_collective"/>
                     </group>

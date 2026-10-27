@@ -90,9 +90,9 @@
                 <div class="frmjc-header">
                     <h4>Listes de présence</h4>
                     <div class="frmjc-meta">
-                        <t t-esc="semaine.session_id.name"/> —
-                        <t t-esc="semaine.intervenant_id.name"/> —
-                        Semaine du <t t-esc="semaine.week_start.strftime('%d/%m/%Y')"/>
+                        <t t-out="semaine.session_id.name"/> —
+                        <t t-out="semaine.intervenant_id.name"/> —
+                        Semaine du <t t-out="semaine.week_start.strftime('%d/%m/%Y')"/>
                     </div>
                 </div>
 
@@ -125,7 +125,7 @@
                             <!-- En-tête du bloc -->
                             <div t-attf-class="dj-header #{is_active and 'active' or (is_signed and 'signed' or (is_past and 'past' or ''))}">
                                 <span>
-                                    <t t-esc="date_str"/> — <t t-esc="dj_label"/>
+                                    <t t-out="date_str"/> — <t t-out="dj_label"/>
                                 </span>
                                 <t t-if="is_signed">
                                     <span class="badge-signe">Signé ✓</span>
@@ -171,7 +171,7 @@
                                                     <t t-foreach="atts" t-as="att">
                                                         <tr>
                                                             <td style="font-weight:500;">
-                                                                <t t-esc="att.partner_id.name"/>
+                                                                <t t-out="att.partner_id.name"/>
                                                             </td>
                                                             <td>
                                                                 <t t-if="att.statut == 'present'">✓ Présent(e)</t>
@@ -247,11 +247,11 @@
                                     <t t-set="atts_absents"    t-value="atts.filtered(lambda a: a.statut in ('absent', 'justifie'))"/>
 
                                     <p style="font-size:.85rem; color:#555; margin:0 0 .6rem 0;">
-                                        Signé le <strong><t t-esc="dj.signe_le.strftime('%d/%m/%Y à %H:%M') if dj.signe_le else '—'"/></strong>
+                                        Signé le <strong><t t-out="dj.signe_le.strftime('%d/%m/%Y à %H:%M') if dj.signe_le else '—'"/></strong>
                                         —
-                                        <strong><t t-esc="len(atts_presents)"/></strong> présent(s) /
-                                        <strong><t t-esc="len(atts_attente)"/></strong> en attente /
-                                        <strong><t t-esc="len(atts_absents)"/></strong> absent(s)
+                                        <strong><t t-out="len(atts_presents)"/></strong> présent(s) /
+                                        <strong><t t-out="len(atts_attente)"/></strong> en attente /
+                                        <strong><t t-out="len(atts_absents)"/></strong> absent(s)
                                     </p>
 
                                     <t t-if="atts">
@@ -266,7 +266,7 @@
                                             <tbody>
                                                 <t t-foreach="atts" t-as="att">
                                                     <tr>
-                                                        <td style="font-weight:500;"><t t-esc="att.partner_id.name"/></td>
+                                                        <td style="font-weight:500;"><t t-out="att.partner_id.name"/></td>
                                                         <td>
                                                             <t t-if="att.statut == 'present'">
                                                                 <span style="color:#27ae60;">✓ Présent(e)</span>
@@ -322,7 +322,7 @@
                                             <tbody>
                                                 <t t-foreach="atts" t-as="att">
                                                     <tr>
-                                                        <td style="font-weight:500; color:#888;"><t t-esc="att.partner_id.name"/></td>
+                                                        <td style="font-weight:500; color:#888;"><t t-out="att.partner_id.name"/></td>
                                                         <td>
                                                             <t t-if="att.statut == 'present'">
                                                                 <span style="color:#27ae60;">✓ Présent(e)</span>
@@ -347,8 +347,8 @@
                                 <!-- À venir -->
                                 <t t-else="">
                                     <p class="future-msg">
-                                        Accessible le <t t-esc="dj.date.strftime('%d/%m/%Y')"/>
-                                        (<t t-esc="dj_label"/>).
+                                        Accessible le <t t-out="dj.date.strftime('%d/%m/%Y')"/>
+                                        (<t t-out="dj_label"/>).
                                     </p>
                                 </t>
 

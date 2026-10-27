@@ -12,7 +12,7 @@
                 </a>
                 <div class="navbar-nav ms-auto d-flex flex-row align-items-center gap-3">
                     <span class="text-white-50 small">
-                        Bonjour, <strong class="text-white"><t t-esc="partner.name.split()[0]"/></strong>
+                        Bonjour, <strong class="text-white"><t t-out="partner.name.split()[0]"/></strong>
                     </span>
                     <a href="/formation/deconnexion" class="btn btn-sm btn-outline-light">
                         Déconnexion
@@ -99,13 +99,13 @@
                             <div class="card h-100 shadow-sm">
                                 <div class="card-body">
                                     <h5 class="card-title">
-                                        <t t-esc="insc.formation_id.display_name or '—'"/>
+                                        <t t-out="insc.formation_id.display_name or '—'"/>
                                     </h5>
                                     <p class="card-text text-muted">
-                                        Session : <t t-esc="insc.session_id.display_name or '—'"/>
+                                        Session : <t t-out="insc.session_id.display_name or '—'"/>
                                     </p>
                                     <p class="card-text">
-                                        Dossier : <strong><t t-esc="insc.reference"/></strong>
+                                        Dossier : <strong><t t-out="insc.reference"/></strong>
                                     </p>
                                 </div>
                                 <div class="card-footer bg-transparent">
@@ -141,11 +141,11 @@
                         <div class="row align-items-center">
                             <div class="col">
                                 <h3 class="mb-1">
-                                    <t t-esc="insc.formation_id.display_name or '—'"/>
+                                    <t t-out="insc.formation_id.display_name or '—'"/>
                                 </h3>
                                 <p class="mb-0 opacity-75">
-                                    Session : <t t-esc="insc.session_id.display_name or '—'"/>
-                                     ·  Dossier n° <strong><t t-esc="insc.reference"/></strong>
+                                    Session : <t t-out="insc.session_id.display_name or '—'"/>
+                                     ·  Dossier n° <strong><t t-out="insc.reference"/></strong>
                                 </p>
                             </div>
                             <div class="col-auto">
@@ -167,7 +167,7 @@
                             <p class="mb-1 mt-1 small">
                                 Informations manquantes :
                                 <t t-foreach="champs_manquants" t-as="champ">
-                                    <span class="badge bg-secondary me-1"><t t-esc="champ"/></span>
+                                    <span class="badge bg-secondary me-1"><t t-out="champ"/></span>
                                 </t>
                             </p>
                             <a t-att-href="'/espace-stagiaire/' + token + '/profil'"
@@ -201,7 +201,7 @@
                         <span style="font-size:1.5rem;">✍️</span>
                         <div>
                             <strong>
-                                <t t-esc="nb_conventions_a_signer"/> convention(s) en attente
+                                <t t-out="nb_conventions_a_signer"/> convention(s) en attente
                                 de votre signature.
                             </strong>
                             <a t-att-href="'/espace-stagiaire/' + token + '/conventions'"
@@ -224,11 +224,11 @@
                                     <div style="font-size:2.5rem;">📋</div>
                                     <h5 class="mt-2 mb-1">Conventions</h5>
                                     <p class="text-muted small mb-2">
-                                        <t t-esc="len(conventions)"/> convention(s)
+                                        <t t-out="len(conventions)"/> convention(s)
                                     </p>
                                     <t t-if="nb_conventions_a_signer > 0">
                                         <span class="badge bg-warning text-dark">
-                                            <t t-esc="nb_conventions_a_signer"/> à signer
+                                            <t t-out="nb_conventions_a_signer"/> à signer
                                         </span>
                                     </t>
                                     <t t-else="">
@@ -282,7 +282,7 @@
                                     <h5 class="mt-2 mb-1">Ma structure</h5>
                                     <t t-if="has_alternance">
                                         <span class="badge bg-success">
-                                            <t t-esc="len(alternances)"/> dossier(s)
+                                            <t t-out="len(alternances)"/> dossier(s)
                                         </span>
                                     </t>
                                     <t t-else="">
@@ -320,9 +320,9 @@
                                 <a t-att-href="'/espace-stagiaire/' + token + '/convention/' + str(conv.id)"
                                    class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
                                     <div>
-                                        <strong><t t-esc="conv.numero"/></strong>
+                                        <strong><t t-out="conv.numero"/></strong>
                                         <span class="ms-2 text-muted">
-                                            <t t-esc="dict(conv._fields['type_convention'].selection).get(conv.type_convention, '—')"/>
+                                            <t t-out="dict(conv._fields['type_convention'].selection).get(conv.type_convention, '—')"/>
                                         </span>
                                     </div>
                                     <t t-set="statut_labels" t-value="{
@@ -334,7 +334,7 @@
                                         'archivee': ('secondary', 'Archivée'),
                                     }"/>
                                     <span t-attf-class="badge bg-#{statut_labels.get(conv.statut, ('secondary','—'))[0]}">
-                                        <t t-esc="statut_labels.get(conv.statut, ('secondary', conv.statut))[1]"/>
+                                        <t t-out="statut_labels.get(conv.statut, ('secondary', conv.statut))[1]"/>
                                     </span>
                                 </a>
                             </t>
@@ -373,22 +373,22 @@
                             <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
                                 <div>
                                     <h5 class="mb-1">
-                                        <t t-esc="conv.numero"/>
+                                        <t t-out="conv.numero"/>
                                         <span class="ms-2 text-muted fw-normal small">
-                                            <t t-esc="dict(conv._fields['type_convention'].selection).get(conv.type_convention, '—')"/>
+                                            <t t-out="dict(conv._fields['type_convention'].selection).get(conv.type_convention, '—')"/>
                                         </span>
                                     </h5>
                                     <p class="text-muted mb-1 small">
-                                        Créée le <t t-esc="conv.date_creation or '—'"/>
+                                        Créée le <t t-out="conv.date_creation or '—'"/>
                                         <t t-if="conv.date_debut and conv.date_fin">
-                                             ·  Période du <t t-esc="conv.date_debut"/>
-                                            au <t t-esc="conv.date_fin"/>
+                                             ·  Période du <t t-out="conv.date_debut"/>
+                                            au <t t-out="conv.date_fin"/>
                                         </t>
                                     </p>
                                     <t t-if="conv.structure_accueil_id">
                                         <p class="mb-0 small">
                                             Structure d'accueil :
-                                            <strong><t t-esc="conv.structure_accueil_id.name"/></strong>
+                                            <strong><t t-out="conv.structure_accueil_id.name"/></strong>
                                         </p>
                                     </t>
                                 </div>
@@ -402,7 +402,7 @@
                                         'archivee': ('secondary', 'Archivée'),
                                     }"/>
                                     <span t-attf-class="badge fs-6 bg-#{statut_labels.get(conv.statut, ('secondary','—'))[0]}">
-                                        <t t-esc="statut_labels.get(conv.statut, ('secondary', conv.statut))[1]"/>
+                                        <t t-out="statut_labels.get(conv.statut, ('secondary', conv.statut))[1]"/>
                                     </span>
                                     <a t-att-href="'/espace-stagiaire/' + token + '/convention/' + str(conv.id)"
                                        class="btn btn-sm btn-outline-primary">
@@ -443,7 +443,7 @@
                         <li class="breadcrumb-item">
                             <a t-att-href="'/espace-stagiaire/' + token + '/conventions'">Conventions</a>
                         </li>
-                        <li class="breadcrumb-item active"><t t-esc="convention.numero"/></li>
+                        <li class="breadcrumb-item active"><t t-out="convention.numero"/></li>
                     </ol>
                 </nav>
 
@@ -459,42 +459,42 @@
 
                 <div t-attf-class="alert alert-#{statut_info.get(convention.statut, ('secondary','—',''))[0]} mb-4">
                     <h5 class="alert-heading mb-1">
-                        <t t-esc="statut_info.get(convention.statut, ('secondary', convention.statut, ''))[1]"/>
+                        <t t-out="statut_info.get(convention.statut, ('secondary', convention.statut, ''))[1]"/>
                     </h5>
                     <p class="mb-0">
-                        <t t-esc="statut_info.get(convention.statut, ('secondary', '—', '—'))[2]"/>
+                        <t t-out="statut_info.get(convention.statut, ('secondary', '—', '—'))[2]"/>
                     </p>
                 </div>
 
                 <div class="card shadow-sm border-0 mb-4">
                     <div class="card-header bg-white fw-bold py-3">
-                        Convention n° <t t-esc="convention.numero"/>
+                        Convention n° <t t-out="convention.numero"/>
                     </div>
                     <div class="card-body">
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <p class="mb-1"><span class="text-muted small">Type :</span><br/>
                                     <strong>
-                                        <t t-esc="dict(convention._fields['type_convention'].selection).get(convention.type_convention, '—')"/>
+                                        <t t-out="dict(convention._fields['type_convention'].selection).get(convention.type_convention, '—')"/>
                                     </strong>
                                 </p>
                             </div>
                             <div class="col-md-6">
                                 <p class="mb-1"><span class="text-muted small">Formation :</span><br/>
-                                    <strong><t t-esc="convention.formation_id.display_name or '—'"/></strong>
+                                    <strong><t t-out="convention.formation_id.display_name or '—'"/></strong>
                                 </p>
                             </div>
                             <t t-if="convention.date_debut">
                             <div class="col-md-6">
                                 <p class="mb-1"><span class="text-muted small">Début :</span><br/>
-                                    <strong><t t-esc="convention.date_debut"/></strong>
+                                    <strong><t t-out="convention.date_debut"/></strong>
                                 </p>
                             </div>
                             </t>
                             <t t-if="convention.date_fin">
                             <div class="col-md-6">
                                 <p class="mb-1"><span class="text-muted small">Fin :</span><br/>
-                                    <strong><t t-esc="convention.date_fin"/></strong>
+                                    <strong><t t-out="convention.date_fin"/></strong>
                                 </p>
                             </div>
                             </t>
@@ -502,14 +502,14 @@
                             <div class="col-md-6">
                                 <p class="mb-1">
                                     <span class="text-muted small">Structure d'accueil :</span><br/>
-                                    <strong><t t-esc="convention.structure_accueil_id.name"/></strong>
+                                    <strong><t t-out="convention.structure_accueil_id.name"/></strong>
                                 </p>
                             </div>
                             </t>
                             <t t-if="convention.cout_total">
                             <div class="col-md-6">
                                 <p class="mb-1"><span class="text-muted small">Coût total :</span><br/>
-                                    <strong><t t-esc="'%.2f €' % convention.cout_total"/></strong>
+                                    <strong><t t-out="'%.2f €' % convention.cout_total"/></strong>
                                 </p>
                             </div>
                             </t>
@@ -531,15 +531,15 @@
                                 <tbody>
                                     <t t-foreach="convention.financement_ids" t-as="ligne">
                                         <tr>
-                                            <td><t t-esc="dict(ligne._fields['source'].selection).get(ligne.source, ligne.source)"/></td>
-                                            <td><t t-esc="ligne.organisme or '—'"/></td>
-                                            <td class="text-end"><t t-esc="'%.2f €' % ligne.montant"/></td>
-                                            <td class="text-end"><t t-esc="'%.1f %%' % ligne.pourcentage"/></td>
+                                            <td><t t-out="dict(ligne._fields['source'].selection).get(ligne.source, ligne.source)"/></td>
+                                            <td><t t-out="ligne.organisme or '—'"/></td>
+                                            <td class="text-end"><t t-out="'%.2f €' % ligne.montant"/></td>
+                                            <td class="text-end"><t t-out="'%.1f %%' % ligne.pourcentage"/></td>
                                         </tr>
                                     </t>
                                     <tr class="fw-bold table-light">
                                         <td colspan="2">Total</td>
-                                        <td class="text-end"><t t-esc="'%.2f €' % convention.total_finance"/></td>
+                                        <td class="text-end"><t t-out="'%.2f €' % convention.total_finance"/></td>
                                         <td class="text-end">100 %</td>
                                     </tr>
                                 </tbody>
@@ -611,13 +611,13 @@
                     <div class="card mb-2 shadow-sm border-0">
                         <div class="card-body d-flex justify-content-between align-items-center">
                             <div>
-                                <strong><t t-esc="doc.name"/></strong>
+                                <strong><t t-out="doc.name"/></strong>
                                 <span class="ms-2 badge bg-secondary">
-                                    <t t-esc="dict(doc._fields['type_document'].selection).get(doc.type_document, '—')"/>
+                                    <t t-out="dict(doc._fields['type_document'].selection).get(doc.type_document, '—')"/>
                                 </span>
                                 <t t-if="doc.date_generation">
                                     <p class="mb-0 text-muted small">
-                                        Généré le <t t-esc="doc.date_generation"/>
+                                        Généré le <t t-out="doc.date_generation"/>
                                     </p>
                                 </t>
                             </div>
@@ -671,15 +671,15 @@
                         <div class="row g-2 small text-muted">
                             <div class="col-md-4">
                                 <strong>Formation :</strong>
-                                <t t-esc="insc.formation_id.display_name or '—'"/>
+                                <t t-out="insc.formation_id.display_name or '—'"/>
                             </div>
                             <div class="col-md-4">
                                 <strong>Session :</strong>
-                                <t t-esc="insc.session_id.display_name or '—'"/>
+                                <t t-out="insc.session_id.display_name or '—'"/>
                             </div>
                             <div class="col-md-4">
                                 <strong>Dossier :</strong>
-                                <t t-esc="insc.reference"/>
+                                <t t-out="insc.reference"/>
                             </div>
                         </div>
                     </div>
@@ -742,7 +742,7 @@
                                         <t t-foreach="pays_list" t-as="pays">
                                             <option t-att-value="pays.id"
                                                     t-att-selected="partner.nationalite_id.id == pays.id">
-                                                <t t-esc="pays.name"/>
+                                                <t t-out="pays.name"/>
                                             </option>
                                         </t>
                                     </select>
@@ -820,7 +820,7 @@
                                         ]" t-as="opt">
                                             <option t-att-value="opt[0]"
                                                     t-att-selected="partner.situation_familiale == opt[0]">
-                                                <t t-esc="opt[1]"/>
+                                                <t t-out="opt[1]"/>
                                             </option>
                                         </t>
                                     </select>
@@ -853,7 +853,7 @@
                                         ]" t-as="opt">
                                             <option t-att-value="opt[0]"
                                                     t-att-selected="insc.statut_emploi == opt[0]">
-                                                <t t-esc="opt[1]"/>
+                                                <t t-out="opt[1]"/>
                                             </option>
                                         </t>
                                     </select>
@@ -871,7 +871,7 @@
                                         ]" t-as="opt">
                                             <option t-att-value="opt[0]"
                                                     t-att-selected="insc.type_contrat == opt[0]">
-                                                <t t-esc="opt[1]"/>
+                                                <t t-out="opt[1]"/>
                                             </option>
                                         </t>
                                     </select>
@@ -907,7 +907,7 @@
                                         ]" t-as="opt">
                                             <option t-att-value="opt[0]"
                                                     t-att-selected="insc.mode_stagiaire == opt[0]">
-                                                <t t-esc="opt[1]"/>
+                                                <t t-out="opt[1]"/>
                                             </option>
                                         </t>
                                     </select>
@@ -931,7 +931,7 @@
                                         ]" t-as="opt">
                                             <option t-att-value="opt[0]"
                                                     t-att-selected="insc.type_financement == opt[0]">
-                                                <t t-esc="opt[1]"/>
+                                                <t t-out="opt[1]"/>
                                             </option>
                                         </t>
                                     </select>
@@ -952,7 +952,7 @@
                                         ]" t-as="opt">
                                             <option t-att-value="opt[0]"
                                                     t-att-selected="insc.sous_type_financement == opt[0]">
-                                                <t t-esc="opt[1]"/>
+                                                <t t-out="opt[1]"/>
                                             </option>
                                         </t>
                                     </select>
@@ -1039,7 +1039,7 @@
                         <span style="font-size:1.4rem;">⏰</span>
                         <div>
                             <strong>
-                                <t t-esc="len(presences_a_confirmer)"/> demi-journée(s)
+                                <t t-out="len(presences_a_confirmer)"/> demi-journée(s)
                                 à confirmer aujourd'hui.
                             </strong>
                         </div>
@@ -1051,13 +1051,13 @@
                             <div class="list-group-item d-flex justify-content-between align-items-center">
                                 <div>
                                     <strong>
-                                        <t t-esc="att.date.strftime('%A %d %B %Y').capitalize()"/>
+                                        <t t-out="att.date.strftime('%A %d %B %Y').capitalize()"/>
                                     </strong>
                                     <span class="ms-2 badge bg-secondary">
-                                        <t t-esc="'Matin' if att.demi_journee == 'matin' else 'Après-midi'"/>
+                                        <t t-out="'Matin' if att.demi_journee == 'matin' else 'Après-midi'"/>
                                     </span>
                                     <p class="mb-0 small text-muted">
-                                        <t t-esc="'%g h' % att.heures"/> de formation
+                                        <t t-out="'%g h' % att.heures"/> de formation
                                     </p>
                                 </div>
                                 <a t-att-href="'/espace-stagiaire/' + token + '/presences/' + str(att.id) + '/confirmer'"
@@ -1078,13 +1078,13 @@
                                  style="opacity:.65;">
                                 <div>
                                     <strong>
-                                        <t t-esc="att.date.strftime('%A %d %B %Y').capitalize()"/>
+                                        <t t-out="att.date.strftime('%A %d %B %Y').capitalize()"/>
                                     </strong>
                                     <span class="ms-2 badge bg-secondary">
-                                        <t t-esc="'Matin' if att.demi_journee == 'matin' else 'Après-midi'"/>
+                                        <t t-out="'Matin' if att.demi_journee == 'matin' else 'Après-midi'"/>
                                     </span>
                                     <p class="mb-0 small text-muted">
-                                        <t t-esc="'%g h' % att.heures"/> de formation
+                                        <t t-out="'%g h' % att.heures"/> de formation
                                     </p>
                                 </div>
                                 <span class="badge bg-light text-muted border">
@@ -1108,15 +1108,15 @@
                             <div class="list-group-item d-flex justify-content-between align-items-center">
                                 <div>
                                     <strong>
-                                        <t t-esc="att.date.strftime('%d/%m/%Y')"/>
+                                        <t t-out="att.date.strftime('%d/%m/%Y')"/>
                                     </strong>
                                     <span class="ms-2 text-muted small">
-                                        <t t-esc="'Matin' if att.demi_journee == 'matin' else 'Après-midi'"/>
+                                        <t t-out="'Matin' if att.demi_journee == 'matin' else 'Après-midi'"/>
                                     </span>
                                 </div>
                                 <div class="d-flex align-items-center gap-2">
                                     <span t-attf-class="badge bg-#{statut_info.get(att.statut, ('secondary','—'))[0]}">
-                                        <t t-esc="statut_info.get(att.statut, ('secondary', att.statut))[1]"/>
+                                        <t t-out="statut_info.get(att.statut, ('secondary', att.statut))[1]"/>
                                     </span>
                                     <t t-if="att.statut == 'absent'">
                                         <a t-att-href="'/espace-stagiaire/' + token + '/presences/' + str(att.id) + '/justifier'"
@@ -1177,22 +1177,22 @@
                             <div class="col-6">
                                 <span class="text-muted small">Date</span><br/>
                                 <strong>
-                                    <t t-esc="att.date.strftime('%A %d %B %Y').capitalize()"/>
+                                    <t t-out="att.date.strftime('%A %d %B %Y').capitalize()"/>
                                 </strong>
                             </div>
                             <div class="col-6">
                                 <span class="text-muted small">Demi-journée</span><br/>
                                 <strong>
-                                    <t t-esc="'Matin' if att.demi_journee == 'matin' else 'Après-midi'"/>
+                                    <t t-out="'Matin' if att.demi_journee == 'matin' else 'Après-midi'"/>
                                 </strong>
                             </div>
                             <div class="col-6">
                                 <span class="text-muted small">Formation</span><br/>
-                                <t t-esc="insc.formation_id.display_name"/>
+                                <t t-out="insc.formation_id.display_name"/>
                             </div>
                             <div class="col-6">
                                 <span class="text-muted small">Durée</span><br/>
-                                <t t-esc="'%g heure(s)' % att.heures"/>
+                                <t t-out="'%g heure(s)' % att.heures"/>
                             </div>
                         </div>
                     </div>
@@ -1200,7 +1200,7 @@
 
                 <t t-if="erreur">
                     <div class="alert alert-danger mb-3">
-                        <t t-esc="erreur"/>
+                        <t t-out="erreur"/>
                     </div>
                 </t>
 
@@ -1354,11 +1354,11 @@
                     <div class="card-body">
                         <p class="mb-1">
                             <strong>Date :</strong>
-                            <t t-esc="att.date.strftime('%A %d %B %Y').capitalize()"/>
+                            <t t-out="att.date.strftime('%A %d %B %Y').capitalize()"/>
                         </p>
                         <p class="mb-0">
                             <strong>Demi-journée :</strong>
-                            <t t-esc="'Matin' if att.demi_journee == 'matin' else 'Après-midi'"/>
+                            <t t-out="'Matin' if att.demi_journee == 'matin' else 'Après-midi'"/>
                         </p>
                     </div>
                 </div>
@@ -1378,7 +1378,7 @@
                             <label class="form-label fw-semibold">Motif de l'absence</label>
                             <textarea name="motif_absence" class="form-control" rows="3"
                                       placeholder="Maladie, obligation familiale, urgence professionnelle…">
-                                <t t-esc="att.motif_absence or ''"/>
+                                <t t-out="att.motif_absence or ''"/>
                             </textarea>
                         </div>
 
@@ -1449,20 +1449,20 @@
                             <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
                                 <div>
                                     <h5 class="mb-1">
-                                        <t t-esc="alt.structure_id.name if alt.structure_id else 'Structure non renseignée'"/>
+                                        <t t-out="alt.structure_id.name if alt.structure_id else 'Structure non renseignée'"/>
                                     </h5>
                                     <p class="text-muted mb-1 small">
                                         <t t-if="alt.tuteur_id">
-                                            Tuteur : <strong><t t-esc="alt.tuteur_id.name"/></strong> ·
+                                            Tuteur : <strong><t t-out="alt.tuteur_id.name"/></strong> ·
                                         </t>
                                         <t t-if="alt.intitule_poste">
-                                            Poste : <t t-esc="alt.intitule_poste"/>
+                                            Poste : <t t-out="alt.intitule_poste"/>
                                         </t>
                                     </p>
                                     <t t-if="alt.date_debut">
                                         <p class="mb-0 small text-muted">
-                                            Du <t t-esc="alt.date_debut"/>
-                                            <t t-if="alt.date_fin"> au <t t-esc="alt.date_fin"/></t>
+                                            Du <t t-out="alt.date_debut"/>
+                                            <t t-if="alt.date_fin"> au <t t-out="alt.date_fin"/></t>
                                         </p>
                                     </t>
                                 </div>
@@ -1474,7 +1474,7 @@
                                         'archive':   ('light',     'Archivé'),
                                     }"/>
                                     <span t-attf-class="badge bg-#{statut_labels.get(alt.statut, ('secondary','—'))[0]}">
-                                        <t t-esc="statut_labels.get(alt.statut, ('secondary', alt.statut))[1]"/>
+                                        <t t-out="statut_labels.get(alt.statut, ('secondary', alt.statut))[1]"/>
                                     </span>
                                     <t t-if="alt.statut == 'brouillon'">
                                         <a t-att-href="'/espace-stagiaire/' + token + '/structure/' + str(alt.id)"
@@ -1521,13 +1521,13 @@
                             <a t-att-href="'/espace-stagiaire/' + token + '/structure'">Ma structure</a>
                         </li>
                         <li class="breadcrumb-item active">
-                            <t t-esc="'Nouveau dossier' if is_new else (alt.structure_id.name if alt and alt.structure_id else 'Modifier')"/>
+                            <t t-out="'Nouveau dossier' if is_new else (alt.structure_id.name if alt and alt.structure_id else 'Modifier')"/>
                         </li>
                     </ol>
                 </nav>
 
                 <h2 class="mb-1">
-                    <t t-esc="'Nouveau dossier d\'alternance' if is_new else 'Mon dossier d\'alternance'"/>
+                    <t t-out="'Nouveau dossier d\'alternance' if is_new else 'Mon dossier d\'alternance'"/>
                 </h2>
                 <p class="text-muted mb-4 small">
                     Ces informations permettront d'établir vos conventions de formation.
@@ -1762,14 +1762,14 @@
                                               placeholder="Décrivez les missions principales du poste…"
                                               t-att-readonly="readonly and 'readonly' or None"
                                               required="required">
-                                        <t t-esc="form_data.get('missions_principales', '')"/>
+                                        <t t-out="form_data.get('missions_principales', '')"/>
                                     </textarea>
                                 </div>
                                 <div class="col-12">
                                     <label class="form-label">Missions complémentaires</label>
                                     <textarea name="missions_complementaires" class="form-control" rows="3"
                                               t-att-readonly="readonly and 'readonly' or None">
-                                        <t t-esc="form_data.get('missions_complementaires', '')"/>
+                                        <t t-out="form_data.get('missions_complementaires', '')"/>
                                     </textarea>
                                 </div>
                                 <div class="col-12">
@@ -1779,7 +1779,7 @@
                                     <textarea name="activites_coordination" class="form-control" rows="3"
                                               placeholder="Activités en lien direct avec le projet de formation…"
                                               t-att-readonly="readonly and 'readonly' or None">
-                                        <t t-esc="form_data.get('activites_coordination', '')"/>
+                                        <t t-out="form_data.get('activites_coordination', '')"/>
                                     </textarea>
                                 </div>
                                 <div class="col-12">
@@ -1787,7 +1787,7 @@
                                     <textarea name="projet_alternance" class="form-control" rows="3"
                                               placeholder="Décrivez le projet principal que vous allez conduire…"
                                               t-att-readonly="readonly and 'readonly' or None">
-                                        <t t-esc="form_data.get('projet_alternance', '')"/>
+                                        <t t-out="form_data.get('projet_alternance', '')"/>
                                     </textarea>
                                 </div>
                             </div>

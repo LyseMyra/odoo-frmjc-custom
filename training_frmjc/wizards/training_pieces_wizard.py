@@ -25,7 +25,7 @@ class TrainingPiecesWizard(models.TransientModel):
                 f"Le candidat {insc.partner_id.name} n'a pas d'adresse email renseignée."
             )
 
-        base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        base_url = self.env['ir.config_parameter'].sudo().get_str('web.base.url')
         lien_portail = f'{base_url}/formation/dossier/{insc.portal_token}'
 
         pieces_html = ''.join(

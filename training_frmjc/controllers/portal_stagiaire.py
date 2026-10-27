@@ -166,7 +166,7 @@ class PortalStagiaire(http.Controller):
                 ('partner_id', '=', partner.id),
             ], limit=1)
             if sign_item and sign_item.state not in ('completed', 'canceled'):
-                base_url = request.env['ir.config_parameter'].sudo().get_param('web.base.url')
+                base_url = request.env['ir.config_parameter'].sudo().get_str('web.base.url')
                 # URL Odoo Sign v17+ : /sign/document/<request_id>/<access_token>
                 sign_url = (
                     f"{base_url}/sign/document"
@@ -319,7 +319,7 @@ class PortalStagiaire(http.Controller):
                     att.write({
                         'statut': 'present',
                         'confirme_le': fields.Datetime.now(),
-                        'signature': base64.b64encode(sig_bytes),
+                        'signature': base64.b64encode(sig_bytes).decode('ascii'),
                         'signature_filename': 'signature.png',
                     })
                     return request.redirect(
@@ -369,7 +369,7 @@ class PortalStagiaire(http.Controller):
             justif_file = request.httprequest.files.get('justificatif')
             if justif_file and justif_file.filename:
                 import base64
-                vals['justificatif'] = base64.b64encode(justif_file.read())
+                vals['justificatif'] = base64.b64encode(justif_file.read()).decode('ascii')
                 vals['justificatif_filename'] = justif_file.filename
             if motif or vals.get('justificatif'):
                 vals['statut'] = 'justifie'

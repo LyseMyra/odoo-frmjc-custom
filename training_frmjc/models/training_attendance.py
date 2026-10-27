@@ -148,7 +148,7 @@ class TrainingAttendance(models.Model):
             ('justificatif', '=', False),
             ('relance_envoyee', '=', False),
         ])
-        base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        base_url = self.env['ir.config_parameter'].sudo().get_str('web.base.url')
         labels_dj = {'matin': 'matin', 'apres_midi': 'après-midi'}
         for rec in records:
             if not rec.partner_id.email:

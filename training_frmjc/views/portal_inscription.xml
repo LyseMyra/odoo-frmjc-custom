@@ -24,20 +24,20 @@
                             <div class="card h-100 shadow-sm">
                                 <div class="card-body">
                                     <h5 class="card-title">
-                                        <t t-esc="session.formation_id.display_name" />
+                                        <t t-out="session.formation_id.display_name" />
                                     </h5>
                                     <p class="text-muted small mb-2">
                                         <t t-if="session.date_debut"> Du <t
-                                                t-esc="session.date_debut.strftime('%d/%m/%Y')" />
+                                                t-out="session.date_debut.strftime('%d/%m/%Y')" />
                                         <t
                                                 t-if="session.date_fin"> au <t
-                                                    t-esc="session.date_fin.strftime('%d/%m/%Y')" />
+                                                    t-out="session.date_fin.strftime('%d/%m/%Y')" />
                                             </t>
                                         </t>
                                     </p>
                                     <t t-if="session.habilitation_id">
                                         <p class="small mb-3"> Habilitation : <t
-                                                t-esc="session.habilitation_id.display_name" />
+                                                t-out="session.habilitation_id.display_name" />
                                         </p>
                                     </t>
                                     <t t-if="inscriptions.get(session.id)">
@@ -110,7 +110,7 @@
 
                 <t t-if="partner">
                     <p class="mt-4 text-muted small"> Connecté en tant que <strong>
-                            <t t-esc="partner.email" />
+                            <t t-out="partner.email" />
                         </strong> — <a
                             href="/formation/deconnexion">Se déconnecter</a>
                     </p>
@@ -180,7 +180,7 @@
                                 <t t-if="session">
                                     <hr />
                                     <p class="small text-muted mb-0"> Formation : <strong>
-                                            <t t-esc="session.formation_id.display_name" />
+                                            <t t-out="session.formation_id.display_name" />
                                         </strong>
                                     </p>
                                 </t>
@@ -204,13 +204,13 @@
                             <div class="card-body p-4">
                                 <h2 class="card-title mb-1">Code de connexion</h2>
                                 <p class="text-muted mb-4"> Un code à 6 chiffres a été envoyé à <strong>
-                                        <t t-esc="email" />
+                                        <t t-out="email" />
                                     </strong>.
                                     Ce code est valable <strong>15 minutes</strong>. </p>
 
                                 <t t-if="error">
                                     <div class="alert alert-danger">
-                                        <t t-esc="error" />
+                                        <t t-out="error" />
                                     </div>
                                 </t>
 
@@ -267,12 +267,12 @@
                 <!-- En-tête -->
                 <div class="mb-3">
                     <h1 class="h3 mb-0">
-                        <t t-esc="insc.session_id.formation_id.display_name" />
+                        <t t-out="insc.session_id.formation_id.display_name" />
                     </h1>
                     <p class="text-muted small"> Dossier <strong>
-                            <t t-esc="insc.reference" />
+                            <t t-out="insc.reference" />
                         </strong> — <t
-                            t-esc="insc.partner_id.email" />
+                            t-out="insc.partner_id.email" />
                     <span class="ms-3">
                             <a href="/formation/deconnexion" class="text-muted small">
                                 Se déconnecter
@@ -284,8 +284,8 @@
                 <!-- Barre de progression -->
                 <div class="mb-4">
                     <div class="d-flex justify-content-between small text-muted mb-1">
-                        <span>Étape <t t-esc="etape" /> / 8</span>
-                        <span><t t-esc="int(round(etape * 100 / 8))" />%</span>
+                        <span>Étape <t t-out="etape" /> / 8</span>
+                        <span><t t-out="int(round(etape * 100 / 8))" />%</span>
                     </div>
                     <div class="progress" style="height:8px;">
                         <div class="progress-bar bg-primary"
@@ -304,7 +304,7 @@
                             <!-- Étape courante -->
                             <t t-if="etape == step[0]">
                                 <span class="fw-bold text-primary border-bottom border-primary pb-1">
-                                    <t t-esc="step[1]" />
+                                    <t t-out="step[1]" />
                                 </span>
                             </t>
                             <!-- Étape déjà visitée → lien cliquable -->
@@ -313,13 +313,13 @@
                                     t-att-href="'/formation/dossier/' + token + '/etape/' + str(step[0])"
                                     class="text-success text-decoration-none"
                                     t-att-title="'Revenir à : ' + step[1]">
-                                    <t t-esc="step[1]" />
+                                    <t t-out="step[1]" />
                                 </a>
                             </t>
                             <!-- Étape non encore atteinte → grisée -->
                             <t t-else="">
                                 <span class="text-muted" style="opacity:0.45;">
-                                    <t t-esc="step[1]" />
+                                    <t t-out="step[1]" />
                                 </span>
                             </t>
                         </t>
@@ -329,7 +329,7 @@
                 <!-- Erreur globale -->
                 <t t-if="errors.get('global')">
                     <div class="alert alert-danger">
-                        <t t-esc="errors['global']" />
+                        <t t-out="errors['global']" />
                     </div>
                 </t>
 
@@ -411,7 +411,7 @@
                                             <t t-foreach="pays_list" t-as="pays">
                                                 <option t-att-value="pays.id"
                                                     t-att-selected="partner.nationalite_id.id == pays.id">
-                                                    <t t-esc="pays.name" />
+                                                    <t t-out="pays.name" />
                                                 </option>
                                             </t>
                                         </select>
@@ -498,7 +498,7 @@
                                                 t-as="opt">
                                                 <option t-att-value="opt[0]"
                                                     t-att-selected="insc.statut_emploi == opt[0]">
-                                                    <t t-esc="opt[1]" />
+                                                    <t t-out="opt[1]" />
                                                 </option>
                                             </t>
                                         </select>
@@ -516,7 +516,7 @@
                                                 t-as="opt">
                                                 <option t-att-value="opt[0]"
                                                     t-att-selected="insc.type_contrat == opt[0]">
-                                                    <t t-esc="opt[1]" />
+                                                    <t t-out="opt[1]" />
                                                 </option>
                                             </t>
                                         </select>
@@ -587,7 +587,7 @@
                                                 t-as="opt">
                                                 <option t-att-value="opt[0]"
                                                     t-att-selected="insc.type_financement == opt[0]">
-                                                    <t t-esc="opt[1]" />
+                                                    <t t-out="opt[1]" />
                                                 </option>
                                             </t>
                                         </select>
@@ -610,7 +610,7 @@
                                                 t-as="opt">
                                                 <option t-att-value="opt[0]"
                                                     t-att-selected="insc.sous_type_financement == opt[0]">
-                                                    <t t-esc="opt[1]" />
+                                                    <t t-out="opt[1]" />
                                                 </option>
                                             </t>
                                         </select>
@@ -637,7 +637,7 @@
                                                 t-as="opt">
                                                 <option t-att-value="opt[0]"
                                                     t-att-selected="insc.niveau_etudes == opt[0]">
-                                                    <t t-esc="opt[1]" />
+                                                    <t t-out="opt[1]" />
                                                 </option>
                                             </t>
                                         </select>
@@ -806,7 +806,7 @@
                                         <textarea name="projet_professionnel" class="form-control"
                                             rows="8"
                                             placeholder="Quelles fonctions souhaitez-vous exercer ?...">
-                                            <t t-esc="insc.projet_professionnel or ''" />
+                                            <t t-out="insc.projet_professionnel or ''" />
                                         </textarea>
                                     </div>
                                     <div class="col-md-6">
@@ -845,7 +845,7 @@
                                         t-as="doc">
                                         <div class="col-12">
                                             <label class="form-label">
-                                                <t t-esc="doc[1]" />
+                                                <t t-out="doc[1]" />
                                                 <t t-if="doc[2]">
                                                     <span class="text-danger">*</span>
                                                 </t>
@@ -856,7 +856,7 @@
                                                     t-att-accept="'application/pdf,application/msword,image/*'" />
                                                 <t t-if="doc[3]">
                                                     <span class="badge bg-success text-nowrap"> ✓ <t
-                                                            t-esc="doc[3]" />
+                                                            t-out="doc[3]" />
                                                     </span>
                                                 </t>
                                             </div>
@@ -881,10 +881,10 @@
                                                 class="list-group-item d-flex justify-content-between align-items-center">
                                                 <span>
                                                     <strong>
-                                                        <t t-esc="d.name" />
+                                                        <t t-out="d.name" />
                                                     </strong>
                                                     <span class="text-muted small ms-2">
-                                                        <t t-esc="d.fichier_filename or ''" />
+                                                        <t t-out="d.fichier_filename or ''" />
                                                     </span>
                                                 </span>
                                                 <span>
@@ -976,7 +976,7 @@
                                         <textarea name="notes_candidat" class="form-control"
                                             rows="4"
                                             placeholder="Toute information utile pour l'étude de votre dossier...">
-                                            <t t-esc="insc.notes_candidat or ''" />
+                                            <t t-out="insc.notes_candidat or ''" />
                                         </textarea>
                                     </div>
                                     <div class="col-12">
@@ -1021,29 +1021,29 @@
                                                 <dl class="row mb-0">
                                                     <dt class="col-sm-4">Nom complet</dt>
                                                     <dd class="col-sm-8">
-                                                        <t t-esc="partner.name or '—'" />
+                                                        <t t-out="partner.name or '—'" />
                                                     </dd>
                                                     <dt class="col-sm-4">Civilité</dt>
                                                     <dd class="col-sm-8">
-                                                        <t t-esc="_sexe" />
+                                                        <t t-out="_sexe" />
                                                     </dd>
                                                     <dt class="col-sm-4">Date de naissance</dt>
                                                     <dd class="col-sm-8">
                                                         <t
-                                                            t-esc="str(partner.date_naissance) if partner.date_naissance else '—'" />
+                                                            t-out="str(partner.date_naissance) if partner.date_naissance else '—'" />
                                                     </dd>
                                                     <dt class="col-sm-4">Lieu de naissance</dt>
                                                     <dd class="col-sm-8">
-                                                        <t t-esc="partner.lieu_naissance or '—'" />
+                                                        <t t-out="partner.lieu_naissance or '—'" />
                                                     </dd>
                                                     <dt class="col-sm-4">N° de sécurité sociale</dt>
                                                     <dd class="col-sm-8">
-                                                        <t t-esc="partner.numero_secu or '—'" />
+                                                        <t t-out="partner.numero_secu or '—'" />
                                                     </dd>
                                                     <dt class="col-sm-4">Nationalité</dt>
                                                     <dd class="col-sm-8">
                                                         <t
-                                                            t-esc="partner.nationalite_id.name if partner.nationalite_id else '—'" />
+                                                            t-out="partner.nationalite_id.name if partner.nationalite_id else '—'" />
                                                     </dd>
                                                 </dl>
                                             </div>
@@ -1063,23 +1063,23 @@
                                                 <dl class="row mb-0">
                                                     <dt class="col-sm-4">Adresse</dt>
                                                     <dd class="col-sm-8">
-                                                        <t t-esc="partner.street or '—'" />
+                                                        <t t-out="partner.street or '—'" />
                                                     </dd>
                                                     <dt class="col-sm-4">Code postal</dt>
                                                     <dd class="col-sm-8">
-                                                        <t t-esc="partner.zip or '—'" />
+                                                        <t t-out="partner.zip or '—'" />
                                                     </dd>
                                                     <dt class="col-sm-4">Ville</dt>
                                                     <dd class="col-sm-8">
-                                                        <t t-esc="partner.city or '—'" />
+                                                        <t t-out="partner.city or '—'" />
                                                     </dd>
                                                     <dt class="col-sm-4">Téléphone</dt>
                                                     <dd class="col-sm-8">
-                                                        <t t-esc="partner.phone or '—'" />
+                                                        <t t-out="partner.phone or '—'" />
                                                     </dd>
                                                     <dt class="col-sm-4">Email</dt>
                                                     <dd class="col-sm-8">
-                                                        <t t-esc="partner.email or '—'" />
+                                                        <t t-out="partner.email or '—'" />
                                                     </dd>
                                                 </dl>
                                             </div>
@@ -1101,46 +1101,46 @@
                                                     <dt class="col-sm-4">Statut d'emploi</dt>
                                                     <dd class="col-sm-8">
                                                         <t
-                                                            t-esc="dict(insc._fields['statut_emploi'].selection or []).get(insc.statut_emploi, '—')" />
+                                                            t-out="dict(insc._fields['statut_emploi'].selection or []).get(insc.statut_emploi, '—')" />
                                                     </dd>
                                                     <dt class="col-sm-4">Type de contrat</dt>
                                                     <dd class="col-sm-8">
                                                         <t
-                                                            t-esc="dict(insc._fields['type_contrat'].selection or []).get(insc.type_contrat, '—')" />
+                                                            t-out="dict(insc._fields['type_contrat'].selection or []).get(insc.type_contrat, '—')" />
                                                     </dd>
                                                     <dt class="col-sm-4">RQTH</dt>
                                                     <dd class="col-sm-8">
                                                         <t
-                                                            t-esc="dict(insc._fields['rqth'].selection or []).get(insc.rqth, '—')" />
+                                                            t-out="dict(insc._fields['rqth'].selection or []).get(insc.rqth, '—')" />
                                                     </dd>
                                                     <dt class="col-sm-4">Employeur</dt>
                                                     <dd class="col-sm-8">
-                                                        <t t-esc="insc.employeur_nom or '—'" />
+                                                        <t t-out="insc.employeur_nom or '—'" />
                                                     </dd>
                                                     <dt class="col-sm-4">Adresse de l'employeur</dt>
                                                     <dd class="col-sm-8">
-                                                        <t t-esc="insc.employeur_adresse or '—'" />
+                                                        <t t-out="insc.employeur_adresse or '—'" />
                                                     </dd>
                                                     <dt class="col-sm-4">Rémunération brute
                                                         mensuelle</dt>
                                                     <dd class="col-sm-8">
                                                         <t
-                                                            t-esc="('%.2f €' % insc.remuneration_mensuelle) if insc.remuneration_mensuelle else '—'" />
+                                                            t-out="('%.2f €' % insc.remuneration_mensuelle) if insc.remuneration_mensuelle else '—'" />
                                                     </dd>
                                                     <dt class="col-sm-4">Volume horaire hebdomadaire</dt>
                                                     <dd class="col-sm-8">
                                                         <t
-                                                            t-esc="('%g h' % insc.volume_horaire_semaine) if insc.volume_horaire_semaine else '—'" />
+                                                            t-out="('%g h' % insc.volume_horaire_semaine) if insc.volume_horaire_semaine else '—'" />
                                                     </dd>
                                                     <dt class="col-sm-4">Type de financement</dt>
                                                     <dd class="col-sm-8">
                                                         <t
-                                                            t-esc="dict(insc._fields['type_financement'].selection or []).get(insc.type_financement, '—')" />
+                                                            t-out="dict(insc._fields['type_financement'].selection or []).get(insc.type_financement, '—')" />
                                                     </dd>
                                                     <dt class="col-sm-4">Sous-type de financement</dt>
                                                     <dd class="col-sm-8">
                                                         <t
-                                                            t-esc="dict(insc._fields['sous_type_financement'].selection or []).get(insc.sous_type_financement, '—')" />
+                                                            t-out="dict(insc._fields['sous_type_financement'].selection or []).get(insc.sous_type_financement, '—')" />
                                                     </dd>
                                                 </dl>
                                             </div>
@@ -1162,20 +1162,20 @@
                                                     <dt class="col-sm-4">Niveau d'études</dt>
                                                     <dd class="col-sm-8">
                                                         <t
-                                                            t-esc="dict(insc._fields['niveau_etudes'].selection or []).get(insc.niveau_etudes, '—')" />
+                                                            t-out="dict(insc._fields['niveau_etudes'].selection or []).get(insc.niveau_etudes, '—')" />
                                                     </dd>
                                                     <dt class="col-sm-4">Dernier diplôme obtenu</dt>
                                                     <dd class="col-sm-8">
-                                                        <t t-esc="insc.dernier_diplome or '—'" />
+                                                        <t t-out="insc.dernier_diplome or '—'" />
                                                     </dd>
                                                     <dt class="col-sm-4">Année d'obtention</dt>
                                                     <dd class="col-sm-8">
-                                                        <t t-esc="insc.annee_obtention or '—'" />
+                                                        <t t-out="insc.annee_obtention or '—'" />
                                                     </dd>
                                                     <dt class="col-sm-4">Établissement</dt>
                                                     <dd class="col-sm-8">
                                                         <t
-                                                            t-esc="insc.etablissement_formation or '—'" />
+                                                            t-out="insc.etablissement_formation or '—'" />
                                                     </dd>
                                                 </dl>
                                                 <hr class="my-3" />
@@ -1197,16 +1197,16 @@
                                                                     <tr>
                                                                         <td>
                                                                             <t
-                                                                                t-esc="exp.annee_periode" />
+                                                                                t-out="exp.annee_periode" />
                                                                         </td>
                                                                         <td>
-                                                                            <t t-esc="exp.heures" />
+                                                                            <t t-out="exp.heures" />
                                                                         </td>
                                                                         <td>
-                                                                            <t t-esc="exp.structure" />
+                                                                            <t t-out="exp.structure" />
                                                                         </td>
                                                                         <td>
-                                                                            <t t-esc="exp.fonction" />
+                                                                            <t t-out="exp.fonction" />
                                                                         </td>
                                                                     </tr>
                                                                 </t>
@@ -1237,16 +1237,16 @@
                                                     <dt class="col-sm-4">Structure d'accueil en
                                                         alternance</dt>
                                                     <dd class="col-sm-8">
-                                                        <t t-esc="insc.structure_accueil or '—'" />
+                                                        <t t-out="insc.structure_accueil or '—'" />
                                                     </dd>
                                                     <dt class="col-sm-4">Fonction visée</dt>
                                                     <dd class="col-sm-8">
-                                                        <t t-esc="insc.fonction_visee or '—'" />
+                                                        <t t-out="insc.fonction_visee or '—'" />
                                                     </dd>
                                                 </dl>
                                                 <p class="fw-semibold mb-1">Projet professionnel</p>
                                                 <p style="white-space:pre-line;" class="mb-0">
-                                                    <t t-esc="insc.projet_professionnel or '—'" />
+                                                    <t t-out="insc.projet_professionnel or '—'" />
                                                 </p>
                                             </div>
                                         </div>
@@ -1276,16 +1276,16 @@
                                                             <t t-if="doc[1]">
                                                                 <span class="text-success me-1">✓</span>
                                                                 <strong>
-                                                                    <t t-esc="doc[0]" />
+                                                                    <t t-out="doc[0]" />
                                                                 </strong>
                                                                 <span class="text-muted small ms-1">
                                                                     (<t
-                                                                        t-esc="doc[2] or 'fichier'" />
+                                                                        t-out="doc[2] or 'fichier'" />
                                                                     )</span>
                                                             </t>
                                                             <t t-else="">
                                                                 <span class="text-muted me-1">–</span>
-                                                                <t t-esc="doc[0]" />
+                                                                <t t-out="doc[0]" />
                                                                 <span class="text-muted small ms-1">non
                                                                     fourni</span>
                                                             </t>
@@ -1301,11 +1301,11 @@
                                                             <li class="mb-1">
                                                                 <span class="text-success me-1">✓</span>
                                                                 <strong>
-                                                                    <t t-esc="d.name" />
+                                                                    <t t-out="d.name" />
                                                                 </strong>
                                                                 <span class="text-muted small ms-1">
                                                                     (<t
-                                                                        t-esc="d.fichier_filename or 'fichier'" />
+                                                                        t-out="d.fichier_filename or 'fichier'" />
                                                                     )</span>
                                                             </li>
                                                         </t>
@@ -1331,18 +1331,18 @@
                                                 <p class="fw-semibold mb-1">Informations
                                                     complémentaires</p>
                                                 <p style="white-space:pre-line;" class="mb-3">
-                                                    <t t-esc="insc.notes_candidat or '—'" />
+                                                    <t t-out="insc.notes_candidat or '—'" />
                                                 </p>
                                                 <dl class="row mb-0">
                                                     <dt class="col-sm-4">Consentement RGPD</dt>
                                                     <dd class="col-sm-8">
                                                         <t
-                                                            t-esc="'Accepté' if insc.conditions_acceptees else 'Non accepté'" />
+                                                            t-out="'Accepté' if insc.conditions_acceptees else 'Non accepté'" />
                                                     </dd>
                                                     <dt class="col-sm-4">Attestation sur l'honneur</dt>
                                                     <dd class="col-sm-8">
                                                         <t
-                                                            t-esc="('Certifiée le ' + str(insc.date_declaration)) if insc.date_declaration else 'Non certifiée'" />
+                                                            t-out="('Certifiée le ' + str(insc.date_declaration)) if insc.date_declaration else 'Non certifiée'" />
                                                     </dd>
                                                 </dl>
                                             </div>
@@ -1371,7 +1371,7 @@
                                 </t>
                                 <t t-if="insc.conditions_acceptees and insc.date_declaration">
                                     <div class="alert alert-success"> ✓ Déclaration sur l'honneur
-                                        acceptée le <t t-esc="str(insc.date_declaration)" />
+                                        acceptée le <t t-out="str(insc.date_declaration)" />
                                     </div>
                                 </t>
 
@@ -1430,7 +1430,7 @@
                             <div class="mb-3" style="font-size:3em;">📬</div>
                             <h1 class="h3 mb-1">Dossier soumis</h1>
                             <p class="text-muted"> Votre dossier <strong>
-                                    <t t-esc="insc.reference" />
+                                    <t t-out="insc.reference" />
                                 </strong>
                                 a bien été reçu. Notre équipe reviendra vers vous dans les plus
                                 brefs délais. </p>
@@ -1439,7 +1439,7 @@
                             <div class="mb-3" style="font-size:3em;">📎</div>
                             <h1 class="h3 mb-1 text-warning">Pièces manquantes</h1>
                             <p class="text-muted"> Votre dossier <strong>
-                                    <t t-esc="insc.reference" />
+                                    <t t-out="insc.reference" />
                                 </strong>
                                 est incomplet. Vous avez reçu un email précisant les pièces à
                                 fournir. </p>
@@ -1460,7 +1460,7 @@
                             <div class="mb-3" style="font-size:3em;">🎉</div>
                             <h1 class="h3 mb-1 text-success">Félicitations — Candidature acceptée !</h1>
                             <p class="text-muted"> Votre candidature pour <strong>
-                                    <t t-esc="insc.formation_id.display_name" />
+                                    <t t-out="insc.formation_id.display_name" />
                                 </strong>
                                 a été acceptée. Accédez à votre espace stagiaire pour consulter vos
                                 conventions et documents de formation. </p>
@@ -1473,7 +1473,7 @@
                             <div class="mb-3" style="font-size:3em;">📩</div>
                             <h1 class="h3 mb-1">Candidature non retenue</h1>
                             <p class="text-muted"> Nous avons étudié votre dossier <strong>
-                                    <t t-esc="insc.reference" />
+                                    <t t-out="insc.reference" />
                                 </strong>
                                 avec attention. Malheureusement, nous ne sommes pas en mesure de
                                 donner une suite favorable à votre candidature. </p>
@@ -1488,15 +1488,15 @@
                                 <dl class="row mb-0 small">
                                     <dt class="col-5">Référence</dt>
                                     <dd class="col-7 mb-1">
-                                        <t t-esc="insc.reference" />
+                                        <t t-out="insc.reference" />
                                     </dd>
                                     <dt class="col-5">Formation</dt>
                                     <dd class="col-7 mb-1">
-                                        <t t-esc="insc.formation_id.display_name" />
+                                        <t t-out="insc.formation_id.display_name" />
                                     </dd>
                                     <dt class="col-5">Candidat</dt>
                                     <dd class="col-7 mb-1">
-                                        <t t-esc="insc.partner_id.name" />
+                                        <t t-out="insc.partner_id.name" />
                                     </dd>
                                     <dt class="col-5">Statut</dt>
                                     <dd class="col-7 mb-0">
@@ -1518,7 +1518,7 @@
                                         </t>
                                         <t t-else="">
                                             <span class="badge bg-secondary">
-                                                <t t-esc="insc.statut" />
+                                                <t t-out="insc.statut" />
                                             </span>
                                         </t>
                                     </dd>
@@ -1553,30 +1553,30 @@
                                         <dl class="row mb-0">
                                             <dt class="col-sm-4">Nom complet</dt>
                                             <dd class="col-sm-8">
-                                                <t t-esc="insc.partner_id.name or '—'" />
+                                                <t t-out="insc.partner_id.name or '—'" />
                                             </dd>
                                             <dt class="col-sm-4">Civilité</dt>
                                             <dd class="col-sm-8">
                                                 <t
-                                                    t-esc="dict(insc.partner_id._fields['sexe'].selection or []).get(insc.partner_id.sexe, '—')" />
+                                                    t-out="dict(insc.partner_id._fields['sexe'].selection or []).get(insc.partner_id.sexe, '—')" />
                                             </dd>
                                             <dt class="col-sm-4">Date de naissance</dt>
                                             <dd class="col-sm-8">
                                                 <t
-                                                    t-esc="str(insc.partner_id.date_naissance) if insc.partner_id.date_naissance else '—'" />
+                                                    t-out="str(insc.partner_id.date_naissance) if insc.partner_id.date_naissance else '—'" />
                                             </dd>
                                             <dt class="col-sm-4">Lieu de naissance</dt>
                                             <dd class="col-sm-8">
-                                                <t t-esc="insc.partner_id.lieu_naissance or '—'" />
+                                                <t t-out="insc.partner_id.lieu_naissance or '—'" />
                                             </dd>
                                             <dt class="col-sm-4">N° de sécurité sociale</dt>
                                             <dd class="col-sm-8">
-                                                <t t-esc="insc.partner_id.numero_secu or '—'" />
+                                                <t t-out="insc.partner_id.numero_secu or '—'" />
                                             </dd>
                                             <dt class="col-sm-4">Nationalité</dt>
                                             <dd class="col-sm-8">
                                                 <t
-                                                    t-esc="insc.partner_id.nationalite_id.name if insc.partner_id.nationalite_id else '—'" />
+                                                    t-out="insc.partner_id.nationalite_id.name if insc.partner_id.nationalite_id else '—'" />
                                             </dd>
                                         </dl>
                                     </div>
@@ -1596,26 +1596,26 @@
                                         <dl class="row mb-0">
                                             <dt class="col-sm-4">Adresse</dt>
                                             <dd class="col-sm-8">
-                                                <t t-esc="insc.partner_id.street or ''" />
+                                                <t t-out="insc.partner_id.street or ''" />
                                                 <t
                                                     t-if="insc.partner_id.zip or insc.partner_id.city">
                                                     <br />
                                                     <t
-                                                        t-esc="(insc.partner_id.zip or '') + ' ' + (insc.partner_id.city or '')" />
+                                                        t-out="(insc.partner_id.zip or '') + ' ' + (insc.partner_id.city or '')" />
                                                 </t>
                                             </dd>
                                             <dt class="col-sm-4">Téléphone</dt>
                                             <dd class="col-sm-8">
-                                                <t t-esc="insc.partner_id.phone or '—'" />
+                                                <t t-out="insc.partner_id.phone or '—'" />
                                             </dd>
                                             <dt class="col-sm-4">Email</dt>
                                             <dd class="col-sm-8">
-                                                <t t-esc="insc.partner_id.email or '—'" />
+                                                <t t-out="insc.partner_id.email or '—'" />
                                             </dd>
                                             <t t-if="insc.email_pro">
                                                 <dt class="col-sm-4">Email professionnel</dt>
                                                 <dd class="col-sm-8">
-                                                    <t t-esc="insc.email_pro" />
+                                                    <t t-out="insc.email_pro" />
                                                 </dd>
                                             </t>
                                         </dl>
@@ -1637,50 +1637,50 @@
                                             <dt class="col-sm-4">Statut d'emploi</dt>
                                             <dd class="col-sm-8">
                                                 <t
-                                                    t-esc="dict(insc._fields['statut_emploi'].selection or []).get(insc.statut_emploi, '—')" />
+                                                    t-out="dict(insc._fields['statut_emploi'].selection or []).get(insc.statut_emploi, '—')" />
                                             </dd>
                                             <dt class="col-sm-4">Type de contrat</dt>
                                             <dd class="col-sm-8">
                                                 <t
-                                                    t-esc="dict(insc._fields['type_contrat'].selection or []).get(insc.type_contrat, '—')" />
+                                                    t-out="dict(insc._fields['type_contrat'].selection or []).get(insc.type_contrat, '—')" />
                                             </dd>
                                             <dt class="col-sm-4">RQTH</dt>
                                             <dd class="col-sm-8">
                                                 <t
-                                                    t-esc="dict(insc._fields['rqth'].selection or []).get(insc.rqth, '—')" />
+                                                    t-out="dict(insc._fields['rqth'].selection or []).get(insc.rqth, '—')" />
                                             </dd>
                                             <dt class="col-sm-4">Employeur</dt>
                                             <dd class="col-sm-8">
-                                                <t t-esc="insc.employeur_nom or '—'" />
+                                                <t t-out="insc.employeur_nom or '—'" />
                                             </dd>
                                             <dt class="col-sm-4">Adresse de l'employeur</dt>
                                             <dd class="col-sm-8">
-                                                <t t-esc="insc.employeur_adresse or '—'" />
+                                                <t t-out="insc.employeur_adresse or '—'" />
                                             </dd>
                                             <dt class="col-sm-4">Rémunération brute mensuelle</dt>
                                             <dd class="col-sm-8">
                                                 <t
-                                                    t-esc="('%.2f €' % insc.remuneration_mensuelle) if insc.remuneration_mensuelle else '—'" />
+                                                    t-out="('%.2f €' % insc.remuneration_mensuelle) if insc.remuneration_mensuelle else '—'" />
                                             </dd>
                                             <dt class="col-sm-4">Volume horaire hebdomadaire</dt>
                                             <dd class="col-sm-8">
                                                 <t
-                                                    t-esc="('%g h' % insc.volume_horaire_semaine) if insc.volume_horaire_semaine else '—'" />
+                                                    t-out="('%g h' % insc.volume_horaire_semaine) if insc.volume_horaire_semaine else '—'" />
                                             </dd>
                                             <dt class="col-sm-4">Type de stagiaire</dt>
                                             <dd class="col-sm-8">
                                                 <t
-                                                    t-esc="dict(insc._fields['mode_stagiaire'].selection or []).get(insc.mode_stagiaire, '—')" />
+                                                    t-out="dict(insc._fields['mode_stagiaire'].selection or []).get(insc.mode_stagiaire, '—')" />
                                             </dd>
                                             <dt class="col-sm-4">Type de financement</dt>
                                             <dd class="col-sm-8">
                                                 <t
-                                                    t-esc="dict(insc._fields['type_financement'].selection or []).get(insc.type_financement, '—')" />
+                                                    t-out="dict(insc._fields['type_financement'].selection or []).get(insc.type_financement, '—')" />
                                             </dd>
                                             <dt class="col-sm-4">Sous-type de financement</dt>
                                             <dd class="col-sm-8">
                                                 <t
-                                                    t-esc="dict(insc._fields['sous_type_financement'].selection or []).get(insc.sous_type_financement, '—')" />
+                                                    t-out="dict(insc._fields['sous_type_financement'].selection or []).get(insc.sous_type_financement, '—')" />
                                             </dd>
                                         </dl>
                                     </div>
@@ -1701,19 +1701,19 @@
                                             <dt class="col-sm-4">Niveau d'études</dt>
                                             <dd class="col-sm-8">
                                                 <t
-                                                    t-esc="dict(insc._fields['niveau_etudes'].selection or []).get(insc.niveau_etudes, '—')" />
+                                                    t-out="dict(insc._fields['niveau_etudes'].selection or []).get(insc.niveau_etudes, '—')" />
                                             </dd>
                                             <dt class="col-sm-4">Dernier diplôme obtenu</dt>
                                             <dd class="col-sm-8">
-                                                <t t-esc="insc.dernier_diplome or '—'" />
+                                                <t t-out="insc.dernier_diplome or '—'" />
                                             </dd>
                                             <dt class="col-sm-4">Année d'obtention</dt>
                                             <dd class="col-sm-8">
-                                                <t t-esc="insc.annee_obtention or '—'" />
+                                                <t t-out="insc.annee_obtention or '—'" />
                                             </dd>
                                             <dt class="col-sm-4">Établissement</dt>
                                             <dd class="col-sm-8">
-                                                <t t-esc="insc.etablissement_formation or '—'" />
+                                                <t t-out="insc.etablissement_formation or '—'" />
                                             </dd>
                                         </dl>
                                         <t t-if="insc.experience_ids">
@@ -1732,16 +1732,16 @@
                                                             t-as="exp">
                                                             <tr>
                                                                 <td>
-                                                                    <t t-esc="exp.annee_periode" />
+                                                                    <t t-out="exp.annee_periode" />
                                                                 </td>
                                                                 <td>
-                                                                    <t t-esc="exp.heures" />
+                                                                    <t t-out="exp.heures" />
                                                                 </td>
                                                                 <td>
-                                                                    <t t-esc="exp.structure" />
+                                                                    <t t-out="exp.structure" />
                                                                 </td>
                                                                 <td>
-                                                                    <t t-esc="exp.fonction" />
+                                                                    <t t-out="exp.fonction" />
                                                                 </td>
                                                             </tr>
                                                         </t>
@@ -1770,16 +1770,16 @@
                                         <dl class="row mb-2">
                                             <dt class="col-sm-4">Structure d'accueil</dt>
                                             <dd class="col-sm-8">
-                                                <t t-esc="insc.structure_accueil or '—'" />
+                                                <t t-out="insc.structure_accueil or '—'" />
                                             </dd>
                                             <dt class="col-sm-4">Fonction visée</dt>
                                             <dd class="col-sm-8">
-                                                <t t-esc="insc.fonction_visee or '—'" />
+                                                <t t-out="insc.fonction_visee or '—'" />
                                             </dd>
                                         </dl>
                                         <t t-if="insc.projet_professionnel">
                                             <p style="white-space:pre-line;">
-                                                <t t-esc="insc.projet_professionnel" />
+                                                <t t-out="insc.projet_professionnel" />
                                             </p>
                                         </t>
                                     </div>
@@ -1810,14 +1810,14 @@
                                                     <t t-if="doc[1]">
                                                         <span class="text-success me-1">✓</span>
                                                         <strong>
-                                                            <t t-esc="doc[0]" />
+                                                            <t t-out="doc[0]" />
                                                         </strong>
                                                         <span class="text-muted small ms-1">(<t
-                                                                t-esc="doc[2] or 'fichier'" />)</span>
+                                                                t-out="doc[2] or 'fichier'" />)</span>
                                                     </t>
                                                     <t t-else="">
                                                         <span class="text-muted me-1">–</span>
-                                                        <t t-esc="doc[0]" />
+                                                        <t t-out="doc[0]" />
                                                         <span class="text-muted small ms-1">non
                                                             fourni</span>
                                                     </t>
@@ -1834,10 +1834,10 @@
                                                     <li class="mb-1">
                                                         <span class="text-success me-1">✓</span>
                                                         <strong>
-                                                            <t t-esc="d.name" />
+                                                            <t t-out="d.name" />
                                                         </strong>
                                                         <span class="text-muted small ms-1">(<t
-                                                                t-esc="d.fichier_filename or 'fichier'" />
+                                                                t-out="d.fichier_filename or 'fichier'" />
                                                             )</span>
                                                     </li>
                                                 </t>
@@ -1862,18 +1862,18 @@
                                     <div class="accordion-body">
                                         <p class="fw-semibold mb-1">Informations complémentaires</p>
                                         <p style="white-space:pre-line;" class="mb-3">
-                                            <t t-esc="insc.notes_candidat or '—'" />
+                                            <t t-out="insc.notes_candidat or '—'" />
                                         </p>
                                         <dl class="row mb-0">
                                             <dt class="col-sm-4">Consentement RGPD</dt>
                                             <dd class="col-sm-8">
                                                 <t
-                                                    t-esc="'Accepté' if insc.conditions_acceptees else 'Non accepté'" />
+                                                    t-out="'Accepté' if insc.conditions_acceptees else 'Non accepté'" />
                                             </dd>
                                             <dt class="col-sm-4">Attestation sur l'honneur</dt>
                                             <dd class="col-sm-8">
                                                 <t
-                                                    t-esc="('Certifiée le ' + str(insc.date_declaration)) if insc.date_declaration else 'Non certifiée'" />
+                                                    t-out="('Certifiée le ' + str(insc.date_declaration)) if insc.date_declaration else 'Non certifiée'" />
                                             </dd>
                                         </dl>
                                     </div>

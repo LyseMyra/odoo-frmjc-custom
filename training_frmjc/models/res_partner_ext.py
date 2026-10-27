@@ -49,7 +49,21 @@ class ResPartner(models.Model):
     is_structure_accueil = fields.Boolean(
         string="Structure d'accueil FRMJC", default=False, index=True,
     )
-    siret = fields.Char(string='SIRET', size=14)
+    siret = fields.Char(
+        string='SIRET', size=14,
+        compute='_compute_siret', inverse='_inverse_siret', store=True,
+        help="Synchronisé avec les identifiants natifs d'Odoo (section "
+             "« Identifiants » de la fiche contact) — pas une donnée distincte.",
+    )
+
+    @api.depends('additional_identifiers')
+    def _compute_siret(self):
+        for partner in self:
+            partner.siret = partner._get_additional_identifier('FR_SIRET')
+
+    def _inverse_siret(self):
+        for partner in self:
+            partner._set_additional_identifier('FR_SIRET', partner.siret)
     code_naf = fields.Char(string='Code NAF / APE', size=6)
     forme_juridique = fields.Char(
         string='Forme juridique',

@@ -29,32 +29,32 @@
                         <!-- En-tête titre -->
                         <h3 style="text-align:center; margin-bottom:.2rem;">
                             Commission de certification
-                            <t t-esc="doc.bloc_id.name"/>
+                            <t t-out="doc.bloc_id.name"/>
                         </h3>
                         <h4 style="text-align:center; margin:0 0 .2rem 0;">
-                            <t t-esc="(hab.type_formation or '').upper()"/>
-                            <t t-if="hab.specialite"> <t t-esc="hab.specialite"/></t>
+                            <t t-out="(hab.type_formation or '').upper()"/>
+                            <t t-out="(' ' + hab.specialite) if hab.specialite else ''"/>
                         </h4>
                         <p style="text-align:center; font-style:italic; margin:0 0 1.5rem 0;">
-                            <t t-if="hab.mention">Mention : <t t-esc="hab.mention"/></t>
+                            <t t-if="hab.mention">Mention : <t t-out="hab.mention"/></t>
                         </p>
 
                         <!-- Date alignée à droite -->
                         <p style="text-align:right; margin-bottom:1.5rem;">
                             À Rennes, le
-                            <t t-esc="today.day"/>
-                            <t t-esc="mois_fr.get(today.month, '')"/>
-                            <t t-esc="today.year"/>
+                            <t t-out="today.day"/>
+                            <t t-out="mois_fr.get(today.month, '')"/>
+                            <t t-out="today.year"/>
                         </p>
 
                         <p>Bonjour,</p>
 
                         <p style="text-align:justify; margin-bottom:1rem;">
                             Nous vous confirmons que vous composez la commission de certification du
-                            <strong><t t-esc="doc.bloc_id.name"/></strong>
-                            du <t t-esc="(hab.type_formation or '').upper()"/>,
-                            <t t-if="hab.specialite"><t t-esc="hab.specialite"/>, </t>
-                            <t t-if="hab.mention">mention <t t-esc="hab.mention"/></t>
+                            <strong><t t-out="doc.bloc_id.name"/></strong>
+                            du <t t-out="(hab.type_formation or '').upper()"/>,
+                            <t t-if="hab.specialite"><t t-out="hab.specialite"/>, </t>
+                            <t t-if="hab.mention">mention <t t-out="hab.mention"/></t>
                             comme suit :
                         </p>
 
@@ -62,9 +62,9 @@
                         <t t-if="cert">
                             <ul style="margin-bottom:1.2rem;">
                                 <li>
-                                    <strong><t t-esc="cert.name"/></strong>
-                                    <t t-if="cert.email"> (<t t-esc="cert.email"/></t>
-                                    <t t-if="cert.phone">, <t t-esc="cert.phone"/></t>
+                                    <strong><t t-out="cert.name"/></strong>
+                                    <t t-if="cert.email"> (<t t-out="cert.email"/></t>
+                                    <t t-if="cert.phone">, <t t-out="cert.phone"/></t>
                                     <t t-if="cert.email or cert.phone">)</t>
                                 </li>
                             </ul>
@@ -73,9 +73,9 @@
                         <p>
                             La certification de
                             <strong>
-                                <t t-esc="doc.partner_id.name"/>
+                                <t t-out="doc.partner_id.name"/>
                                 <t t-if="doc.partner_id.phone">
-                                    (<t t-esc="doc.partner_id.phone"/>)
+                                    (<t t-out="doc.partner_id.phone"/>)
                                 </t>
                             </strong>
                             aura lieu :
@@ -85,15 +85,15 @@
                         <div style="border:1.5px solid #333; padding:.8rem 1.2rem; margin:1rem 2rem; text-align:center;">
                             <t t-if="doc.date_certification_a">
                                 <p style="font-weight:bold; margin:0 0 .3rem 0;">
-                                    le <t t-esc="doc.date_certification_a.strftime('%A %d %B %Y')"/>
+                                    le <t t-out="doc.date_certification_a.strftime('%A %d %B %Y')"/>
                                 </p>
                             </t>
                             <p style="font-weight:bold; margin:0 0 .3rem 0;">
-                                à <t t-esc="h_fmt"/>,
+                                à <t t-out="h_fmt"/>,
                             </p>
                             <t t-if="doc.lieu_certification_a">
                                 <p style="font-weight:bold; margin:0; text-transform:uppercase;">
-                                    Lieu : <t t-esc="doc.lieu_certification_a"/>
+                                    Lieu : <t t-out="doc.lieu_certification_a"/>
                                 </p>
                             </t>
                         </div>
@@ -108,7 +108,7 @@
                             Vous trouverez en pièces jointes les éléments relatifs à la certification :
                         </p>
                         <ul style="margin-bottom:1.2rem;">
-                            <li>Les modalités régionales d'évaluation certificative pour le <t t-esc="doc.bloc_id.name"/></li>
+                            <li>Les modalités régionales d'évaluation certificative pour le <t t-out="doc.bloc_id.name"/></li>
                             <li>Les grilles de certification de chacune des UC</li>
                             <li>Les dossiers du candidat</li>
                             <li>Une fiche de frais de déplacement</li>
@@ -122,12 +122,12 @@
                         <p>Cordialement,</p>
 
                         <div style="text-align:right; margin-top:1rem;">
-                            <p style="margin:0;"><strong><t t-esc="responsable.name or ''"/></strong></p>
+                            <p style="margin:0;"><strong><t t-out="responsable.name or ''"/></strong></p>
                             <t t-if="responsable.email">
-                                <p style="margin:0; font-size:.9rem;"><t t-esc="responsable.email"/></p>
+                                <p style="margin:0; font-size:.9rem;"><t t-out="responsable.email"/></p>
                             </t>
                             <t t-if="responsable.phone">
-                                <p style="margin:0; font-size:.9rem;"><t t-esc="responsable.phone"/></p>
+                                <p style="margin:0; font-size:.9rem;"><t t-out="responsable.phone"/></p>
                             </t>
                         </div>
 

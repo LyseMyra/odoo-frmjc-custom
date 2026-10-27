@@ -60,7 +60,7 @@ class MobilityImportBmWizard(models.TransientModel):
             raise UserError("La bibliothèque openpyxl est requise. pip install openpyxl")
 
         wb = openpyxl.load_workbook(
-            io.BytesIO(base64.b64decode(self.file)), data_only=True,
+            io.BytesIO(bytes(self.file)), data_only=True,
         )
         ws = wb.active
         headers = [c.value for c in next(ws.iter_rows(min_row=1, max_row=1))]

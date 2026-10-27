@@ -74,7 +74,7 @@ class MobilityExportBmWizard(models.TransientModel):
         filename = f"export_bm_{fields.Date.today().isoformat()}.xlsx"
         attachment = self.env['ir.attachment'].create({
             'name': filename,
-            'datas': base64.b64encode(output.read()),
+            'raw': output.read(),
             'res_model': 'mobility.export.bm.wizard',
             'res_id': self.id,
             'mimetype': (

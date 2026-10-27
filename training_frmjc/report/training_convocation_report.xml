@@ -30,9 +30,9 @@
                         <t t-set="today" t-value="context_timestamp(datetime.datetime.now())"/>
                         <p style="text-align:right; margin-bottom:1.2rem;">
                             Rennes, le
-                            <t t-esc="today.day"/>
-                            <t t-esc="mois_fr.get(today.month, '')"/>
-                            <t t-esc="today.year"/>
+                            <t t-out="today.day"/>
+                            <t t-out="mois_fr.get(today.month, '')"/>
+                            <t t-out="today.year"/>
                         </p>
 
                         <!-- Encadré formation + BCs -->
@@ -40,17 +40,17 @@
                         <t t-set="all_blocs" t-value="weeks.mapped('week_line_ids.module_id.bloc_id').filtered(lambda b: b.type_bloc == 'bc')"/>
                         <div style="border:1.5px solid #222; padding:.8rem 1rem; margin-bottom:1.5rem; text-align:center;">
                             <p style="font-weight:bold; margin:0 0 .2rem 0;">
-                                <t t-esc="(hab.type_formation or '').upper()"/>
-                                <t t-if="hab.specialite"> <t t-esc="hab.specialite"/></t>
+                                <t t-out="(hab.type_formation or '').upper()"/>
+                                <t t-out="(' ' + hab.specialite) if hab.specialite else ''"/>
                             </p>
                             <t t-if="hab.mention">
                                 <p style="margin:0 0 .5rem 0; font-size:.9rem;">
-                                    Mention : <t t-esc="hab.mention"/>
+                                    Mention : <t t-out="hab.mention"/>
                                 </p>
                             </t>
                             <t t-foreach="all_blocs" t-as="bloc">
                                 <p style="font-weight:bold; font-size:.85rem; text-transform:uppercase; margin:.2rem 0 0 0; text-align:left;">
-                                    <t t-esc="bloc.name"/>
+                                    <t t-out="bloc.name"/>
                                 </p>
                             </t>
                         </div>
@@ -61,22 +61,22 @@
                             <!-- Titre de période -->
                             <t t-if="week.date_debut and week.date_fin">
                                 <h3 style="text-align:center; font-size:1.1rem; margin-bottom:1.2rem;">
-                                    Du <t t-esc="jours_fr.get(week.date_debut.weekday(), '')"/>
-                                    <t t-esc="week.date_debut.day"/>
-                                    au <t t-esc="jours_fr.get(week.date_fin.weekday(), '')"/>
-                                    <t t-esc="week.date_fin.day"/>
-                                    <t t-esc="mois_fr.get(week.date_fin.month, '')"/>
-                                    <t t-esc="week.date_fin.year"/>
+                                    Du <t t-out="jours_fr.get(week.date_debut.weekday(), '')"/>
+                                    <t t-out="week.date_debut.day"/>
+                                    au <t t-out="jours_fr.get(week.date_fin.weekday(), '')"/>
+                                    <t t-out="week.date_fin.day"/>
+                                    <t t-out="mois_fr.get(week.date_fin.month, '')"/>
+                                    <t t-out="week.date_fin.year"/>
                                 </h3>
                             </t>
 
                             <!-- Appel et lieu -->
-                            <p>Bonjour <t t-esc="doc.partner_id.name"/>,</p>
+                            <p>Bonjour <t t-out="doc.partner_id.name"/>,</p>
                             <p style="margin-bottom:1.2rem;">
                                 Vous êtes invité(e) à participer à la session de formation
-                                <t t-esc="doc.session_id.name"/>
+                                <t t-out="doc.session_id.name"/>
                                 <t t-if="week.lieu">
-                                    qui se déroulera à <strong><t t-esc="week.lieu"/></strong>
+                                    qui se déroulera à <strong><t t-out="week.lieu"/></strong>
                                 </t>.
                             </p>
 
@@ -89,13 +89,13 @@
                                     <t t-set="date_j" t-value="premiere_ligne.date_jour"/>
                                     <p style="font-weight:bold; margin:.9rem 0 .3rem 0;">
                                         <t t-if="date_j">
-                                            <t t-esc="jours_fr.get(date_j.weekday(), jour.capitalize())"/>
-                                            <t t-esc="date_j.day"/>
-                                            <t t-esc="mois_fr.get(date_j.month, '')"/>
-                                            <t t-esc="date_j.year"/>
+                                            <t t-out="jours_fr.get(date_j.weekday(), jour.capitalize())"/>
+                                            <t t-out="date_j.day"/>
+                                            <t t-out="mois_fr.get(date_j.month, '')"/>
+                                            <t t-out="date_j.year"/>
                                         </t>
                                         <t t-else="">
-                                            <t t-esc="jour.capitalize()"/>
+                                            <t t-out="jour.capitalize()"/>
                                         </t>
                                     </p>
 
@@ -109,19 +109,19 @@
                                             <span style="margin-right:.4rem;">•</span>
                                             <t t-if="ligne.heure_debut">
                                                 <strong>
-                                                    <t t-esc="'%dh%02d' % (int(h_deb), int(round((h_deb % 1) * 60)))"/>
+                                                    <t t-out="'%dh%02d' % (int(h_deb), int(round((h_deb % 1) * 60)))"/>
                                                     –
-                                                    <t t-esc="'%dh%02d' % (int(h_fin), int(round((h_fin % 1) * 60)))"/>
+                                                    <t t-out="'%dh%02d' % (int(h_fin), int(round((h_fin % 1) * 60)))"/>
                                                 </strong>
                                                 :
                                             </t>
-                                            <t t-esc="ligne.module_id.intitule or ligne.module_id.code or '—'"/>
+                                            <t t-out="ligne.module_id.intitule or ligne.module_id.code or '—'"/>
                                         </div>
                                         <t t-if="ligne.intervenant_id">
                                             <div style="margin-left:1.8rem; font-size:.88rem; color:#333; margin-bottom:.1rem;">
-                                                ▪ Intervenant : <t t-esc="ligne.intervenant_id.name"/>
+                                                ▪ Intervenant : <t t-out="ligne.intervenant_id.name"/>
                                                 <t t-if="ligne.intervenant_id.company_name">
-                                                    - <t t-esc="ligne.intervenant_id.company_name"/>
+                                                    - <t t-out="ligne.intervenant_id.company_name"/>
                                                 </t>
                                             </div>
                                         </t>
@@ -145,7 +145,7 @@
                         <!-- Signature -->
                         <div style="text-align:right; margin-top:2rem;">
                             <p style="margin:0; font-weight:normal;">
-                                <t t-esc="doc.session_id.responsable_id.name"/>
+                                <t t-out="doc.session_id.responsable_id.name"/>
                             </p>
                             <p style="margin:0; font-size:.9rem; color:#555;">
                                 Coordinateur(trice) de la formation

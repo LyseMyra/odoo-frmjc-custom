@@ -111,6 +111,25 @@ class TrainingConvention(models.Model):
         string='État signature', compute='_compute_sign_state', readonly=True,
     )
 
+    # ── Pré-remplissage depuis le dossier candidat ──────────────────
+    @api.onchange('inscription_id')
+    def _onchange_inscription_id(self):
+        for rec in self:
+            insc = rec.inscription_id
+            if not insc:
+                continue
+            session = insc.session_id
+            if session.date_debut:
+                rec.date_debut = session.date_debut
+            if session.date_fin:
+                rec.date_fin = session.date_fin
+            if insc.structure_accueil_id:
+                rec.structure_accueil_id = insc.structure_accueil_id
+            if insc.tuteur_id:
+                rec.tuteur_id = insc.tuteur_id
+            if insc.representant_structure_id:
+                rec.representant_structure_id = insc.representant_structure_id
+
     # ── Computed sign state ────────────────────────────────────────
     @api.depends('sign_request_id')
     def _compute_sign_state(self):
@@ -176,7 +195,7 @@ class TrainingConvention(models.Model):
         )
         filename = f'{self.numero}.pdf'
         self.write({
-            'document_pdf': base64.b64encode(pdf_content),
+            'document_pdf': base64.b64encode(pdf_content).decode('ascii'),
             'document_pdf_filename': filename,
             'statut': 'generee',
         })
@@ -204,7 +223,7 @@ class TrainingConvention(models.Model):
         # Créer l'attachement depuis le PDF généré
         attachment = self.env['ir.attachment'].sudo().create({
             'name': self.document_pdf_filename or f'{self.numero}.pdf',
-            'datas': self.document_pdf,
+            'raw': self.document_pdf,
             'mimetype': 'application/pdf',
             'res_model': self._name,
             'res_id': self.id,
@@ -335,7 +354,7 @@ class TrainingConvention(models.Model):
                 ], limit=1, order='id desc')
                 vals = {'statut': 'signee', 'date_signature': fields.Datetime.now()}
                 if att:
-                    vals['document_signe_pdf'] = att.datas
+                    vals['document_signe_pdf'] = att.raw
                     vals['document_signe_filename'] = att.name
                 rec.write(vals)
                 rec.message_post(body="Convention signée par toutes les parties.")

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_template_variable_list" model="ir.ui.view">
+        <field name="name">template.variable.list</field>
+        <field name="model">template.variable</field>
+        <field name="arch" type="xml">
+            <list string="Catalogue des variables" create="false" edit="false" delete="false">
+                <field name="tag" string="Balise à coller dans le document"/>
+                <field name="description"/>
+                <field name="model_id" string="Document applicable à"/>
+                <field name="source_module"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_template_variable_search" model="ir.ui.view">
+        <field name="name">template.variable.search</field>
+        <field name="model">template.variable</field>
+        <field name="arch" type="xml">
+            <search string="Catalogue des variables">
+                <field name="code" string="Balise ou description"
+                       filter_domain="['|', ('code', 'ilike', self), ('description', 'ilike', self)]"/>
+                <field name="model_id"/>
+                <separator/>
+                <filter name="group_model" string="Par document"
+                        context="{'group_by': 'model_id'}"/>
+                <filter name="group_module" string="Par module"
+                        context="{'group_by': 'source_module'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_template_variable" model="ir.actions.act_window">
+        <field name="name">Catalogue des variables</field>
+        <field name="res_model">template.variable</field>
+        <field name="view_mode">list</field>
+        <field name="search_view_id" ref="view_template_variable_search"/>
+        <field name="context">{'search_default_group_model': 1}</field>
+        <field name="help" type="html">
+            <p>Aucune variable disponible pour le moment.</p>
+            <p>Les variables apparaissent ici automatiquement : il n'y a rien à créer à la main.</p>
+        </field>
+    </record>
+
+</odoo>

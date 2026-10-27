@@ -382,7 +382,7 @@ class PortalInscription(http.Controller):
                 if uploaded and uploaded.filename:
                     data = uploaded.read()
                     if data:
-                        vals[field_name] = base64.b64encode(data)
+                        vals[field_name] = base64.b64encode(data).decode('ascii')
                         vals[fname_field] = uploaded.filename
 
             # ── Autres documents justificatifs (liste dynamique) ───
@@ -416,7 +416,7 @@ class PortalInscription(http.Controller):
                     })
                 commands.append((0, 0, {
                     'name': nom,
-                    'fichier': base64.b64encode(data),
+                    'fichier': base64.b64encode(data).decode('ascii'),
                     'fichier_filename': fichier.filename,
                 }))
             if commands:
@@ -466,7 +466,7 @@ class PortalInscription(http.Controller):
 
     def _envoyer_confirmation(self, insc):
         try:
-            base_url = request.env['ir.config_parameter'].sudo().get_param('web.base.url')
+            base_url = request.env['ir.config_parameter'].sudo().get_str('web.base.url')
             request.env['mail.mail'].sudo().create({
                 'subject': f"Dossier reçu – {insc.reference}",
                 'body_html': f"""

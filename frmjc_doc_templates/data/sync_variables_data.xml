@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- post_init_hook ne s'exécute qu'à la toute première installation
+         du module (voir odoo/modules/loading.py : condition
+         update_operation == 'install'), jamais sur une mise à jour
+         (-u / Mettre à niveau). Les fichiers 'data' en revanche sont
+         rechargés à chaque fois (install ET upgrade) : c'est pourquoi la
+         synchronisation du catalogue de variables est appelée ici plutôt
+         que seulement dans post_init_hook. Doit rester le DERNIER élément
+         chargé par ce module, pour que tout le code Python (et donc tous
+         les register_variable des fichiers variables_*.py) ait déjà été
+         importé. -->
+    <function model="template.variable" name="_sync_variables"/>
+
+</odoo>

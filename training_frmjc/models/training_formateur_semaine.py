@@ -52,7 +52,7 @@ class TrainingFormateurSemaine(models.Model):
             rec.nb_signes = len(djs.filtered(lambda d: d.statut == 'signe'))
 
     def action_envoyer_email(self):
-        base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        base_url = self.env['ir.config_parameter'].sudo().get_str('web.base.url')
         dj_labels = {'matin': 'Matin', 'apres_midi': 'Après-midi'}
         nb_envoyes = 0
         for rec in self:

@@ -760,7 +760,7 @@ class MobilityMobility(models.Model):
 
     def action_ouvrir_fiche_renseignement(self):
         self.ensure_one()
-        base_url = self.env["ir.config_parameter"].sudo().get_param("web.base.url")
+        base_url = self.env["ir.config_parameter"].sudo().get_str("web.base.url")
         return {
             "type": "ir.actions.act_url",
             "url": f"{base_url}/mobilite/fiche/{self.portal_token}",

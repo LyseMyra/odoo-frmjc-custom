@@ -129,7 +129,7 @@ class TrainingCertification(models.Model):
         self.write({'statut': 'planifie'})
 
     def action_convoquer_circuit_a(self):
-        base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        base_url = self.env['ir.config_parameter'].sudo().get_str('web.base.url')
         for rec in self:
             if not rec.certificateur_id:
                 raise UserError(f'{rec.display_name} : certificateur manquant.')

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem id="menu_doc_templates_root"
+        name="Documents"
+        sequence="60"/>
+
+    <menuitem id="menu_template_document"
+        name="Modèles de documents"
+        parent="menu_doc_templates_root"
+        action="action_template_document"
+        sequence="10"/>
+
+    <menuitem id="menu_template_variable"
+        name="Catalogue des variables"
+        parent="menu_doc_templates_root"
+        action="action_template_variable"
+        sequence="20"/>
+
+</odoo>

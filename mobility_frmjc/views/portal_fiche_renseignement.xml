@@ -38,9 +38,9 @@
         <t t-call="website.layout">
             <div class="container py-5">
                 <div class="alert alert-success">
-                    <h4 class="alert-heading">Merci <t t-esc="mobility.participant_id.name" /> !</h4>
+                    <h4 class="alert-heading">Merci <t t-out="mobility.participant_id.name" /> !</h4>
                     <p class="mb-0"> Votre fiche de renseignement pour la mobilité <strong>
-                            <t t-esc="mobility.name" />
+                            <t t-out="mobility.name" />
                         </strong> a bien été
                         enregistrée. L'équipe FRMJC / FDMJC22 va maintenant la vérifier avant de
                         poursuivre les démarches de placement. </p>
@@ -57,11 +57,11 @@
             <div class="container py-5" style="max-width: 900px;">
                 <h1 class="mb-1">Fiche de renseignement volontaire</h1>
                 <p class="text-muted mb-4"> Mobilité <strong>
-                        <t t-esc="mobility.name" />
+                        <t t-out="mobility.name" />
                     </strong>
                     <t
                         t-if="mobility.reference_projet"> — Projet <t
-                            t-esc="mobility.reference_projet" /></t> — à compléter par la structure
+                            t-out="mobility.reference_projet" /></t> — à compléter par la structure
                     d'accueil. </p>
 
                 <t t-if="errors">
@@ -183,7 +183,7 @@
                                         required="required" t-att-value="v_participant_prenom" />
                                     <t t-if="errors.get('participant_prenom')">
                                         <div class="text-danger small">
-                                            <t t-esc="errors['participant_prenom']" />
+                                            <t t-out="errors['participant_prenom']" />
                                         </div>
                                     </t>
                                 </div>
@@ -193,7 +193,7 @@
                                         required="required" t-att-value="v_participant_nom" />
                                     <t t-if="errors.get('participant_nom')">
                                         <div class="text-danger small">
-                                            <t t-esc="errors['participant_nom']" />
+                                            <t t-out="errors['participant_nom']" />
                                         </div>
                                     </t>
                                 </div>
@@ -203,7 +203,7 @@
                                         required="required" t-att-value="v_email" />
                                     <t t-if="errors.get('email')">
                                         <div class="text-danger small">
-                                            <t t-esc="errors['email']" />
+                                            <t t-out="errors['email']" />
                                         </div>
                                     </t>
                                 </div>
@@ -218,7 +218,7 @@
                                         required="required" t-att-value="v_date_naissance" />
                                     <t t-if="errors.get('date_naissance')">
                                         <div class="text-danger small">
-                                            <t t-esc="errors['date_naissance']" />
+                                            <t t-out="errors['date_naissance']" />
                                         </div>
                                     </t>
                                 </div>
@@ -229,7 +229,7 @@
                                         <t t-foreach="pays_list" t-as="pays">
                                             <option t-att-value="pays.id"
                                                 t-att-selected="str(pays.id) == v_nationalite_id">
-                                                <t t-esc="pays.name" />
+                                                <t t-out="pays.name" />
                                             </option>
                                         </t>
                                     </select>
@@ -241,7 +241,7 @@
                                         <t t-foreach="pays_list" t-as="pays">
                                             <option t-att-value="pays.id"
                                                 t-att-selected="str(pays.id) == v_pays_residence_id">
-                                                <t t-esc="pays.name" />
+                                                <t t-out="pays.name" />
                                             </option>
                                         </t>
                                     </select>
@@ -268,7 +268,7 @@
                                         traitement médical, régime...)</label>
                                     <textarea name="besoins_particuliers" class="form-control"
                                         rows="2">
-                                        <t t-esc="v_besoins_particuliers" />
+                                        <t t-out="v_besoins_particuliers" />
                                     </textarea>
                                 </div>
                             </div>
@@ -324,7 +324,7 @@
                                         <t t-foreach="pays_list" t-as="pays">
                                             <option t-att-value="pays.id"
                                                 t-att-selected="str(pays.id) == v_country_id">
-                                                <t t-esc="pays.name" />
+                                                <t t-out="pays.name" />
                                             </option>
                                         </t>
                                     </select>
@@ -467,7 +467,7 @@
                                         required="required" t-att-value="v_hosting_org_nom" />
                                     <t t-if="errors.get('hosting_org_nom')">
                                         <div class="text-danger small">
-                                            <t t-esc="errors['hosting_org_nom']" />
+                                            <t t-out="errors['hosting_org_nom']" />
                                         </div>
                                     </t>
                                 </div>
@@ -565,7 +565,7 @@
                                     </label>
                                     <t t-if="errors.get('declaration_acceptee')">
                                         <div class="text-danger small">
-                                            <t t-esc="errors['declaration_acceptee']" />
+                                            <t t-out="errors['declaration_acceptee']" />
                                         </div>
                                     </t>
                                 </div>

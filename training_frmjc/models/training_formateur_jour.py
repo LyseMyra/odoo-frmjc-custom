@@ -58,7 +58,7 @@ class TrainingFormateurJour(models.Model):
         ], order='partner_id, demi_journee')
 
     def action_envoyer_email(self):
-        base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        base_url = self.env['ir.config_parameter'].sudo().get_str('web.base.url')
         dj_labels = {'matin': 'Matin', 'apres_midi': 'Après-midi'}
         nb_envoyes = 0
         sans_email = []

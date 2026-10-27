@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Bouton "Générer un document" sur le dossier d'inscription.
+         Ce module (frmjc_doc_templates) dépend de training_frmjc, pas
+         l'inverse : c'est pour ça que ce bouton est ajouté ici par
+         héritage, et pas directement dans training_frmjc. -->
+    <record id="view_training_inscription_form_doc_templates" model="ir.ui.view">
+        <field name="name">training.inscription.form.doc.templates</field>
+        <field name="model">training.inscription</field>
+        <field name="inherit_id" ref="training_frmjc.view_training_inscription_form"/>
+        <field name="arch" type="xml">
+            <button name="action_imprimer_certificat_realisation" position="after">
+                <button name="action_generer_document" string="Générer un document (.docx)"
+                        type="object" class="btn-secondary"
+                        invisible="statut != 'accepte'"/>
+            </button>
+        </field>
+    </record>
+
+</odoo>

@@ -44,20 +44,20 @@
 
                             <!-- Dates de la formation -->
                             <p style="margin:0; font-size:8.5pt;"> Formation du <t
-                                    t-esc="doc.session_id.date_debut.strftime('%d/%m/%Y') if doc.session_id.date_debut else '—'" />
+                                    t-out="doc.session_id.date_debut.strftime('%d/%m/%Y') if doc.session_id.date_debut else '—'" />
                                 au <t
-                                    t-esc="doc.session_id.date_fin.strftime('%d/%m/%Y') if doc.session_id.date_fin else '—'" />
+                                    t-out="doc.session_id.date_fin.strftime('%d/%m/%Y') if doc.session_id.date_fin else '—'" />
                             </p>
 
                             <!-- Mois en gros -->
                             <p style="font-size:20pt; font-weight:bold; margin:0.3cm 0;">
-                                <t t-esc="mois_fr_maj.get(doc.mois, str(doc.mois))" />
-                                <t t-esc="doc.annee" />
+                                <t t-out="mois_fr_maj.get(doc.mois, str(doc.mois))" />
+                                <t t-out="doc.annee" />
                             </p>
 
                             <!-- Stagiaire -->
                             <p style="margin:0;"> Stagiaire : <strong>
-                                    <t t-esc="doc.partner_id.name" />
+                                    <t t-out="doc.partner_id.name" />
                                 </strong>
                             </p>
 
@@ -99,17 +99,17 @@
 
                             <!-- Informations formation -->
                             <p style="text-align:center; font-weight:bold; margin:0; font-size:9pt;">
-                                <t t-esc="(hab.type_formation or '').upper()" />
-                                <t t-if="hab.specialite"> - <t t-esc="hab.specialite" /></t>
+                                <t t-out="(hab.type_formation or '').upper()" />
+                                <t t-if="hab.specialite"> - <t t-out="hab.specialite" /></t>
                             </p>
                             <t t-if="hab.mention">
                                 <p
                                     style="text-align:center; font-style:italic; margin:0; font-size:8.5pt;">
-                                    MENTION : <t t-esc="hab.mention" />
+                                    MENTION : <t t-out="hab.mention" />
                                 </p>
                             </t>
                             <p style="text-align:center; margin:0 0 0.5cm 0; font-size:8.5pt;">
-                                Habilitation : <t t-esc="hab.numero or hab.display_name or '—'" />
+                                Habilitation : <t t-out="hab.numero or hab.display_name or '—'" />
                             </p>
 
                             <!-- ── Tableaux semaine par semaine ─────── -->
@@ -146,32 +146,32 @@
                                                 <!-- Code jour (L M M J V S) -->
                                                 <td
                                                     style="border:1px solid #ccc; padding:2px 4px; text-align:center; font-weight:bold;">
-                                                    <t t-esc="jour['code']" />
+                                                    <t t-out="jour['code']" />
                                                 </td>
                                                 <!-- Date -->
                                                 <td
                                                     style="border:1px solid #ccc; padding:2px 4px; text-align:center;">
                                                     <t t-if="jour['date']">
-                                                        <t t-esc="jour['date'].strftime('%d/%m/%Y')" />
+                                                        <t t-out="jour['date'].strftime('%d/%m/%Y')" />
                                                     </t>
                                                 </td>
                                                 <!-- Stage en entreprise -->
                                                 <td
                                                     style="border:1px solid #ccc; padding:2px 4px; text-align:center;">
                                                     <t t-if="jour['h_stage'] is not None">
-                                                        <t t-esc="int(jour['h_stage'])" />
+                                                        <t t-out="int(jour['h_stage'])" />
                                                     </t>
                                                 </td>
                                                 <!-- Formation en centre -->
                                                 <td
                                                     style="border:1px solid #ccc; padding:2px 4px; text-align:center;">
                                                     <t t-if="jour['h_centre'] is not None">
-                                                        <t t-esc="int(jour['h_centre'])" />
+                                                        <t t-out="int(jour['h_centre'])" />
                                                     </t>
                                                 </td>
                                                 <!-- Motif -->
                                                 <td style="border:1px solid #ccc; padding:2px 6px;">
-                                                    <t t-esc="jour['motif']" />
+                                                    <t t-out="jour['motif']" />
                                                 </td>
                                             </tr>
                                         </t>
@@ -182,11 +182,11 @@
                                                 TOT</td>
                                             <td
                                                 style="border:1px solid #333; padding:2px 4px; text-align:center; font-weight:bold;">
-                                                <t t-esc="int(sem['tot_stage'])" />
+                                                <t t-out="int(sem['tot_stage'])" />
                                             </td>
                                             <td
                                                 style="border:1px solid #333; padding:2px 4px; text-align:center; font-weight:bold;">
-                                                <t t-esc="int(sem['tot_centre'])" />
+                                                <t t-out="int(sem['tot_centre'])" />
                                             </td>
                                             <td style="border:1px solid #333;"></td>
                                         </tr>
@@ -203,11 +203,11 @@
                                     </td>
                                     <td
                                         style="border:1.5px solid #333; padding:3px 6px; text-align:center; font-weight:bold; width:2cm;">
-                                        <t t-esc="int(tot_global_stage)" />
+                                        <t t-out="int(tot_global_stage)" />
                                     </td>
                                     <td
                                         style="border:1.5px solid #333; padding:3px 6px; text-align:center; font-weight:bold; width:2cm;">
-                                        <t t-esc="int(tot_global_centre)" />
+                                        <t t-out="int(tot_global_centre)" />
                                     </td>
                                     <td
                                         style="border:1.5px solid #333; padding:3px 6px; font-weight:bold;">
@@ -225,18 +225,18 @@
                     <div
                         style="margin-top:1cm; border-top:1px solid #555; padding-top:0.3cm; text-align:center; font-size:7.5pt; color:#333;">
                         <strong>
-                            <t t-esc="company.name" />
+                            <t t-out="company.name" />
                         </strong>
                         <br />
                         <t t-if="company.street">
-                            <t t-esc="company.street" />
+                            <t t-out="company.street" />
                             <t t-if="company.zip or company.city">
-                                <t t-esc="(company.zip or '') + ' ' + (company.city or '')" />
+                                <t t-out="(company.zip or '') + ' ' + (company.city or '')" />
                             </t>
                         </t>
-                        <t t-if="company.vat"> - SIRET <t t-esc="company.vat" /></t>
-                        <t t-if="company.phone"> - <t t-esc="company.phone" /></t>
-                        <t t-if="company.email"> - <t t-esc="company.email" /></t>
+                        <t t-if="company.vat"> - SIRET <t t-out="company.vat" /></t>
+                        <t t-if="company.phone"> - <t t-out="company.phone" /></t>
+                        <t t-if="company.email"> - <t t-out="company.email" /></t>
                     </div>
 
                 </div>

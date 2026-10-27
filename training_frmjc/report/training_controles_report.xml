@@ -134,12 +134,12 @@
 
                         <!-- ── En-tête ────────────────────────────────────────── -->
                         <div class="rc-header">
-                            <h1>Ruban de contrôles — <t t-esc="formation.type_formation or formation.name"/></h1>
+                            <h1>Ruban de contrôles — <t t-out="formation.type_formation or formation.name"/></h1>
                             <t t-if="formation.specialite">
-                                <p><t t-esc="formation.specialite"/></p>
+                                <p><t t-out="formation.specialite"/></p>
                             </t>
                             <t t-if="formation.mention">
-                                <p>Mention : <t t-esc="formation.mention"/></p>
+                                <p>Mention : <t t-out="formation.mention"/></p>
                             </t>
                         </div>
 
@@ -199,52 +199,52 @@
                                                 <!-- Cellule BLOC : seulement sur la 1re ligne du 1er module -->
                                                 <t t-if="module_r_first and rep_first">
                                                     <td class="td-bloc" t-att-rowspan="bloc_total_rows">
-                                                        <t t-esc="bloc.name"/>
+                                                        <t t-out="bloc.name"/>
                                                     </td>
                                                 </t>
 
                                                 <!-- Cellules module : rowspan = nb lignes de répartition -->
                                                 <t t-if="rep_first">
                                                     <td t-att-rowspan="nb_rep" style="font-weight:bold;">
-                                                        <t t-esc="module_r.code or ''"/>
+                                                        <t t-out="module_r.code or ''"/>
                                                         <t t-if="module_r.intitule">
-                                                            <br/><span style="font-weight:normal;"><t t-esc="module_r.intitule"/></span>
+                                                            <br/><span style="font-weight:normal;"><t t-out="module_r.intitule"/></span>
                                                         </t>
                                                     </td>
                                                     <td t-att-rowspan="nb_rep">
-                                                        <t t-esc="module_r.objectifs or ''"/>
+                                                        <t t-out="module_r.objectifs or ''"/>
                                                     </td>
                                                     <td t-att-rowspan="nb_rep">
-                                                        <t t-esc="module_r.contenus or ''"/>
+                                                        <t t-out="module_r.contenus or ''"/>
                                                     </td>
                                                     <td t-att-rowspan="nb_rep">
-                                                        <t t-esc="module_r.intervenant_default_id.name or ''"/>
+                                                        <t t-out="module_r.intervenant_default_id.name or ''"/>
                                                     </td>
                                                     <td t-att-rowspan="nb_rep">
-                                                        <t t-esc="module_r.modalites_peda or ''"/>
+                                                        <t t-out="module_r.modalites_peda or ''"/>
                                                     </td>
                                                     <td t-att-rowspan="nb_rep" class="td-num">
-                                                        <t t-esc="'%.0f' % (module_r.volume_of or 0)"/>
+                                                        <t t-out="'%.0f' % (module_r.volume_of or 0)"/>
                                                     </td>
                                                     <td t-att-rowspan="nb_rep">
-                                                        <t t-esc="module_r.activites_entreprise or ''"/>
+                                                        <t t-out="module_r.activites_entreprise or ''"/>
                                                     </td>
                                                     <td t-att-rowspan="nb_rep">
-                                                        <t t-esc="module_r.commandes_tuteur or ''"/>
+                                                        <t t-out="module_r.commandes_tuteur or ''"/>
                                                     </td>
                                                     <td t-att-rowspan="nb_rep" class="td-num">
-                                                        <t t-esc="'%.0f' % (module_r.volume_entreprise or 0)"/>
+                                                        <t t-out="'%.0f' % (module_r.volume_entreprise or 0)"/>
                                                     </td>
                                                     <td t-att-rowspan="nb_rep" class="td-num" style="font-weight:bold;">
-                                                        <t t-esc="'%.0f' % (module_r.volume_total or 0)"/>
+                                                        <t t-out="'%.0f' % (module_r.volume_total or 0)"/>
                                                     </td>
                                                 </t>
 
                                                 <!-- Répartition -->
                                                 <t t-if="rep">
-                                                    <td class="td-rep-sem">S<t t-esc="rep.semaine"/></td>
-                                                    <td class="td-rep-jour"><t t-esc="rep.jour[:3].capitalize()"/></td>
-                                                    <td class="td-rep-heure"><t t-esc="'%.0f' % rep.heures"/>h</td>
+                                                    <td class="td-rep-sem">S<t t-out="rep.semaine"/></td>
+                                                    <td class="td-rep-jour"><t t-out="rep.jour[:3].capitalize()"/></td>
+                                                    <td class="td-rep-heure"><t t-out="'%.0f' % rep.heures"/>h</td>
                                                 </t>
                                                 <t t-else="">
                                                     <td class="td-empty">—</td>

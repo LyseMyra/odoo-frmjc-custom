@@ -46,10 +46,10 @@
                         <div class="mb-3" style="padding-left: 16px;">
                             <span t-field="partner.name"/>
                             <t t-if="partner.parent_id">
-                                <br/><t t-esc="partner.parent_id.name"/>
+                                <br/><t t-out="partner.parent_id.name"/>
                             </t>
                             <t t-if="partner.vat">
-                                <br/>Siret : <t t-esc="partner.vat"/>
+                                <br/>Siret : <t t-out="partner.vat"/>
                             </t>
                         </div>
 
@@ -57,14 +57,14 @@
 
                         <!-- Organisme de formation -->
                         <div class="mb-3" style="padding-left: 16px;">
-                            Le demandeur, <t t-esc="env.company.name"/>,<br/>
+                            Le demandeur, <t t-out="env.company.name"/>,<br/>
                             <t t-if="env.company.vat">
-                                N° de SIRET <t t-esc="env.company.vat"/> – Code APE 9329Z<br/>
+                                N° de SIRET <t t-out="env.company.vat"/> – Code APE 9329Z<br/>
                             </t>
-                            <t t-esc="env.company.street"/> à <t t-esc="env.company.city"/>,
+                            <t t-out="env.company.street"/> à <t t-out="env.company.city"/>,
                             dont le siège social est sis représentée par
-                            <t t-esc="session.signataire_nom or ''"/> en sa qualité de
-                            <t t-esc="session.signataire_titre or 'représentant légal'"/> ;
+                            <t t-out="session.signataire_nom or ''"/> en sa qualité de
+                            <t t-out="session.signataire_titre or 'représentant légal'"/> ;
                         </div>
 
                         <p>
@@ -75,8 +75,8 @@
                         <p><u>Article 1 — OBJET</u></p>
                         <p>
                             La présente convention a pour objet la réalisation par le prestataire d'une action de formation
-                            dans le cadre du <strong><t t-esc="session.formation_id.intitule"/></strong>
-                            à destination des participant·es pour le compte de <t t-esc="env.company.name"/>
+                            dans le cadre du <strong><t t-out="session.formation_id.intitule"/></strong>
+                            à destination des participant·es pour le compte de <t t-out="env.company.name"/>
                             par l'intervenant·e <span t-field="partner.name"/>.
                         </p>
 
@@ -84,13 +84,13 @@
                         <p><u>Article 2 — CONTENU</u></p>
                         <p>
                             L'action de formation portera sur les modules décrits dans le dossier d'habilitation
-                            transmis par <t t-esc="env.company.name"/> à l'intervenant·e <span t-field="partner.name"/>
+                            transmis par <t t-out="env.company.name"/> à l'intervenant·e <span t-field="partner.name"/>
                             et dont les contenus ont été définis lors des temps de préparation :
                         </p>
                         <t t-if="modules_list">
                             <ul>
                                 <t t-foreach="modules_list" t-as="module">
-                                    <li><t t-esc="module.intitule"/></li>
+                                    <li><t t-out="module.intitule"/></li>
                                 </t>
                             </ul>
                         </t>
@@ -102,14 +102,14 @@
 
                         <!-- ── Article 3 ───────────────────────────────── -->
                         <p><u>Article 3 — LIEU</u></p>
-                        <p>L'action de formation se déroulera <strong><t t-esc="session.lieu_formation or 'en itinérance'"/></strong>.</p>
+                        <p>L'action de formation se déroulera <strong><t t-out="session.lieu_formation or 'en itinérance'"/></strong>.</p>
 
                         <!-- ── Article 4 ───────────────────────────────── -->
                         <p><u>Article 4 — BÉNÉFICIAIRES</u></p>
                         <p>
                             L'action de formation sera réalisée auprès des
-                            <strong><t t-esc="session.nb_stagiaires_acceptes"/></strong>
-                            stagiaires de la promotion <strong><t t-esc="session.formation_id.intitule"/></strong>.
+                            <strong><t t-out="session.nb_stagiaires_acceptes"/></strong>
+                            stagiaires de la promotion <strong><t t-out="session.formation_id.intitule"/></strong>.
                         </p>
 
                         <!-- ── Article 5 ───────────────────────────────── -->
@@ -121,7 +121,7 @@
                         <t t-if="modules_list">
                             <ul>
                                 <t t-foreach="modules_list" t-as="module">
-                                    <li><t t-esc="module.intitule"/></li>
+                                    <li><t t-out="module.intitule"/></li>
                                 </t>
                             </ul>
                         </t>
@@ -149,12 +149,12 @@
                         <ul>
                             <t t-foreach="depenses_partner" t-as="d">
                                 <li>
-                                    <t t-esc="d.description or d.product_id.name"/> :
-                                    <t t-esc="'%.2f' % d.prix_unitaire"/> €
+                                    <t t-out="d.description or d.product_id.name"/> :
+                                    <t t-out="'%.2f' % d.prix_unitaire"/> €
                                     <t t-if="d.quantite != 1.0">
-                                        × <t t-esc="'%.2f' % d.quantite"/>
+                                        × <t t-out="'%.2f' % d.quantite"/>
                                     </t>
-                                    = <strong><t t-esc="'%.2f' % d.montant_total"/> €</strong>
+                                    = <strong><t t-out="'%.2f' % d.montant_total"/> €</strong>
                                 </li>
                             </t>
                         </ul>
@@ -176,14 +176,14 @@
                         <p><u>Article 7 — DURÉE</u></p>
                         <p>
                             L'action de formation se déroulera sur
-                            <strong><t t-esc="'%.1f' % sum(depenses_partner.mapped('quantite'))"/></strong>
+                            <strong><t t-out="'%.1f' % sum(depenses_partner.mapped('quantite'))"/></strong>
                             jour(s).
                         </p>
                         <p>
                             Les date(s) prévisionnelles de l'action se situent dans la période du
-                            <strong><t t-esc="session.date_debut.strftime('%d/%m/%Y') if session.date_debut else '?'"/></strong>
+                            <strong><t t-out="session.date_debut.strftime('%d/%m/%Y') if session.date_debut else '?'"/></strong>
                             au
-                            <strong><t t-esc="session.date_fin.strftime('%d/%m/%Y') if session.date_fin else '?'"/></strong>.
+                            <strong><t t-out="session.date_fin.strftime('%d/%m/%Y') if session.date_fin else '?'"/></strong>.
                         </p>
                         <p>
                             Toute prolongation de la présente convention devra faire l'objet d'un avenant sous peine
@@ -231,8 +231,8 @@
                         <div class="row mt-4">
                             <div class="col-12">
                                 <p>
-                                    Fait à <t t-esc="env.company.city or 'Rennes'"/>,
-                                    le <t t-esc="time.strftime('%d/%m/%Y')"/>, deux exemplaires,
+                                    Fait à <t t-out="env.company.city or 'Rennes'"/>,
+                                    le <t t-out="time.strftime('%d/%m/%Y')"/>, deux exemplaires,
                                 </p>
                             </div>
                         </div>
@@ -240,23 +240,23 @@
                         <div class="row mt-3">
                             <div class="col-6" style="border: 1px solid #333; padding: 12px; min-height: 120px;">
                                 <p style="text-align:center;">
-                                    <strong><t t-esc="env.company.name"/></strong><br/>
-                                    <t t-esc="env.company.street or ''"/>
+                                    <strong><t t-out="env.company.name"/></strong><br/>
+                                    <t t-out="env.company.street or ''"/>
                                     <t t-if="env.company.zip or env.company.city">
-                                        <br/><t t-esc="(env.company.zip or '') + ' ' + (env.company.city or '')"/>
+                                        <br/><t t-out="(env.company.zip or '') + ' ' + (env.company.city or '')"/>
                                     </t>
                                 </p>
                                 <br/><br/><br/>
                                 <p style="text-align:center;">
-                                    <t t-esc="session.signataire_nom or ''"/><br/>
-                                    <em><t t-esc="session.signataire_titre or ''"/></em>
+                                    <t t-out="session.signataire_nom or ''"/><br/>
+                                    <em><t t-out="session.signataire_titre or ''"/></em>
                                 </p>
                             </div>
                             <div class="col-6" style="border: 1px solid #333; padding: 12px; min-height: 120px;">
                                 <p style="text-align:center;">
                                     <span t-field="partner.name"/>
                                     <t t-if="partner.parent_id">
-                                        <br/><t t-esc="partner.parent_id.name"/>
+                                        <br/><t t-out="partner.parent_id.name"/>
                                     </t>
                                     <br/>Nom, qualité et signature
                                 </p>

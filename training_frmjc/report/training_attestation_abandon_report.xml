@@ -40,7 +40,7 @@
                             </h2>
                             <p style="font-size:9pt; color:#666; margin:0;">
                                 Etablie le
-                                <t t-esc="doc.date_abandon.strftime('%d/%m/%Y') if doc.date_abandon else time.strftime('%d/%m/%Y')"/>
+                                <t t-out="doc.date_abandon.strftime('%d/%m/%Y') if doc.date_abandon else time.strftime('%d/%m/%Y')"/>
                             </p>
                         </div>
 
@@ -55,15 +55,15 @@
                             <table style="width:100%; font-size:9.5pt;">
                                 <tr>
                                     <td style="width:38%; color:#555; padding:.08cm 0;">Nom / Prénom :</td>
-                                    <td style="font-weight:bold;"><t t-esc="stagiaire.name or '—'"/></td>
+                                    <td style="font-weight:bold;"><t t-out="stagiaire.name or '—'"/></td>
                                 </tr>
                                 <t t-if="stagiaire.street or stagiaire.city">
                                     <tr>
                                         <td style="color:#555; padding:.08cm 0;">Adresse :</td>
                                         <td>
-                                            <t t-esc="stagiaire.street or ''"/>
+                                            <t t-out="stagiaire.street or ''"/>
                                             <t t-if="stagiaire.zip or stagiaire.city">
-                                                <t t-esc="', ' + ((stagiaire.zip or '') + ' ' + (stagiaire.city or '')).strip()"/>
+                                                <t t-out="', ' + ((stagiaire.zip or '') + ' ' + (stagiaire.city or '')).strip()"/>
                                             </t>
                                         </td>
                                     </tr>
@@ -71,13 +71,13 @@
                                 <t t-if="stagiaire.email">
                                     <tr>
                                         <td style="color:#555; padding:.08cm 0;">Email :</td>
-                                        <td><t t-esc="stagiaire.email"/></td>
+                                        <td><t t-out="stagiaire.email"/></td>
                                     </tr>
                                 </t>
                                 <t t-if="stagiaire.phone">
                                     <tr>
                                         <td style="color:#555; padding:.08cm 0;">Telephone :</td>
-                                        <td><t t-esc="stagiaire.phone"/></td>
+                                        <td><t t-out="stagiaire.phone"/></td>
                                     </tr>
                                 </t>
                             </table>
@@ -95,26 +95,26 @@
                                 <tr>
                                     <td style="width:38%; color:#555; padding:.08cm 0;">Intitule :</td>
                                     <td style="font-weight:bold;">
-                                        <t t-esc="insc.formation_id.intitule if insc.formation_id else '—'"/>
+                                        <t t-out="insc.formation_id.intitule if insc.formation_id else '—'"/>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td style="color:#555; padding:.08cm 0;">Session :</td>
-                                    <td><t t-esc="session.name if session else '—'"/></td>
+                                    <td><t t-out="session.name if session else '—'"/></td>
                                 </tr>
                                 <t t-if="session and (session.date_debut or session.date_fin)">
                                     <tr>
                                         <td style="color:#555; padding:.08cm 0;">Periode :</td>
                                         <td>
-                                            Du <t t-esc="session.date_debut.strftime('%d/%m/%Y') if session.date_debut else '?'"/>
-                                            au <t t-esc="session.date_fin.strftime('%d/%m/%Y') if session.date_fin else '?'"/>
+                                            Du <t t-out="session.date_debut.strftime('%d/%m/%Y') if session.date_debut else '?'"/>
+                                            au <t t-out="session.date_fin.strftime('%d/%m/%Y') if session.date_fin else '?'"/>
                                         </td>
                                     </tr>
                                 </t>
                                 <t t-if="insc.reference">
                                     <tr>
                                         <td style="color:#555; padding:.08cm 0;">N° dossier :</td>
-                                        <td><t t-esc="insc.reference"/></td>
+                                        <td><t t-out="insc.reference"/></td>
                                     </tr>
                                 </t>
                             </table>
@@ -132,19 +132,19 @@
                                 <tr>
                                     <td style="width:38%; color:#555; padding:.08cm 0;">Date d'abandon :</td>
                                     <td style="font-weight:bold;">
-                                        <t t-esc="doc.date_abandon.strftime('%d/%m/%Y') if doc.date_abandon else '—'"/>
+                                        <t t-out="doc.date_abandon.strftime('%d/%m/%Y') if doc.date_abandon else '—'"/>
                                     </td>
                                 </tr>
                                 <t t-if="doc.semaine_abandon_id">
                                     <tr>
                                         <td style="color:#555; padding:.08cm 0;">Semaine d'abandon :</td>
-                                        <td><t t-esc="doc.semaine_abandon_id.name or '—'"/></td>
+                                        <td><t t-out="doc.semaine_abandon_id.name or '—'"/></td>
                                     </tr>
                                 </t>
                                 <tr>
                                     <td style="color:#555; padding:.08cm 0;">Motif :</td>
                                     <td style="font-weight:bold;">
-                                        <t t-esc="motif_labels.get(doc.motif, doc.motif or '—')"/>
+                                        <t t-out="motif_labels.get(doc.motif, doc.motif or '—')"/>
                                     </td>
                                 </tr>
                                 <t t-if="doc.description">
@@ -153,7 +153,7 @@
                                             Commentaires :
                                         </td>
                                         <td style="font-style:italic;">
-                                            <t t-esc="doc.description"/>
+                                            <t t-out="doc.description"/>
                                         </td>
                                     </tr>
                                 </t>
@@ -180,7 +180,7 @@
                                         <tr>
                                             <td style="color:#555; padding:.08cm 0;">Montant :</td>
                                             <td style="font-weight:bold;">
-                                                <t t-esc="'%.2f EUR' % doc.montant_remboursement"/>
+                                                <t t-out="'%.2f EUR' % doc.montant_remboursement"/>
                                             </td>
                                         </tr>
                                     </t>
@@ -207,7 +207,7 @@
                                         L'Organisme de formation
                                     </p>
                                     <p style="font-size:9pt; color:#555; margin:0 0 .25cm 0;">
-                                        <t t-esc="env.company.name"/>
+                                        <t t-out="env.company.name"/>
                                     </p>
                                     <p style="margin:0 0 .25cm 0; font-size:9pt;">Date :</p>
                                     <p style="margin:0 0 .6cm 0; font-size:9pt;">
@@ -223,7 +223,7 @@
                                         Le(la) Stagiaire
                                     </p>
                                     <p style="font-size:9pt; color:#555; margin:0 0 .25cm 0;">
-                                        <t t-esc="stagiaire.name or ''"/>
+                                        <t t-out="stagiaire.name or ''"/>
                                     </p>
                                     <p style="margin:0 0 .25cm 0; font-size:9pt;">Date :</p>
                                     <p style="margin:0 0 .6cm 0; font-size:9pt;">Signature :</p>

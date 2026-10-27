@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_template_generate_wizard_form" model="ir.ui.view">
+        <field name="name">template.generate.wizard.form</field>
+        <field name="model">template.generate.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Générer un document">
+                <field name="res_model" invisible="1"/>
+                <field name="res_id" invisible="1"/>
+                <field name="state" invisible="1"/>
+
+                <group invisible="state != 'choose'">
+                    <field name="record_name" readonly="1" string="Pour"/>
+                    <field name="template_id"
+                           domain="[('model_name', '=', res_model)]"
+                           options="{'no_create': True}"/>
+                </group>
+                <div class="alert alert-warning" role="status"
+                     invisible="state != 'choose' or template_id">
+                    Aucun modèle de document n'est encore configuré pour ce
+                    type d'enregistrement. Vas dans Documents > Modèles de
+                    documents pour en uploader un.
+                </div>
+
+                <group invisible="state != 'done'">
+                    <div class="alert alert-success" role="status">
+                        Document généré avec succès.
+                    </div>
+                    <field name="file" filename="file_name" readonly="1"/>
+                    <field name="file_name" invisible="1"/>
+                </group>
+
+                <footer>
+                    <button name="action_generate" string="Générer" type="object"
+                            class="btn-primary" invisible="state != 'choose'"/>
+                    <button string="Fermer" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_template_generate_wizard" model="ir.actions.act_window">
+        <field name="name">Générer un document</field>
+        <field name="res_model">template.generate.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+</odoo>

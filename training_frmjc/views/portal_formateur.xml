@@ -29,8 +29,8 @@
                 <div class="frmjc-header">
                     <h4>Liste de présence</h4>
                     <div class="frmjc-meta">
-                        <t t-esc="fj.session_id.name"/> —
-                        <t t-esc="fj.date.strftime('%A %d %B %Y').capitalize()"/>
+                        <t t-out="fj.session_id.name"/> —
+                        <t t-out="fj.date.strftime('%A %d %B %Y').capitalize()"/>
                     </div>
                 </div>
                 <div class="frmjc-body">
@@ -38,13 +38,13 @@
                     <t t-if="already_confirmed">
                         <div class="alert-info-frmjc">
                             ℹ Vous avez déjà soumis cette liste le
-                            <strong><t t-esc="fj.confirme_le.strftime('%d/%m/%Y à %H:%M')"/></strong>.
+                            <strong><t t-out="fj.confirme_le.strftime('%d/%m/%Y à %H:%M')"/></strong>.
                             Vous pouvez modifier et resoumettre si nécessaire.
                         </div>
                     </t>
 
                     <p>
-                        <strong>Intervenant :</strong> <t t-esc="fj.intervenant_id.name"/>
+                        <strong>Intervenant :</strong> <t t-out="fj.intervenant_id.name"/>
                     </p>
 
                     <t t-if="not attendances">
@@ -68,7 +68,7 @@
                                     <t t-foreach="attendances" t-as="att">
                                         <tr class="presence-row" style="border-bottom:1px solid #f0f0f0;">
                                             <td style="padding:.6rem .8rem; font-weight:500;">
-                                                <t t-esc="att.partner_id.name"/>
+                                                <t t-out="att.partner_id.name"/>
                                             </td>
                                             <td style="padding:.6rem .8rem;">
                                                 <t t-if="att.demi_journee == 'matin'">Matin</t>
@@ -148,12 +148,12 @@
                 <h3>Présences enregistrées</h3>
                 <p class="sub">
                     Vos confirmations pour le
-                    <strong><t t-esc="fj.date.strftime('%d/%m/%Y')"/></strong>
-                    (<t t-esc="fj.session_id.name"/>)
+                    <strong><t t-out="fj.date.strftime('%d/%m/%Y')"/></strong>
+                    (<t t-out="fj.session_id.name"/>)
                     ont bien été prises en compte.
                 </p>
                 <p style="margin-top:1rem; font-size:.9rem; color:#888;">
-                    <t t-esc="nb_confirmes"/> présence(s) confirmée(s) sur <t t-esc="nb_total"/> demi-journée(s).
+                    <t t-out="nb_confirmes"/> présence(s) confirmée(s) sur <t t-out="nb_total"/> demi-journée(s).
                 </p>
             </div>
         </t>

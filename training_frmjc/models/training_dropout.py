@@ -74,7 +74,7 @@ class TrainingDropout(models.Model):
             attachment = self.env['ir.attachment'].sudo().create({
                 'name': filename,
                 'type': 'binary',
-                'datas': pdf_content,
+                'raw': pdf_content,
                 'res_model': self._name,
                 'res_id': self.id,
                 'mimetype': 'application/pdf',

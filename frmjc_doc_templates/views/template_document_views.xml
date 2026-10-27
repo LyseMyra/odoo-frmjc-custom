@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_template_document_form" model="ir.ui.view">
+        <field name="name">template.document.form</field>
+        <field name="model">template.document</field>
+        <field name="arch" type="xml">
+            <form string="Modèle de document">
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Nom du modèle, ex. Certificat de réalisation"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="model_id" options="{'no_create': True}"/>
+                            <field name="active"/>
+                        </group>
+                        <group>
+                            <field name="file" filename="file_name"/>
+                            <field name="file_name" invisible="1"/>
+                        </group>
+                    </group>
+                    <group string="Notes">
+                        <field name="notes" nolabel="1" placeholder="Notes internes (non affichées dans le document généré)"/>
+                    </group>
+                    <div class="alert alert-info" role="status" invisible="not model_id">
+                        Les balises disponibles pour ce document sont listées dans le
+                        <strong>Catalogue des variables</strong> (menu Documents), filtré par
+                        document applicable.
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_template_document_list" model="ir.ui.view">
+        <field name="name">template.document.list</field>
+        <field name="model">template.document</field>
+        <field name="arch" type="xml">
+            <list string="Modèles de documents">
+                <field name="name"/>
+                <field name="model_id"/>
+                <field name="file_name"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_template_document" model="ir.actions.act_window">
+        <field name="name">Modèles de documents</field>
+        <field name="res_model">template.document</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucun modèle de document pour le moment</p>
+            <p>Uploade un fichier .docx avec des balises {{ variable }} — vois le
+            Catalogue des variables pour savoir lesquelles sont disponibles.</p>
+        </field>
+    </record>
+
+</odoo>

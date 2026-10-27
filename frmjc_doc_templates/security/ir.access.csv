@@ -1,0 +1,4 @@
+id,name,model_id,group_id/id,operation,domain
+access_template_variable_user,template.variable user,template.variable,base.group_user,r,
+access_template_document_user,template.document user,template.document,base.group_user,crud,
+access_template_generate_wizard_user,template.generate.wizard user,template.generate.wizard,base.group_user,crud,

@@ -152,21 +152,21 @@
                         <!-- ── En-tête ──────────────────────────────────────── -->
                         <div class="planning-header">
                             <div class="planning-title">
-                                <t t-esc="(session.formation_id.type_formation or '').upper()"/>
+                                <t t-out="(session.formation_id.type_formation or '').upper()"/>
                                 <t t-if="session.date_debut and session.date_fin">
-                                    &#160;<t t-esc="session.date_debut.year"/>
+                                    &#160;<t t-out="session.date_debut.year"/>
                                     –
-                                    <t t-esc="session.date_fin.year"/>
+                                    <t t-out="session.date_fin.year"/>
                                 </t>
                             </div>
                             <t t-if="session.formation_id.specialite">
                                 <div class="planning-subtitle">
-                                    <t t-esc="session.formation_id.specialite"/>
+                                    <t t-out="session.formation_id.specialite"/>
                                 </div>
                             </t>
                             <t t-if="session.formation_id.mention">
                                 <div class="planning-subtitle">
-                                    Mention <t t-esc="session.formation_id.mention"/>
+                                    Mention <t t-out="session.formation_id.mention"/>
                                 </div>
                             </t>
                             <div class="planning-label">Planning de formation</div>
@@ -211,28 +211,28 @@
                                                 <!-- Cellule Année : seulement pour la 1re semaine du groupe -->
                                                 <t t-if="week_index == 0">
                                                     <td t-att-rowspan="nb_semaines_annee" class="col-annee">
-                                                        <t t-esc="ga[0]"/>
+                                                        <t t-out="ga[0]"/>
                                                     </td>
                                                 </t>
                                                 <!-- Date -->
                                                 <td class="col-date">
-                                                    <t t-esc="week.date_range_str or ''"/>
+                                                    <t t-out="week.date_range_str or ''"/>
                                                 </td>
                                                 <!-- BC -->
                                                 <td class="col-bc">
                                                     <t t-if="week.blocs_competences">
                                                         <span class="bc-badge">
-                                                            <t t-esc="week.blocs_competences"/>
+                                                            <t t-out="week.blocs_competences"/>
                                                         </span>
                                                     </t>
                                                 </td>
                                                 <!-- Thème -->
                                                 <td class="col-theme">
-                                                    <t t-esc="week.theme or ''"/>
+                                                    <t t-out="week.theme or ''"/>
                                                 </td>
                                                 <!-- Lieu -->
                                                 <td class="col-lieu">
-                                                    <t t-esc="week.lieu or ''"/>
+                                                    <t t-out="week.lieu or ''"/>
                                                 </td>
                                             </tr>
                                         </t>
@@ -255,16 +255,16 @@
                                         <tbody>
                                             <t t-foreach="bilan" t-as="bc_item">
                                                 <tr>
-                                                    <td><t t-esc="bc_item[0]"/></td>
+                                                    <td><t t-out="bc_item[0]"/></td>
                                                     <td style="text-align:right;">
-                                                        <t t-esc="'%.1f' % bc_item[1]"/>h
+                                                        <t t-out="'%.1f' % bc_item[1]"/>h
                                                     </td>
                                                 </tr>
                                             </t>
                                             <tr class="bilan-total">
                                                 <td>TOTAL</td>
                                                 <td style="text-align:right;">
-                                                    <t t-esc="'%.1f' % sum(x[1] for x in bilan)"/>h
+                                                    <t t-out="'%.1f' % sum(x[1] for x in bilan)"/>h
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -276,10 +276,10 @@
                             <div class="planning-footer">
                                 Les dates et lieux sont indiqués à titre indicatif et peuvent être modifiés en cours de formation.
                                 <t t-if="session.numero_drajes">
-                                    — N° DRAJES : <t t-esc="session.numero_drajes"/>
+                                    — N° DRAJES : <t t-out="session.numero_drajes"/>
                                 </t>
                                 <t t-if="session.responsable_id">
-                                    — Responsable pédagogique : <t t-esc="session.responsable_id.name"/>
+                                    — Responsable pédagogique : <t t-out="session.responsable_id.name"/>
                                 </t>
                             </div>
                         </t>

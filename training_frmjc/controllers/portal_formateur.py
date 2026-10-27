@@ -97,7 +97,7 @@ class PortalFormateur(http.Controller):
             raw = sig_data.split(',', 1)[-1]
             try:
                 dj.sudo().write({
-                    'signature': base64.b64decode(raw),
+                    'signature': raw,
                     'signe_le': now,
                     'statut': 'signe',
                 })

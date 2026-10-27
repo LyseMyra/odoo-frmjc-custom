@@ -94,7 +94,7 @@ class TrainingSurvey(models.Model):
             raise UserError(
                 'Aucun stagiaire accepté avec une adresse email dans cette session.'
             )
-        base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        base_url = self.env['ir.config_parameter'].sudo().get_str('web.base.url')
         nb = 0
         for insc in inscriptions:
             user_input = self.env['survey.user_input'].sudo().create({

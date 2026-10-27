@@ -30,7 +30,7 @@
                         <!-- Titre underliné -->
                         <h2 style="text-align:center; text-decoration:underline; margin-bottom:1.5rem;">
                             CONVOCATION JURY – Certification
-                            <t t-esc="doc.bloc_id.name"/>
+                            <t t-out="doc.bloc_id.name"/>
                         </h2>
 
                         <!-- Tableau d'information (clé : valeur) -->
@@ -38,22 +38,22 @@
                             <tr>
                                 <td style="padding:.3rem .8rem; color:#555; width:35%; text-align:right; vertical-align:top;">Diplôme préparé :</td>
                                 <td style="padding:.3rem .8rem; font-weight:bold;">
-                                    <t t-esc="(hab.type_formation or '').upper()"/>
-                                    <t t-if="hab.specialite"> <t t-esc="hab.specialite"/></t>
+                                    <t t-out="(hab.type_formation or '').upper()"/>
+                                    <t t-out="(' ' + hab.specialite) if hab.specialite else ''"/>
                                     <t t-if="hab.mention">
-                                        <br/>Mention : <t t-esc="hab.mention"/>
+                                        <br/>Mention : <t t-out="hab.mention"/>
                                     </t>
                                 </td>
                             </tr>
                             <tr>
                                 <td style="padding:.3rem .8rem; color:#555; text-align:right; vertical-align:top;">Organisme de<br/>formation :</td>
                                 <td style="padding:.3rem .8rem; font-weight:bold;">
-                                    <t t-esc="company.name"/>
+                                    <t t-out="company.name"/>
                                     <t t-if="company.street">
-                                        (<t t-esc="company.street"/>
-                                        <t t-if="company.zip"> <t t-esc="company.zip"/></t>
-                                        <t t-if="company.city"> <t t-esc="company.city"/></t>
-                                        <t t-if="company.phone"> – <t t-esc="company.phone"/></t>)
+                                        (<t t-out="company.street"/>
+                                        <t t-if="company.zip"> <t t-out="company.zip"/></t>
+                                        <t t-out="(' ' + company.city) if company.city else ''"/>
+                                        <t t-if="company.phone"> – <t t-out="company.phone"/></t>)
                                     </t>
                                 </td>
                             </tr>
@@ -61,33 +61,33 @@
                                 <td style="padding:.3rem .8rem; color:#555; text-align:right;">Date :</td>
                                 <td style="padding:.3rem .8rem; background:#e8e8e8; font-weight:bold;">
                                     <t t-if="doc.date">
-                                        <t t-esc="jours_fr.get(doc.date.weekday(), '')"/>
-                                        <t t-esc="doc.date.day"/>
-                                        <t t-esc="mois_fr.get(doc.date.month, '')"/>
-                                        <t t-esc="doc.date.year"/>
+                                        <t t-out="jours_fr.get(doc.date.weekday(), '')"/>
+                                        <t t-out="doc.date.day"/>
+                                        <t t-out="mois_fr.get(doc.date.month, '')"/>
+                                        <t t-out="doc.date.year"/>
                                     </t>
                                 </td>
                             </tr>
                             <tr>
                                 <td style="padding:.3rem .8rem; color:#555; text-align:right;">UC évaluées :</td>
-                                <td style="padding:.3rem .8rem; font-weight:bold;"><t t-esc="doc.bloc_id.name"/></td>
+                                <td style="padding:.3rem .8rem; font-weight:bold;"><t t-out="doc.bloc_id.name"/></td>
                             </tr>
                             <tr>
                                 <td style="padding:.3rem .8rem; color:#555; text-align:right;">Nombre de candidats :</td>
-                                <td style="padding:.3rem .8rem; font-weight:bold;"><t t-esc="doc.nb_candidats"/></td>
+                                <td style="padding:.3rem .8rem; font-weight:bold;"><t t-out="doc.nb_candidats"/></td>
                             </tr>
                             <tr>
                                 <td style="padding:.3rem .8rem; color:#555; text-align:right;">Nombre de commissions :</td>
-                                <td style="padding:.3rem .8rem; font-weight:bold;"><t t-esc="len(commissions)"/></td>
+                                <td style="padding:.3rem .8rem; font-weight:bold;"><t t-out="len(commissions)"/></td>
                             </tr>
                             <tr>
                                 <td style="padding:.3rem .8rem; color:#555; text-align:right; vertical-align:top;">Composition des<br/>commissions</td>
                                 <td style="padding:.3rem .8rem;">
                                     <t t-foreach="commissions" t-as="comm">
                                         <div style="border:1px solid #ccc; padding:.4rem .7rem; margin-bottom:.4rem;">
-                                            <p style="color:#555; margin:0 0 .2rem 0; font-size:8.5pt;">Commission <t t-esc="comm['num']"/> :</p>
+                                            <p style="color:#555; margin:0 0 .2rem 0; font-size:8.5pt;">Commission <t t-out="comm['num']"/> :</p>
                                             <t t-foreach="comm['membres']" t-as="m">
-                                                <p style="font-weight:bold; margin:0;"><t t-esc="m.name"/></p>
+                                                <p style="font-weight:bold; margin:0;"><t t-out="m.name"/></p>
                                             </t>
                                         </div>
                                     </t>
@@ -98,7 +98,7 @@
                         <!-- Déroulement si notes disponibles -->
                         <t t-if="doc.notes">
                             <p style="color:#555; margin:.3rem 0 .2rem 0;">Déroulement de la journée :</p>
-                            <p style="white-space:pre-line; margin-bottom:1rem; font-size:9pt;"><t t-esc="doc.notes"/></p>
+                            <p style="white-space:pre-line; margin-bottom:1rem; font-size:9pt;"><t t-out="doc.notes"/></p>
                         </t>
                         <t t-else="">
                             <!-- Déroulement standard de l'épreuve -->
@@ -113,7 +113,7 @@
                         <!-- Lieu -->
                         <t t-if="doc.lieu">
                             <p style="color:#555; margin:.3rem 0 .2rem 0;">Lieu de l'épreuve :</p>
-                            <p style="font-weight:bold; margin-bottom:1.2rem;"><t t-esc="doc.lieu"/></p>
+                            <p style="font-weight:bold; margin-bottom:1.2rem;"><t t-out="doc.lieu"/></p>
                         </t>
 
                         <!-- Tableau Commission / Membres / Horaires et candidats -->
@@ -129,21 +129,21 @@
                                 <t t-foreach="commissions" t-as="comm">
                                     <tr>
                                         <td style="border:1px solid #ccc; padding:.5rem .6rem; text-align:center; font-weight:bold; vertical-align:top;">
-                                            <t t-esc="comm['num']"/>
+                                            <t t-out="comm['num']"/>
                                         </td>
                                         <td style="border:1px solid #ccc; padding:.5rem .6rem; vertical-align:top;">
                                             <t t-foreach="comm['membres']" t-as="m">
-                                                <p style="margin:0;"><t t-esc="m.name"/></p>
+                                                <p style="margin:0;"><t t-out="m.name"/></p>
                                             </t>
                                         </td>
                                         <td style="border:1px solid #ccc; padding:.5rem .6rem; vertical-align:top;">
                                             <t t-foreach="comm['certs']" t-as="cert">
                                                 <p style="margin:0;">
                                                     <t t-if="cert.heure_debut_b">
-                                                        <t t-esc="'%dh%02d' % (int(cert.heure_debut_b), int(round((cert.heure_debut_b % 1)*60)))"/>
+                                                        <t t-out="'%dh%02d' % (int(cert.heure_debut_b), int(round((cert.heure_debut_b % 1)*60)))"/>
                                                         –
                                                     </t>
-                                                    <t t-esc="cert.partner_id.name"/>
+                                                    <t t-out="cert.partner_id.name"/>
                                                 </p>
                                             </t>
                                         </td>
@@ -154,13 +154,13 @@
 
                         <!-- Pied de page -->
                         <div style="margin-top:1cm; text-align:center; font-size:8pt; border-top:1px solid #aaa; padding-top:.4cm;">
-                            <t t-esc="company.name"/>
-                            <t t-if="company.street"> | <t t-esc="company.street"/>
-                                <t t-if="company.zip"> <t t-esc="company.zip"/></t>
-                                <t t-if="company.city"> <t t-esc="company.city"/></t>
+                            <t t-out="company.name"/>
+                            <t t-if="company.street"> | <t t-out="company.street"/>
+                                <t t-if="company.zip"> <t t-out="company.zip"/></t>
+                                <t t-out="(' ' + company.city) if company.city else ''"/>
                             </t>
-                            <t t-if="company.phone"> – <t t-esc="company.phone"/></t>
-                            <t t-if="company.email"> – <t t-esc="company.email"/></t>
+                            <t t-if="company.phone"> – <t t-out="company.phone"/></t>
+                            <t t-if="company.email"> – <t t-out="company.email"/></t>
                         </div>
 
                     </div>
@@ -202,32 +202,32 @@
                         <!-- Date alignée à droite -->
                         <p style="text-align:right; margin-bottom:1.5rem;">
                             Rennes, le
-                            <t t-esc="today.day"/>
-                            <t t-esc="mois_fr.get(today.month, '')"/>
-                            <t t-esc="today.year"/>
+                            <t t-out="today.day"/>
+                            <t t-out="mois_fr.get(today.month, '')"/>
+                            <t t-out="today.year"/>
                         </p>
 
                         <!-- Encadré formation + titre -->
                         <div style="border:1.5px solid #333; padding:.8rem 1.2rem; margin-bottom:1.5rem; text-align:center;">
                             <p style="font-weight:bold; margin:0 0 .2rem 0;">
-                                <t t-esc="(hab.type_formation or '').upper()"/>
-                                <t t-if="hab.specialite"> <t t-esc="hab.specialite"/></t>
+                                <t t-out="(hab.type_formation or '').upper()"/>
+                                <t t-out="(' ' + hab.specialite) if hab.specialite else ''"/>
                             </p>
                             <t t-if="hab.mention">
                                 <p style="margin:0 0 .6rem 0; font-size:.9rem;">
-                                    Mention : <t t-esc="hab.mention"/>
+                                    Mention : <t t-out="hab.mention"/>
                                 </p>
                             </t>
                             <p style="font-weight:bold; font-size:1.05rem; margin:.6rem 0 .5rem 0;">
                                 CONVOCATION CANDIDAT : Certification
-                                <t t-esc="doc.bloc_id.name"/>
+                                <t t-out="doc.bloc_id.name"/>
                             </p>
                             <!-- Intitulés des UCs du bloc -->
                             <t t-if="doc.bloc_id.module_ids">
                                 <div style="text-align:left; margin-top:.5rem;">
                                     <t t-foreach="doc.bloc_id.module_ids" t-as="mod">
                                         <p style="font-weight:bold; font-size:.85rem; text-transform:uppercase; margin:.1rem 0 0 0;">
-                                            <t t-esc="mod.code"/> : <t t-esc="mod.intitule or mod.code"/>
+                                            <t t-out="mod.code"/> : <t t-out="mod.intitule or mod.code"/>
                                         </p>
                                     </t>
                                 </div>
@@ -236,7 +236,7 @@
 
                         <!-- Destinataire -->
                         <p style="margin-bottom:1rem;">
-                            <t t-esc="doc.partner_id.name"/>
+                            <t t-out="doc.partner_id.name"/>
                         </p>
 
                         <!-- Corps de la convocation -->
@@ -244,29 +244,29 @@
                             Vous êtes convoqué(e)
                             <t t-if="date_jury">
                                 <strong>
-                                    <t t-esc="jours_fr.get(date_jury.weekday(), '')"/>
-                                    <t t-esc="date_jury.day"/>
-                                    <t t-esc="mois_fr.get(date_jury.month, '')"/>
-                                    <t t-esc="date_jury.year"/>
+                                    <t t-out="jours_fr.get(date_jury.weekday(), '')"/>
+                                    <t t-out="date_jury.day"/>
+                                    <t t-out="mois_fr.get(date_jury.month, '')"/>
+                                    <t t-out="date_jury.year"/>
                                 </strong>
                             </t>
                             à l'épreuve de certification du
-                            <t t-esc="doc.bloc_id.name"/>
+                            <t t-out="doc.bloc_id.name"/>
                             <t t-if="hab.type_formation">
-                                du <t t-esc="(hab.type_formation or '').upper()"/>
+                                du <t t-out="(hab.type_formation or '').upper()"/>
                             </t>
-                            <t t-if="hab.specialite"><t t-esc="hab.specialite"/>,</t>
-                            <t t-if="hab.mention">mention <t t-esc="hab.mention"/>.</t>
+                            <t t-if="hab.specialite"><t t-out="hab.specialite"/>,</t>
+                            <t t-if="hab.mention">mention <t t-out="hab.mention"/>.</t>
                         </p>
 
                         <p style="margin-bottom:1rem;">
                             Vous passerez l'épreuve
                             <t t-if="doc.numero_commission">
-                                devant la commission n°<strong><t t-esc="doc.numero_commission"/></strong>,
+                                devant la commission n°<strong><t t-out="doc.numero_commission"/></strong>,
                             </t>
-                            à <strong><t t-esc="h_pass"/></strong>.
+                            à <strong><t t-out="h_pass"/></strong>.
                             <t t-if="js and js.lieu">
-                                <br/>Lieu : <strong><t t-esc="js.lieu"/></strong>
+                                <br/>Lieu : <strong><t t-out="js.lieu"/></strong>
                             </t>
                         </p>
 
@@ -277,7 +277,7 @@
                         <ul style="margin-bottom:1.2rem;">
                             <li>votre pièce d'identité,</li>
                             <li>votre livret de formation (PIF)</li>
-                            <li>un exemplaire papier de vos dossiers pour chaque UC du <t t-esc="doc.bloc_id.name"/></li>
+                            <li>un exemplaire papier de vos dossiers pour chaque UC du <t t-out="doc.bloc_id.name"/></li>
                             <li>de tout document que vous jugerez utile pour appuyer votre présentation.</li>
                         </ul>
 
@@ -288,12 +288,12 @@
                         <p>Cordialement,</p>
 
                         <div style="text-align:right; margin-top:1rem;">
-                            <p style="margin:0;"><strong><t t-esc="responsable.name or ''"/></strong></p>
+                            <p style="margin:0;"><strong><t t-out="responsable.name or ''"/></strong></p>
                             <t t-if="responsable.email">
-                                <p style="margin:0; font-size:.9rem;"><t t-esc="responsable.email"/></p>
+                                <p style="margin:0; font-size:.9rem;"><t t-out="responsable.email"/></p>
                             </t>
                             <t t-if="responsable.phone">
-                                <p style="margin:0; font-size:.9rem;"><t t-esc="responsable.phone"/></p>
+                                <p style="margin:0; font-size:.9rem;"><t t-out="responsable.phone"/></p>
                             </t>
                         </div>
 

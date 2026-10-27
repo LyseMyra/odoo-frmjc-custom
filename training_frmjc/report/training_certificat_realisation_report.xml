@@ -35,16 +35,16 @@
 
                         <!-- Corps principal -->
                         <p style="margin-bottom:.8rem; text-align:justify;">
-                            Je soussigné(e) <strong><t t-esc="signataire"/></strong>,
-                            <t t-esc="titre_sign"/>, représentante légale de l'organisme de formation
+                            Je soussigné(e) <strong><t t-out="signataire"/></strong>,
+                            <t t-out="titre_sign"/>, représentante légale de l'organisme de formation
                             <strong>FRMJC Bretagne - Pays de la Loire</strong>, certifie que :
                         </p>
 
                         <p style="text-align:center; margin-bottom:1.2rem;">
-                            <t t-esc="doc.partner_id.name"/>
+                            <t t-out="doc.partner_id.name"/>
                             <t t-if="structure">
                                 alternant·e de la structure
-                                <strong><t t-esc="structure"/></strong>
+                                <strong><t t-out="structure"/></strong>
                             </t>
                             a suivi l'action de formation intitulée :
                         </p>
@@ -52,16 +52,16 @@
                         <!-- Formation encadrée -->
                         <div style="text-align:center; margin-bottom:1.5rem;">
                             <p style="font-size:1.15rem; font-weight:bold; margin:0 0 .3rem 0; letter-spacing:.5px;">
-                                <t t-esc="(hab.type_formation or '').upper()"/>
+                                <t t-out="(hab.type_formation or '').upper()"/>
                             </p>
                             <t t-if="hab.specialite">
                                 <p style="font-size:.95rem; letter-spacing:.5px; text-transform:uppercase; margin:0 0 .2rem 0;">
-                                    Spécialité <t t-esc="hab.specialite"/>
+                                    Spécialité <t t-out="hab.specialite"/>
                                 </p>
                             </t>
                             <t t-if="hab.mention">
                                 <p style="font-size:.95rem; letter-spacing:.5px; text-transform:uppercase; margin:0;">
-                                    Mention <t t-esc="hab.mention"/>
+                                    Mention <t t-out="hab.mention"/>
                                 </p>
                             </t>
                         </div>
@@ -70,24 +70,24 @@
                         <p style="margin:.4rem 0;">
                             <strong>Dates de la formation :</strong>
                             <t t-if="session.date_debut and session.date_fin">
-                                du <t t-esc="session.date_debut.strftime('%d/%m/%Y')"/>
-                                au <t t-esc="session.date_fin.strftime('%d/%m/%Y')"/>
+                                du <t t-out="session.date_debut.strftime('%d/%m/%Y')"/>
+                                au <t t-out="session.date_fin.strftime('%d/%m/%Y')"/>
                             </t>
                         </p>
                         <t t-if="session.volume_heures_prevues">
                             <p style="margin:.4rem 0;">
                                 <strong>Durée de la formation :</strong>
-                                <t t-esc="int(session.volume_heures_prevues)"/> heures
+                                <t t-out="int(session.volume_heures_prevues)"/> heures
                             </p>
                         </t>
                         <p style="margin:.4rem 0;">
                             <strong>Lieu de la formation :</strong>
-                            <t t-esc="session.lieu_formation or 'En itinérance'"/>
+                            <t t-out="session.lieu_formation or 'En itinérance'"/>
                         </p>
                         <t t-if="session.nature_action">
                             <p style="margin:.4rem 0 1.5rem 0;">
                                 Nature de l'action de formation :
-                                <strong><t t-esc="session.nature_action"/></strong>
+                                <strong><t t-out="session.nature_action"/></strong>
                             </p>
                         </t>
 
@@ -110,12 +110,12 @@
                         <!-- Signature -->
                         <p>
                             Fait à Rennes, le
-                            <t t-esc="today.day"/>
-                            <t t-esc="mois_fr.get(today.month, '')"/>
-                            <t t-esc="today.year"/>
+                            <t t-out="today.day"/>
+                            <t t-out="mois_fr.get(today.month, '')"/>
+                            <t t-out="today.year"/>
                         </p>
                         <div style="text-align:right; margin-top:1.5rem;">
-                            <p style="margin:0;"><t t-esc="signataire"/></p>
+                            <p style="margin:0;"><t t-out="signataire"/></p>
                         </div>
 
                     </div>

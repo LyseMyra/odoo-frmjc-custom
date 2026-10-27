@@ -20,8 +20,8 @@ Connexion à Odoo (variables d'environnement recommandées pour ne pas
 laisser le mot de passe dans l'historique du shell ; à défaut, le script
 les demande de façon interactive) :
 
-    ODOO_URL        (défaut : http://localhost:8069)
-    ODOO_DB         (défaut : frmjc_dev)
+    ODOO_URL        (défaut : http://localhost:8070)
+    ODOO_DB         (défaut : frmjc_v20_test)
     ODOO_USER       (demandé si absent)
     ODOO_PASSWORD   (demandé de façon masquée si absent)
 
@@ -843,8 +843,8 @@ def main():
     parser.add_argument('--formation-mention', default='Coordination de projets')
     args = parser.parse_args()
 
-    url = os.environ.get('ODOO_URL', 'http://localhost:8069')
-    db = os.environ.get('ODOO_DB', 'frmjc_dev')
+    url = os.environ.get('ODOO_URL', 'http://localhost:8070')
+    db = os.environ.get('ODOO_DB', 'frmjc_v20_test')
     user = os.environ.get('ODOO_USER') or input('Utilisateur Odoo : ').strip()
     password = os.environ.get('ODOO_PASSWORD') or getpass.getpass('Mot de passe Odoo : ')
 
