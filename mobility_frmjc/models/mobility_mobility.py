@@ -986,6 +986,14 @@ class MobilityMobility(models.Model):
         }
 
     @api.model
+    def build_fiche_vals_rpc(self, post):
+        """Wrapper public de _build_fiche_vals(post) : les méthodes dont le
+        nom commence par un underscore sont bloquées par Odoo en appel
+        XML-RPC ("Private methods ... cannot be called remotely"). Utilisé
+        par scripts/import_tally_mobilite.py."""
+        return self._build_fiche_vals(post)
+
+    @api.model
     def _cron_terminer_missions_echues(self):
         """Passe en 'Terminé' les mobilités en mission dont la date de fin
         est dépassée (déclencheur §2 du cahier : 'Date de fin de mission
