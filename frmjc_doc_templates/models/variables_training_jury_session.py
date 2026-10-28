@@ -31,6 +31,10 @@ register('formation_specialite', 'Spécialité de la formation',
           lambda r: r.session_id.habilitation_id.specialite or '')
 register('formation_mention', 'Mention de la formation',
           lambda r: r.session_id.habilitation_id.mention or '')
+register('session_numero_drajes', 'N° FOROMES / DRAJES de la session',
+          lambda r: r.session_id.numero_drajes or '')
+register('habilitation_numero', "Numéro d'habilitation DRAJES",
+          lambda r: r.session_id.habilitation_id.numero or '')
 
 register('date_jury', 'Date du jury (jour en toutes lettres)', lambda r: _date_fr(r.date))
 register('lieu_jury', "Lieu de l'épreuve", lambda r: r.lieu or '')

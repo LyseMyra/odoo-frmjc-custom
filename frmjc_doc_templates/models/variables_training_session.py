@@ -29,6 +29,8 @@ register('session_lieu', 'Lieu de la formation', lambda r: r.lieu_formation or '
 register('session_nature_action', "Nature de l'action de formation",
           lambda r: r.nature_action or '')
 register('numero_drajes', 'Numéro DRAJES', lambda r: r.numero_drajes or '')
+register('habilitation_numero', "Numéro d'habilitation DRAJES",
+          lambda r: r.habilitation_id.numero or '')
 register('responsable_nom', 'Nom du ou de la responsable pédagogique',
           lambda r: r.responsable_id.name or '')
 register('responsable_email', 'Email du ou de la responsable pédagogique',

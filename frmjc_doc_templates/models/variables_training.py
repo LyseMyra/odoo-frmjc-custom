@@ -11,6 +11,15 @@ from .variable_registry import register_variable
 MODULE = 'training_frmjc'
 MODEL_INSCRIPTION = 'training.inscription'
 
+STATUT_EMPLOI_LABELS = {
+    'salarie': 'Salarié',
+    'independant': 'Indépendant',
+    'demandeur_emploi': "Demandeur d'emploi",
+    'etudiant': 'Étudiant',
+    'benevole': 'Bénévole',
+    'autre': 'Autre',
+}
+
 
 def register(code, description, getter):
     register_variable(MODEL_INSCRIPTION, code, description, getter, module=MODULE)
@@ -66,3 +75,18 @@ register('stagiaire_ville', 'Ville du stagiaire', lambda r: r.partner_id.city or
 register('niveau_etudes', "Niveau d'études du candidat",
           lambda r: dict(r._fields['niveau_etudes'].selection or []).get(r.niveau_etudes, ''))
 register('dernier_diplome', 'Dernier diplôme obtenu', lambda r: r.dernier_diplome or '')
+
+register('formation_intitule', 'Intitulé de la formation',
+          lambda r: r.formation_id.intitule or '')
+register('date_naissance_stagiaire', 'Date de naissance du stagiaire (JJ/MM/AAAA)',
+          lambda r: _date_fr(r.partner_id.date_naissance))
+register('lieu_naissance_stagiaire', 'Lieu de naissance du stagiaire',
+          lambda r: r.partner_id.lieu_naissance or '')
+register('stagiaire_code_postal', 'Code postal du stagiaire',
+          lambda r: r.partner_zip or '')
+register('statut_stagiaire', "Statut du stagiaire (salarié, demandeur d'emploi...)",
+          lambda r: STATUT_EMPLOI_LABELS.get(r.statut_emploi, r.statut_emploi or ''))
+register('habilitation_numero', "Numéro d'habilitation DRAJES",
+          lambda r: r.session_id.habilitation_id.numero or '')
+register('session_numero_drajes', 'N° FOROMES / DRAJES de la session',
+          lambda r: r.session_id.numero_drajes or '')

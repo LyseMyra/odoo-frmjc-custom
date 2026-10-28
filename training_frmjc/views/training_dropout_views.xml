@@ -26,6 +26,7 @@
                         </group>
                         <group string="Abandon">
                             <field name="date_abandon"/>
+                            <field name="type_rupture"/>
                             <field name="motif"/>
                             <field name="semaine_abandon_id"/>
                         </group>

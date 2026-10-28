@@ -26,6 +26,14 @@ class TrainingDropout(models.Model):
     date_abandon = fields.Date(
         string='Date d\'abandon', required=True, default=fields.Date.today, tracking=True
     )
+    type_rupture = fields.Selection([
+        ('rupture_contrat_travail', 'Rupture du contrat de travail avec l\'entreprise'),
+        ('rupture_contrat_formation', 'Rupture du contrat de formation avec l\'OF'),
+        ('abandon_formation', 'Abandon de la formation'),
+    ], string='Objet de la rupture (classification DRAJES)', tracking=True,
+        help="Classification attendue par la fiche de signalement DRAJES — "
+             "distincte du motif détaillé ci-dessous.",
+    )
     motif = fields.Selection([
         ('personnel', 'Raison personnelle'),
         ('professionnel', 'Raison professionnelle'),
