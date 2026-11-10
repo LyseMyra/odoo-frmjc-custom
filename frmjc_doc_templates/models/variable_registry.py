@@ -25,14 +25,29 @@ _REGISTRY = {}
 # (ex. la date du jour). { code: {'description': str, 'getter': callable, 'module': str} }
 _GLOBAL_REGISTRY = {}
 
+# Variables "liste" : pour remplir une ligne de tableau Word qui se répète
+# (ex. la liste des candidats d'une session). Le getter renvoie une liste de
+# dicts — un dict par ligne, avec des clés simples (pas d'imbrication).
+# { model_name: { code: {'description': str, 'getter': callable, 'module': str} } }
+_LIST_REGISTRY = {}
+
 _MOIS_FR = {
-    1: 'janvier', 2: 'février', 3: 'mars', 4: 'avril', 5: 'mai', 6: 'juin',
-    7: 'juillet', 8: 'août', 9: 'septembre', 10: 'octobre', 11: 'novembre',
-    12: 'décembre',
+    1: "janvier",
+    2: "février",
+    3: "mars",
+    4: "avril",
+    5: "mai",
+    6: "juin",
+    7: "juillet",
+    8: "août",
+    9: "septembre",
+    10: "octobre",
+    11: "novembre",
+    12: "décembre",
 }
 
 
-def register_variable(model, code, description, getter, module=''):
+def register_variable(model, code, description, getter, module=""):
     """Déclare une variable {{ code }} disponible pour les documents liés
     au modèle Odoo ``model`` (ex. 'training.inscription').
 
@@ -40,19 +55,40 @@ def register_variable(model, code, description, getter, module=''):
         valeur texte à insérer dans le document.
     """
     _REGISTRY.setdefault(model, {})[code] = {
-        'description': description,
-        'getter': getter,
-        'module': module,
+        "description": description,
+        "getter": getter,
+        "module": module,
     }
 
 
-def register_global_variable(code, description, getter, module=''):
+def register_global_variable(code, description, getter, module=""):
     """Déclare une variable globale, disponible pour tous les documents
     quel que soit leur modèle (ex. {{ date_jour }})."""
     _GLOBAL_REGISTRY[code] = {
-        'description': description,
-        'getter': getter,
-        'module': module,
+        "description": description,
+        "getter": getter,
+        "module": module,
+    }
+
+
+def register_list_variable(model, code, description, getter, module=""):
+    """Déclare une variable {{ code }} qui, pour un document lié au modèle
+    Odoo ``model``, remplit une ligne de tableau Word qui se répète (liste
+    de candidats, d'apprenants...).
+
+    :param getter: fonction prenant l'enregistrement et renvoyant une
+        liste de dicts — un dict par ligne, avec des clés simples
+        utilisables dans Word via ``{{ nom_de_boucle.cle }}``.
+
+    Usage dans le document Word (syntaxe docxtpl, dans un tableau) :
+        - 1ère cellule de la ligne à répéter : ``{%tr for x in code %}``
+        - cellules suivantes : ``{{ x.cle }}`` pour chaque colonne
+        - dernière cellule de la même ligne : ``{%tr endfor %}``
+    """
+    _LIST_REGISTRY.setdefault(model, {})[code] = {
+        "description": description,
+        "getter": getter,
+        "module": module,
     }
 
 
@@ -64,8 +100,12 @@ def get_global_variables():
     return _GLOBAL_REGISTRY
 
 
+def get_list_variables(model):
+    return _LIST_REGISTRY.get(model, {})
+
+
 def all_models():
-    return list(_REGISTRY.keys())
+    return list(set(_REGISTRY.keys()) | set(_LIST_REGISTRY.keys()))
 
 
 def build_context(record):
@@ -73,54 +113,75 @@ def build_context(record):
     context = {}
     for code, meta in _GLOBAL_REGISTRY.items():
         try:
-            value = meta['getter'](record)
+            value = meta["getter"](record)
         except Exception:
             _logger.exception("Échec du calcul de la variable globale %r", code)
-            value = ''
-        context[code] = value if value not in (None, False) else ''
+            value = ""
+        context[code] = value if value not in (None, False) else ""
     for code, meta in get_variables(record._name).items():
         try:
-            value = meta['getter'](record)
+            value = meta["getter"](record)
+        except Exception:
+            _logger.exception("Échec du calcul de la variable %r pour %s", code, record)
+            value = ""
+        context[code] = value if value not in (None, False) else ""
+    for code, meta in get_list_variables(record._name).items():
+        try:
+            value = meta["getter"](record) or []
         except Exception:
             _logger.exception(
-                "Échec du calcul de la variable %r pour %s", code, record
+                "Échec du calcul de la variable liste %r pour %s", code, record
             )
-            value = ''
-        context[code] = value if value not in (None, False) else ''
+            value = []
+        context[code] = value
     return context
 
 
 def format_date_fr(d):
     if not d:
-        return ''
+        return ""
     return f"{d.day} {_MOIS_FR.get(d.month, '')} {d.year}"
 
 
 register_global_variable(
-    'date_jour', "Date du jour (date de génération du document)",
+    "date_jour",
+    "Date du jour (date de génération du document)",
     lambda record: format_date_fr(datetime.date.today()),
-    module='frmjc_doc_templates',
+    module="frmjc_doc_templates",
 )
 register_global_variable(
-    'frmjc_nom', "Nom de l'organisme de formation (société Odoo)",
-    lambda record: record.env.company.name or '',
-    module='frmjc_doc_templates',
+    "frmjc_nom",
+    "Nom de l'organisme de formation (société Odoo)",
+    lambda record: record.env.company.name or "",
+    module="frmjc_doc_templates",
 )
 register_global_variable(
-    'frmjc_adresse', "Adresse complète de l'organisme de formation",
-    lambda record: ' '.join(filter(None, [
-        record.env.company.street or '',
-        ((record.env.company.zip or '') + ' ' + (record.env.company.city or '')).strip(),
-    ])).strip(),
-    module='frmjc_doc_templates',
+    "frmjc_adresse",
+    "Adresse complète de l'organisme de formation",
+    lambda record: " ".join(
+        filter(
+            None,
+            [
+                record.env.company.street or "",
+                (
+                    (record.env.company.zip or "")
+                    + " "
+                    + (record.env.company.city or "")
+                ).strip(),
+            ],
+        )
+    ).strip(),
+    module="frmjc_doc_templates",
 )
 register_global_variable(
-    'frmjc_telephone', "Téléphone de l'organisme de formation",
-    lambda record: record.env.company.phone or '',
-    module='frmjc_doc_templates',
+    "frmjc_telephone",
+    "Téléphone de l'organisme de formation",
+    lambda record: record.env.company.phone or "",
+    module="frmjc_doc_templates",
 )
 register_global_variable(
-    'frmjc_email', "Email de l'organisme de formation",
-    lambda record: record.env.company.email or '',
-    module='frmjc_doc_templates',
+    "frmjc_email",
+    "Email de l'organisme de formation",
+    lambda record: record.env.company.email or "",
+    module="frmjc_doc_templates",
 )

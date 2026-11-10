@@ -106,127 +106,158 @@ from datetime import datetime
 # ──────────────────────────────────────────────────────────────────────
 
 CIVILITE_MAP = {
-    'monsieur': 'm',
-    'madame': 'f',
-    'non précisé': 'autre',
-    'non precise': 'autre',
+    "monsieur": "m",
+    "madame": "f",
+    "non précisé": "autre",
+    "non precise": "autre",
 }
 
 STATUT_EMPLOI_MAP = {
-    'salarié': 'salarie',
-    'salarie': 'salarie',
-    'indépendant': 'independant',
-    'independant': 'independant',
-    "demandeur d'emploi": 'demandeur_emploi',
-    'étudiant': 'etudiant',
-    'etudiant': 'etudiant',
-    'bénévole': 'benevole',
-    'benevole': 'benevole',
-    'autre': 'autre',
+    "salarié": "salarie",
+    "salarie": "salarie",
+    "indépendant": "independant",
+    "independant": "independant",
+    "demandeur d'emploi": "demandeur_emploi",
+    "étudiant": "etudiant",
+    "etudiant": "etudiant",
+    "bénévole": "benevole",
+    "benevole": "benevole",
+    "autre": "autre",
 }
 
 TYPE_CONTRAT_MAP = {
-    'cdi': 'cdi',
-    'cdd': 'cdd',
-    'intérim': 'interim',
-    'interim': 'interim',
-    'apprentissage': 'apprentissage',
-    'professionnalisation': 'professionnalisation',
-    'pas de contrat': 'sanscontract',
+    "cdi": "cdi",
+    "cdd": "cdd",
+    "intérim": "interim",
+    "interim": "interim",
+    "apprentissage": "apprentissage",
+    "professionnalisation": "professionnalisation",
+    "pas de contrat": "sanscontract",
 }
 
 RQTH_MAP = {
-    'oui': 'oui',
-    'non': 'non',
+    "oui": "oui",
+    "non": "non",
 }
 
 NIVEAU_ETUDES_MAP = {
-    'niveau 3 (cap/bep)': 'v',
-    'niveau 4 (bac)': 'iv',
-    'niveau 5 (bac+2)': 'iii',
-    'niveau 6 (bac+3/4)': 'ii',
-    'niveau 7/8 (bac+5 et +)': 'i',
+    "niveau 3 (cap/bep)": "v",
+    "niveau 4 (bac)": "iv",
+    "niveau 5 (bac+2)": "iii",
+    "niveau 6 (bac+3/4)": "ii",
+    "niveau 7/8 (bac+5 et +)": "i",
 }
 
 TYPE_FINANCEMENT_MAP = {
-    'mon employeur finance ma formation': '1',
-    'organisme paritaire (opco, cpf, apprentissage…)': '2',
-    'organisme paritaire (opco, cpf, apprentissage...)': '2',
-    'pouvoir public — agents publics': '3',
-    'pouvoir public - agents publics': '3',
-    'instance européenne': '4',
-    'état': '5',
-    'etat': '5',
-    'conseil régional': '6',
-    'conseil regional': '6',
-    'france travail (ex pôle emploi)': '7',
-    'france travail (ex pole emploi)': '7',
-    'autre ressource publique': '8',
-    'contrat individuel — à mes propres frais': '9',
-    'contrat individuel - a mes propres frais': '9',
-    'autre organisme de formation / cfa': '10',
-    'autre': '11',
+    "mon employeur finance ma formation": "1",
+    "organisme paritaire (opco, cpf, apprentissage…)": "2",
+    "organisme paritaire (opco, cpf, apprentissage...)": "2",
+    "pouvoir public — agents publics": "3",
+    "pouvoir public - agents publics": "3",
+    "instance européenne": "4",
+    "état": "5",
+    "etat": "5",
+    "conseil régional": "6",
+    "conseil regional": "6",
+    "france travail (ex pôle emploi)": "7",
+    "france travail (ex pole emploi)": "7",
+    "autre ressource publique": "8",
+    "contrat individuel — à mes propres frais": "9",
+    "contrat individuel - a mes propres frais": "9",
+    "autre organisme de formation / cfa": "10",
+    "autre": "11",
 }
 
 SOUS_TYPE_FINANCEMENT_MAP = {
-    "contrat d'apprentissage": 'a',
-    'contrat de professionnalisation': 'b',
-    'promotion / reconversion par alternance (pro-a)': 'c',
-    'projet de transition professionnelle (ptp)': 'd',
-    'compte personnel de formation (cpf)': 'e',
-    "dispositif pour demandeurs d'emploi": 'f',
-    'dispositif pour travailleurs non-salariés': 'g',
-    'dispositif pour travailleurs non-salaries': 'g',
-    'plan de développement des compétences / autre': 'h',
-    'plan de developpement des competences / autre': 'h',
+    "contrat d'apprentissage": "a",
+    "contrat de professionnalisation": "b",
+    "promotion / reconversion par alternance (pro-a)": "c",
+    "projet de transition professionnelle (ptp)": "d",
+    "compte personnel de formation (cpf)": "e",
+    "dispositif pour demandeurs d'emploi": "f",
+    "dispositif pour travailleurs non-salariés": "g",
+    "dispositif pour travailleurs non-salaries": "g",
+    "plan de développement des compétences / autre": "h",
+    "plan de developpement des competences / autre": "h",
 }
 
 # Démonymes français courants → nom du pays dans res.country (fallback
 # quand la "Nationalité" saisie en texte libre ne correspond pas
 # directement au nom du pays, ex. "Française" ≠ "France").
 NATIONALITE_TO_COUNTRY = {
-    'française': 'France', 'francaise': 'France', 'français': 'France', 'francais': 'France',
-    'marocaine': 'Maroc', 'marocain': 'Maroc',
-    'algérienne': 'Algérie', 'algerienne': 'Algérie', 'algérien': 'Algérie',
-    'tunisienne': 'Tunisie', 'tunisien': 'Tunisie',
-    'sénégalaise': 'Sénégal', 'senegalaise': 'Sénégal', 'sénégalais': 'Sénégal',
-    'ivoirienne': "Côte d'Ivoire", 'ivoirien': "Côte d'Ivoire",
-    'belge': 'Belgique',
-    'suisse': 'Suisse',
-    'portugaise': 'Portugal', 'portugais': 'Portugal',
-    'espagnole': 'Espagne', 'espagnol': 'Espagne',
-    'italienne': 'Italie', 'italien': 'Italie',
-    'allemande': 'Allemagne', 'allemand': 'Allemagne',
-    'britannique': 'Royaume-Uni',
-    'américaine': 'États-Unis', 'americaine': 'États-Unis', 'américain': 'États-Unis',
-    'camerounaise': 'Cameroun', 'camerounais': 'Cameroun',
-    'malienne': 'Mali', 'malien': 'Mali',
-    'congolaise': 'Congo', 'congolais': 'Congo',
-    'guinéenne': 'Guinée', 'guineenne': 'Guinée', 'guinéen': 'Guinée',
-    'comorienne': 'Comores', 'comorien': 'Comores',
-    "haïtienne": 'Haïti', 'haitienne': 'Haïti', 'haïtien': 'Haïti',
-    'roumaine': 'Roumanie', 'roumain': 'Roumanie',
-    'polonaise': 'Pologne', 'polonais': 'Pologne',
-    'chinoise': 'Chine', 'chinois': 'Chine',
-    'malgache': 'Madagascar',
-    'togolaise': 'Togo', 'togolais': 'Togo',
+    "française": "France",
+    "francaise": "France",
+    "français": "France",
+    "francais": "France",
+    "marocaine": "Maroc",
+    "marocain": "Maroc",
+    "algérienne": "Algérie",
+    "algerienne": "Algérie",
+    "algérien": "Algérie",
+    "tunisienne": "Tunisie",
+    "tunisien": "Tunisie",
+    "sénégalaise": "Sénégal",
+    "senegalaise": "Sénégal",
+    "sénégalais": "Sénégal",
+    "ivoirienne": "Côte d'Ivoire",
+    "ivoirien": "Côte d'Ivoire",
+    "belge": "Belgique",
+    "suisse": "Suisse",
+    "portugaise": "Portugal",
+    "portugais": "Portugal",
+    "espagnole": "Espagne",
+    "espagnol": "Espagne",
+    "italienne": "Italie",
+    "italien": "Italie",
+    "allemande": "Allemagne",
+    "allemand": "Allemagne",
+    "britannique": "Royaume-Uni",
+    "américaine": "États-Unis",
+    "americaine": "États-Unis",
+    "américain": "États-Unis",
+    "camerounaise": "Cameroun",
+    "camerounais": "Cameroun",
+    "malienne": "Mali",
+    "malien": "Mali",
+    "congolaise": "Congo",
+    "congolais": "Congo",
+    "guinéenne": "Guinée",
+    "guineenne": "Guinée",
+    "guinéen": "Guinée",
+    "comorienne": "Comores",
+    "comorien": "Comores",
+    "haïtienne": "Haïti",
+    "haitienne": "Haïti",
+    "haïtien": "Haïti",
+    "roumaine": "Roumanie",
+    "roumain": "Roumanie",
+    "polonaise": "Pologne",
+    "polonais": "Pologne",
+    "chinoise": "Chine",
+    "chinois": "Chine",
+    "malgache": "Madagascar",
+    "togolaise": "Togo",
+    "togolais": "Togo",
 }
 
-EXPERIENCE_SUFFIXES = ['', ' (2)', ' (3)', ' (4)']
+EXPERIENCE_SUFFIXES = ["", " (2)", " (3)", " (4)"]
 # Le sous-champ "Nom de la structure" du bloc Expériences est décalé d'un
 # cran par rapport aux 3 autres sous-champs du même bloc — voir la note
 # "PIÈGE TALLY" dans le docstring du module.
-EXPERIENCE_STRUCTURE_SUFFIXES = [' (2)', ' (3)', ' (4)', ' (5)']
-DOCUMENT_SUFFIXES = ['', ' (2)', ' (3)']
+EXPERIENCE_STRUCTURE_SUFFIXES = [" (2)", " (3)", " (4)", " (5)"]
+DOCUMENT_SUFFIXES = ["", " (2)", " (3)"]
 
 # Champs fichier "fixes" : colonne CSV -> (champ binaire, champ nom de fichier)
 FILE_FIELDS = {
-    "Photo d'identité": ('photo_identite', 'photo_identite_filename'),
-    'CV': ('cv', 'cv_filename'),
-    'Lettre de motivation': ('lettre_motivation_doc', 'lettre_motivation_filename'),
-    'Diplôme / attestation de niveau': ('diplome_doc', 'diplome_filename'),
-    "Justificatif d'identité valide": ('justificatif_identite', 'justificatif_identite_filename'),
-    'Attestation RQTH': ('attestation_rqth', 'attestation_rqth_filename'),
+    "Photo d'identité": ("photo_identite", "photo_identite_filename"),
+    "CV": ("cv", "cv_filename"),
+    "Lettre de motivation": ("lettre_motivation_doc", "lettre_motivation_filename"),
+    "Diplôme / attestation de niveau": ("diplome_doc", "diplome_filename"),
+    "Justificatif d'identité valide": (
+        "justificatif_identite",
+        "justificatif_identite_filename",
+    ),
+    "Attestation RQTH": ("attestation_rqth", "attestation_rqth_filename"),
 }
 
 
@@ -234,21 +265,21 @@ FILE_FIELDS = {
 # Utilitaires
 # ──────────────────────────────────────────────────────────────────────
 
+
 def strip_accents(s):
-    return ''.join(
-        c for c in unicodedata.normalize('NFD', s)
-        if unicodedata.category(c) != 'Mn'
+    return "".join(
+        c for c in unicodedata.normalize("NFD", s) if unicodedata.category(c) != "Mn"
     )
 
 
 def norm(s):
     """Normalise une valeur texte pour comparaison robuste (casse, accents,
     espaces superflus)."""
-    return strip_accents((s or '').strip().lower())
+    return strip_accents((s or "").strip().lower())
 
 
 def map_selection(value, mapping, label, warnings, row_ref):
-    value = (value or '').strip()
+    value = (value or "").strip()
     if not value:
         return False
     key = mapping.get(norm(value))
@@ -261,24 +292,24 @@ def map_selection(value, mapping, label, warnings, row_ref):
 
 
 def parse_bool(value):
-    return (value or '').strip().lower() == 'true'
+    return (value or "").strip().lower() == "true"
 
 
 def parse_date(value):
     """Accepte 'YYYY-MM-DD' ou 'YYYY-MM-DD HH:MM:SS' (format export Tally)."""
-    value = (value or '').strip()
+    value = (value or "").strip()
     if not value:
         return False
-    for fmt in ('%Y-%m-%d %H:%M:%S', '%Y-%m-%d'):
+    for fmt in ("%Y-%m-%d %H:%M:%S", "%Y-%m-%d"):
         try:
-            return datetime.strptime(value, fmt).strftime('%Y-%m-%d')
+            return datetime.strptime(value, fmt).strftime("%Y-%m-%d")
         except ValueError:
             continue
     return False
 
 
 def parse_float(value):
-    value = (value or '').strip().replace(',', '.')
+    value = (value or "").strip().replace(",", ".")
     if not value:
         return 0.0
     try:
@@ -288,7 +319,7 @@ def parse_float(value):
 
 
 def parse_int(value):
-    value = (value or '').strip()
+    value = (value or "").strip()
     if not value:
         return 0
     try:
@@ -301,10 +332,10 @@ def download_base64(url, warnings, row_ref, label):
     if not url:
         return None
     try:
-        req = urllib.request.Request(url, headers={'User-Agent': 'FRMJC-import/1.0'})
+        req = urllib.request.Request(url, headers={"User-Agent": "FRMJC-import/1.0"})
         with urllib.request.urlopen(req, timeout=30) as resp:
             data = resp.read()
-        return base64.b64encode(data).decode('ascii')
+        return base64.b64encode(data).decode("ascii")
     except (urllib.error.URLError, urllib.error.HTTPError, TimeoutError) as exc:
         warnings.append(
             f"[{row_ref}] Échec de téléchargement « {label} » ({exc}) — fichier ignoré. "
@@ -317,8 +348,8 @@ def download_base64(url, warnings, row_ref, label):
 def filename_from_url(url):
     if not url:
         return False
-    path = url.split('?', 1)[0]
-    return path.rsplit('/', 1)[-1] or 'document'
+    path = url.split("?", 1)[0]
+    return path.rsplit("/", 1)[-1] or "document"
 
 
 CONSENT_RGPD_COLUMN = (
@@ -331,8 +362,13 @@ CONSENT_ATTESTATION_COLUMN = (
     "m'engage à fournir les originaux sur demande. (Je certifie)"
 )
 EXPECTED_COLUMNS = [
-    'Submission ID', 'Submitted at', 'Prénom', 'Nom de famille', 'Email',
-    CONSENT_RGPD_COLUMN, CONSENT_ATTESTATION_COLUMN,
+    "Submission ID",
+    "Submitted at",
+    "Prénom",
+    "Nom de famille",
+    "Email",
+    CONSENT_RGPD_COLUMN,
+    CONSENT_ATTESTATION_COLUMN,
 ]
 
 
@@ -347,10 +383,10 @@ def check_expected_columns(fieldnames):
         raise SystemExit(
             "Le fichier CSV ne contient pas les colonnes attendues suivantes "
             "(le formulaire Tally a probablement été modifié) :\n"
-            + '\n'.join(f'  - {c!r}' for c in missing)
+            + "\n".join(f"  - {c!r}" for c in missing)
             + "\n\nMets à jour les constantes correspondantes en haut de "
-              "import_tally_formation.py (EXPECTED_COLUMNS et les dictionnaires "
-              "de mapping) avec les nouveaux intitulés, puis relance."
+            "import_tally_formation.py (EXPECTED_COLUMNS et les dictionnaires "
+            "de mapping) avec les nouveaux intitulés, puis relance."
         )
 
 
@@ -358,17 +394,18 @@ def check_expected_columns(fieldnames):
 # Client Odoo (XML-RPC)
 # ──────────────────────────────────────────────────────────────────────
 
+
 class OdooClient:
     def __init__(self, url, db, username, password):
         self.db = db
         self.password = password
-        common = xmlrpc.client.ServerProxy(f'{url}/xmlrpc/2/common')
+        common = xmlrpc.client.ServerProxy(f"{url}/xmlrpc/2/common")
         self.uid = common.authenticate(db, username, password, {})
         if not self.uid:
             raise SystemExit(
                 "Authentification Odoo refusée — vérifie ODOO_USER / ODOO_PASSWORD / ODOO_DB."
             )
-        self.models = xmlrpc.client.ServerProxy(f'{url}/xmlrpc/2/object')
+        self.models = xmlrpc.client.ServerProxy(f"{url}/xmlrpc/2/object")
 
     def execute(self, model, method, *args, **kwargs):
         return self.models.execute_kw(
@@ -376,23 +413,23 @@ class OdooClient:
         )
 
     def search(self, model, domain, **kwargs):
-        return self.execute(model, 'search', domain, **kwargs)
+        return self.execute(model, "search", domain, **kwargs)
 
     def search_read(self, model, domain, fields, **kwargs):
-        return self.execute(model, 'search_read', domain, fields, **kwargs)
+        return self.execute(model, "search_read", domain, fields, **kwargs)
 
     def read(self, model, ids, fields):
-        return self.execute(model, 'read', ids, fields)
+        return self.execute(model, "read", ids, fields)
 
     def create(self, model, vals):
-        return self.execute(model, 'create', [vals])
+        return self.execute(model, "create", [vals])
 
     def write(self, model, ids, vals):
-        return self.execute(model, 'write', ids, vals)
+        return self.execute(model, "write", ids, vals)
 
     def message_post(self, model, res_id, body):
         try:
-            self.execute(model, 'message_post', [res_id], body=body)
+            self.execute(model, "message_post", [res_id], body=body)
         except xmlrpc.client.Fault:
             pass  # chatter facultatif, ne doit jamais faire échouer l'import
 
@@ -401,18 +438,23 @@ class OdooClient:
 # Résolution de la session cible
 # ──────────────────────────────────────────────────────────────────────
 
+
 def resolve_session(odoo, args):
     if args.session_id:
-        session = odoo.read('training.session', [args.session_id], ['id', 'display_name'])
+        session = odoo.read(
+            "training.session", [args.session_id], ["id", "display_name"]
+        )
         if not session:
             raise SystemExit(f"Aucune training.session avec id={args.session_id}.")
         return args.session_id
 
     formations = odoo.search_read(
-        'training.formation',
-        [('intitule', '=', args.formation_intitule),
-         ('mention', 'ilike', args.formation_mention)],
-        ['id', 'display_name'],
+        "training.formation",
+        [
+            ("intitule", "=", args.formation_intitule),
+            ("mention", "ilike", args.formation_mention),
+        ],
+        ["id", "display_name"],
     )
     if not formations:
         raise SystemExit(
@@ -421,14 +463,19 @@ def resolve_session(odoo, args):
             f"la session, ou corrige --formation-intitule/--formation-mention."
         )
     if len(formations) > 1:
-        noms = ', '.join(f"{f['id']}:{f['display_name']}" for f in formations)
-        raise SystemExit(f"Plusieurs formations correspondent ({noms}) — utilise --session-id.")
+        noms = ", ".join(f"{f['id']}:{f['display_name']}" for f in formations)
+        raise SystemExit(
+            f"Plusieurs formations correspondent ({noms}) — utilise --session-id."
+        )
 
     formation = formations[0]
     sessions = odoo.search_read(
-        'training.session',
-        [('formation_id', '=', formation['id']), ('statut', 'in', ('ouvert', 'en_cours'))],
-        ['id', 'display_name', 'statut'],
+        "training.session",
+        [
+            ("formation_id", "=", formation["id"]),
+            ("statut", "in", ("ouvert", "en_cours")),
+        ],
+        ["id", "display_name", "statut"],
     )
     if not sessions:
         raise SystemExit(
@@ -436,27 +483,32 @@ def resolve_session(odoo, args):
             f"« {formation['display_name']} » (id={formation['id']}). Utilise --session-id."
         )
     if len(sessions) > 1:
-        noms = ', '.join(f"{s['id']}:{s['display_name']} ({s['statut']})" for s in sessions)
-        raise SystemExit(f"Plusieurs sessions ouvertes pour cette formation ({noms}) — utilise --session-id.")
+        noms = ", ".join(
+            f"{s['id']}:{s['display_name']} ({s['statut']})" for s in sessions
+        )
+        raise SystemExit(
+            f"Plusieurs sessions ouvertes pour cette formation ({noms}) — utilise --session-id."
+        )
 
     print(f"→ Session cible : {sessions[0]['display_name']} (id={sessions[0]['id']})")
-    return sessions[0]['id']
+    return sessions[0]["id"]
 
 
 # ──────────────────────────────────────────────────────────────────────
 # Résolution pays (nationalité)
 # ──────────────────────────────────────────────────────────────────────
 
+
 class CountryResolver:
     def __init__(self, odoo):
         self.odoo = odoo
         self._by_name = {}
-        countries = odoo.search_read('res.country', [], ['id', 'name'])
+        countries = odoo.search_read("res.country", [], ["id", "name"])
         for c in countries:
-            self._by_name[norm(c['name'])] = c['id']
+            self._by_name[norm(c["name"])] = c["id"]
 
     def resolve(self, nationalite, warnings, row_ref):
-        nationalite = (nationalite or '').strip()
+        nationalite = (nationalite or "").strip()
         if not nationalite:
             return False
         key = norm(nationalite)
@@ -476,33 +528,36 @@ class CountryResolver:
 # Construction des valeurs à partir d'une ligne CSV
 # ──────────────────────────────────────────────────────────────────────
 
+
 def build_partner_vals(row, country_resolver, warnings, row_ref):
-    prenom = (row.get('Prénom') or '').strip()
-    nom = (row.get('Nom de famille') or '').strip()
+    prenom = (row.get("Prénom") or "").strip()
+    nom = (row.get("Nom de famille") or "").strip()
     vals = {
-        'name': f'{prenom} {nom}'.strip() or (row.get('Email') or '').strip(),
-        'email': (row.get('Email') or '').strip().lower(),
-        'street': (row.get('Adresse') or '').strip(),
-        'city': (row.get('Ville') or '').strip(),
-        'zip': (row.get('Code postal') or '').strip(),
-        'phone': (row.get('Téléphone') or '').strip(),
-        'lieu_naissance': (row.get('Lieu de naissance') or '').strip(),
-        'numero_secu': (row.get('N° de sécurité sociale') or '').strip(),
-        'is_stagiaire_frmjc': True,
+        "name": f"{prenom} {nom}".strip() or (row.get("Email") or "").strip(),
+        "email": (row.get("Email") or "").strip().lower(),
+        "street": (row.get("Adresse") or "").strip(),
+        "city": (row.get("Ville") or "").strip(),
+        "zip": (row.get("Code postal") or "").strip(),
+        "phone": (row.get("Téléphone") or "").strip(),
+        "lieu_naissance": (row.get("Lieu de naissance") or "").strip(),
+        "numero_secu": (row.get("N° de sécurité sociale") or "").strip(),
+        "is_stagiaire_frmjc": True,
     }
-    sexe = map_selection(row.get('Civilité'), CIVILITE_MAP, 'Civilité', warnings, row_ref)
+    sexe = map_selection(
+        row.get("Civilité"), CIVILITE_MAP, "Civilité", warnings, row_ref
+    )
     if sexe:
-        vals['sexe'] = sexe
-    date_naissance = parse_date(row.get('Date de naissance'))
+        vals["sexe"] = sexe
+    date_naissance = parse_date(row.get("Date de naissance"))
     if date_naissance:
-        vals['date_naissance'] = date_naissance
-    nationalite_id = country_resolver.resolve(row.get('Nationalité'), warnings, row_ref)
+        vals["date_naissance"] = date_naissance
+    nationalite_id = country_resolver.resolve(row.get("Nationalité"), warnings, row_ref)
     if nationalite_id:
-        vals['nationalite_id'] = nationalite_id
+        vals["nationalite_id"] = nationalite_id
     # On ne garde que les champs réellement renseignés : on ne veut jamais
     # écraser un champ existant par une valeur vide lors d'une mise à jour.
     # (L'email est toujours non vide ici : process_row() l'a déjà vérifié.)
-    return {k: v for k, v in vals.items() if v not in ('', None)}
+    return {k: v for k, v in vals.items() if v not in ("", None)}
 
 
 # ──────────────────────────────────────────────────────────────────────
@@ -512,36 +567,47 @@ def build_partner_vals(row, country_resolver, warnings, row_ref):
 # un champ déjà renseigné sur une fiche existante n'est jamais écrasé.
 # ──────────────────────────────────────────────────────────────────────
 
+
 def find_or_create_structure(odoo, row, warnings, row_ref, dry_run):
     """Cherche (par SIRET puis par nom) ou crée la fiche res.partner de la
     structure d'accueil. Retourne son id, ou None si aucun nom fourni."""
-    nom = (row.get('Nom de la structure') or '').strip()
+    nom = (row.get("Nom de la structure") or "").strip()
     if not nom:
         return None
 
-    siret = (row.get("N° SIRET de la structure d'accueil") or '').strip().replace(' ', '')
-    candidate_vals = {k: v for k, v in {
-        'siret': siret,
-        'email': (row.get("Email de la structure d'accueil") or '').strip().lower(),
-        'phone': (row.get("Téléphone de la structure d'accueil") or '').strip(),
-        # Question Tally en texte libre unique (pas de rue/CP/ville séparés) :
-        # stockée entière dans 'street'.
-        'street': (row.get("Adresse de la structure d'accueil") or '').strip(),
-    }.items() if v}
-    fields_to_read = ['id'] + list(candidate_vals.keys())
+    siret = (
+        (row.get("N° SIRET de la structure d'accueil") or "").strip().replace(" ", "")
+    )
+    candidate_vals = {
+        k: v
+        for k, v in {
+            "siret": siret,
+            "email": (row.get("Email de la structure d'accueil") or "").strip().lower(),
+            "phone": (row.get("Téléphone de la structure d'accueil") or "").strip(),
+            # Question Tally en texte libre unique (pas de rue/CP/ville séparés) :
+            # stockée entière dans 'street'.
+            "street": (row.get("Adresse de la structure d'accueil") or "").strip(),
+        }.items()
+        if v
+    }
+    fields_to_read = ["id"] + list(candidate_vals.keys())
 
     structure = None
     if siret:
         found = odoo.search_read(
-            'res.partner', [('siret', '=', siret), ('is_company', '=', True)],
-            fields_to_read, limit=1,
+            "res.partner",
+            [("siret", "=", siret), ("is_company", "=", True)],
+            fields_to_read,
+            limit=1,
         )
         if found:
             structure = found[0]
     if not structure:
         found = odoo.search_read(
-            'res.partner', [('name', '=ilike', nom), ('is_company', '=', True)],
-            fields_to_read, limit=1,
+            "res.partner",
+            [("name", "=ilike", nom), ("is_company", "=", True)],
+            fields_to_read,
+            limit=1,
         )
         if found:
             structure = found[0]
@@ -549,79 +615,94 @@ def find_or_create_structure(odoo, row, warnings, row_ref, dry_run):
     if structure:
         to_write = {k: v for k, v in candidate_vals.items() if not structure.get(k)}
         if dry_run:
-            print(f"    · structure d'accueil trouvée : {nom!r} (id={structure['id']})"
-                  + (f" — à compléter : {sorted(to_write)}" if to_write else ""))
-            return structure['id']
+            print(
+                f"    · structure d'accueil trouvée : {nom!r} (id={structure['id']})"
+                + (f" — à compléter : {sorted(to_write)}" if to_write else "")
+            )
+            return structure["id"]
         if to_write:
-            odoo.write('res.partner', [structure['id']], to_write)
-        return structure['id']
+            odoo.write("res.partner", [structure["id"]], to_write)
+        return structure["id"]
 
     if dry_run:
         print(f"    · structure d'accueil à créer : {nom!r}")
         return None
     create_vals = dict(candidate_vals)
-    create_vals.update({'name': nom, 'is_company': True, 'is_structure_accueil': True})
-    return odoo.create('res.partner', create_vals)[0]
+    create_vals.update({"name": nom, "is_company": True, "is_structure_accueil": True})
+    return odoo.create("res.partner", create_vals)[0]
 
 
-def find_or_create_person(odoo, structure_id, prenom, nom, dry_run, label,
-                           email='', phone='', function=''):
+def find_or_create_person(
+    odoo, structure_id, prenom, nom, dry_run, label, email="", phone="", function=""
+):
     """Cherche (par email puis par nom+structure) ou crée un contact
     (tuteur ou représentant) rattaché à la structure d'accueil. Retourne
     son id, ou None si aucun nom fourni."""
-    nom_complet = ' '.join(filter(None, [prenom, nom])).strip()
+    nom_complet = " ".join(filter(None, [prenom, nom])).strip()
     if not nom_complet:
         return None
 
-    candidate_vals = {k: v for k, v in {
-        'email': email, 'phone': phone, 'function': function,
-    }.items() if v}
-    fields_to_read = ['id'] + list(candidate_vals.keys())
+    candidate_vals = {
+        k: v
+        for k, v in {
+            "email": email,
+            "phone": phone,
+            "function": function,
+        }.items()
+        if v
+    }
+    fields_to_read = ["id"] + list(candidate_vals.keys())
 
     person = None
     if email:
         found = odoo.search_read(
-            'res.partner', [('email', '=ilike', email), ('is_company', '=', False)],
-            fields_to_read, limit=1,
+            "res.partner",
+            [("email", "=ilike", email), ("is_company", "=", False)],
+            fields_to_read,
+            limit=1,
         )
         if found:
             person = found[0]
     if not person:
-        domain = [('name', '=ilike', nom_complet), ('is_company', '=', False)]
+        domain = [("name", "=ilike", nom_complet), ("is_company", "=", False)]
         if structure_id:
-            domain = domain + [('parent_id', '=', structure_id)]
-        found = odoo.search_read('res.partner', domain, fields_to_read, limit=1)
+            domain = domain + [("parent_id", "=", structure_id)]
+        found = odoo.search_read("res.partner", domain, fields_to_read, limit=1)
         if found:
             person = found[0]
 
     if person:
         to_write = {k: v for k, v in candidate_vals.items() if not person.get(k)}
         if dry_run:
-            print(f"    · {label} trouvé·e : {nom_complet!r} (id={person['id']})"
-                  + (f" — à compléter : {sorted(to_write)}" if to_write else ""))
-            return person['id']
+            print(
+                f"    · {label} trouvé·e : {nom_complet!r} (id={person['id']})"
+                + (f" — à compléter : {sorted(to_write)}" if to_write else "")
+            )
+            return person["id"]
         if to_write:
-            odoo.write('res.partner', [person['id']], to_write)
-        return person['id']
+            odoo.write("res.partner", [person["id"]], to_write)
+        return person["id"]
 
     if dry_run:
         print(f"    · {label} à créer : {nom_complet!r}")
         return None
     create_vals = dict(candidate_vals)
-    create_vals['name'] = nom_complet
-    create_vals['is_company'] = False
+    create_vals["name"] = nom_complet
+    create_vals["is_company"] = False
     if structure_id:
-        create_vals['parent_id'] = structure_id
-    return odoo.create('res.partner', create_vals)[0]
+        create_vals["parent_id"] = structure_id
+    return odoo.create("res.partner", create_vals)[0]
 
 
 def build_experience_commands(row, warnings, row_ref):
     commands = []
-    for suffix, structure_suffix in zip(EXPERIENCE_SUFFIXES, EXPERIENCE_STRUCTURE_SUFFIXES):
-        annee = (row.get(f'Année / Période{suffix}') or '').strip()
-        heures = (row.get(f"Nombre d'heures effectuées{suffix}") or '').strip()
-        structure = (row.get(f'Nom de la structure{structure_suffix}') or '').strip()
-        fonction = (row.get(f'Fonction{suffix}') or '').strip()
+    for suffix, structure_suffix in zip(
+        EXPERIENCE_SUFFIXES, EXPERIENCE_STRUCTURE_SUFFIXES
+    ):
+        annee = (row.get(f"Année / Période{suffix}") or "").strip()
+        heures = (row.get(f"Nombre d'heures effectuées{suffix}") or "").strip()
+        structure = (row.get(f"Nom de la structure{structure_suffix}") or "").strip()
+        fonction = (row.get(f"Fonction{suffix}") or "").strip()
         if not any((annee, heures, structure, fonction)):
             continue
         if not (annee and structure and fonction):
@@ -630,20 +711,26 @@ def build_experience_commands(row, warnings, row_ref):
                 f"requis) — ligne ignorée."
             )
             continue
-        commands.append((0, 0, {
-            'annee_periode': annee,
-            'heures': parse_float(heures),
-            'structure': structure,
-            'fonction': fonction,
-        }))
+        commands.append(
+            (
+                0,
+                0,
+                {
+                    "annee_periode": annee,
+                    "heures": parse_float(heures),
+                    "structure": structure,
+                    "fonction": fonction,
+                },
+            )
+        )
     return commands
 
 
 def build_document_commands(row, warnings, row_ref, download_files):
     commands = []
     for suffix in DOCUMENT_SUFFIXES:
-        nature = (row.get(f'Nature du document{suffix}') or '').strip()
-        url = (row.get(f'Untitled file upload field{suffix}') or '').strip()
+        nature = (row.get(f"Nature du document{suffix}") or "").strip()
+        url = (row.get(f"Untitled file upload field{suffix}") or "").strip()
         if not nature and not url:
             continue
         if not (nature and url):
@@ -652,77 +739,114 @@ def build_document_commands(row, warnings, row_ref, download_files):
                 f"manquant) — ligne ignorée."
             )
             continue
-        fichier_b64 = download_base64(url, warnings, row_ref, f'Autre document{suffix}') if download_files else None
+        fichier_b64 = (
+            download_base64(url, warnings, row_ref, f"Autre document{suffix}")
+            if download_files
+            else None
+        )
         if not fichier_b64:
             continue
-        commands.append((0, 0, {
-            'name': nature,
-            'fichier': fichier_b64,
-            'fichier_filename': filename_from_url(url),
-        }))
+        commands.append(
+            (
+                0,
+                0,
+                {
+                    "name": nature,
+                    "fichier": fichier_b64,
+                    "fichier_filename": filename_from_url(url),
+                },
+            )
+        )
     return commands
 
 
 def build_inscription_vals(row, session_id, warnings, row_ref, download_files):
     vals = {
-        'session_id': session_id,
-        'structure_accueil': (row.get('Nom de la structure') or '').strip(),
-        'employeur_nom': (row.get("Nom de l'employeur") or '').strip(),
-        'employeur_adresse': (row.get("Adresse de l'employeur") or '').strip(),
-        'remuneration_mensuelle': parse_float(row.get('Rémunération brute mensuelle')),
-        'volume_horaire_semaine': parse_float(row.get('Volume horaire hebdomadaire')),
-        'dernier_diplome': (row.get('Dernier diplôme obtenu') or '').strip(),
-        'etablissement_formation': (row.get('Établissement') or '').strip(),
-        'annee_obtention': parse_int(row.get("Année d'obtention")),
-        'projet_professionnel': (row.get('Projet professionnel') or '').strip(),
-        'notes_candidat': (row.get('Informations complémentaires') or '').strip(),
+        "session_id": session_id,
+        "structure_accueil": (row.get("Nom de la structure") or "").strip(),
+        "employeur_nom": (row.get("Nom de l'employeur") or "").strip(),
+        "employeur_adresse": (row.get("Adresse de l'employeur") or "").strip(),
+        "remuneration_mensuelle": parse_float(row.get("Rémunération brute mensuelle")),
+        "volume_horaire_semaine": parse_float(row.get("Volume horaire hebdomadaire")),
+        "dernier_diplome": (row.get("Dernier diplôme obtenu") or "").strip(),
+        "etablissement_formation": (row.get("Établissement") or "").strip(),
+        "annee_obtention": parse_int(row.get("Année d'obtention")),
+        "projet_professionnel": (row.get("Projet professionnel") or "").strip(),
+        "notes_candidat": (row.get("Informations complémentaires") or "").strip(),
     }
 
-    statut_emploi = map_selection(row.get("Statut d'emploi actuel"), STATUT_EMPLOI_MAP,
-                                   "Statut d'emploi actuel", warnings, row_ref)
+    statut_emploi = map_selection(
+        row.get("Statut d'emploi actuel"),
+        STATUT_EMPLOI_MAP,
+        "Statut d'emploi actuel",
+        warnings,
+        row_ref,
+    )
     if statut_emploi:
-        vals['statut_emploi'] = statut_emploi
-    type_contrat = map_selection(row.get('Type de contrat'), TYPE_CONTRAT_MAP,
-                                  'Type de contrat', warnings, row_ref)
+        vals["statut_emploi"] = statut_emploi
+    type_contrat = map_selection(
+        row.get("Type de contrat"),
+        TYPE_CONTRAT_MAP,
+        "Type de contrat",
+        warnings,
+        row_ref,
+    )
     if type_contrat:
-        vals['type_contrat'] = type_contrat
-    rqth = map_selection(row.get('RQTH'), RQTH_MAP, 'RQTH', warnings, row_ref)
+        vals["type_contrat"] = type_contrat
+    rqth = map_selection(row.get("RQTH"), RQTH_MAP, "RQTH", warnings, row_ref)
     if rqth:
-        vals['rqth'] = rqth
-    niveau = map_selection(row.get("Niveau d'études"), NIVEAU_ETUDES_MAP,
-                            "Niveau d'études", warnings, row_ref)
+        vals["rqth"] = rqth
+    niveau = map_selection(
+        row.get("Niveau d'études"),
+        NIVEAU_ETUDES_MAP,
+        "Niveau d'études",
+        warnings,
+        row_ref,
+    )
     if niveau:
-        vals['niveau_etudes'] = niveau
-    financement = map_selection(row.get('Type de financement'), TYPE_FINANCEMENT_MAP,
-                                 'Type de financement', warnings, row_ref)
+        vals["niveau_etudes"] = niveau
+    financement = map_selection(
+        row.get("Type de financement"),
+        TYPE_FINANCEMENT_MAP,
+        "Type de financement",
+        warnings,
+        row_ref,
+    )
     if financement:
-        vals['type_financement'] = financement
-    sous_type = map_selection(row.get('Précision du financement'), SOUS_TYPE_FINANCEMENT_MAP,
-                               'Précision du financement', warnings, row_ref)
+        vals["type_financement"] = financement
+    sous_type = map_selection(
+        row.get("Précision du financement"),
+        SOUS_TYPE_FINANCEMENT_MAP,
+        "Précision du financement",
+        warnings,
+        row_ref,
+    )
     if sous_type:
-        vals['sous_type_financement'] = sous_type
+        vals["sous_type_financement"] = sous_type
 
     conditions_acceptees = parse_bool(row.get(CONSENT_RGPD_COLUMN))
-    vals['conditions_acceptees'] = conditions_acceptees
+    vals["conditions_acceptees"] = conditions_acceptees
 
     atteste = parse_bool(row.get(CONSENT_ATTESTATION_COLUMN))
-    submitted_date = parse_date(row.get('Submitted at')) or datetime.today().strftime('%Y-%m-%d')
+    submitted_date = parse_date(row.get("Submitted at")) or datetime.today().strftime(
+        "%Y-%m-%d"
+    )
     if atteste:
-        vals['date_declaration'] = submitted_date
-    vals['date_inscription'] = submitted_date
-    vals['statut'] = 'soumis' if (conditions_acceptees and atteste) else 'en_cours'
+        vals["date_declaration"] = submitted_date
+    vals["date_inscription"] = submitted_date
+    vals["statut"] = "soumis" if (conditions_acceptees and atteste) else "en_cours"
 
     experience_commands = build_experience_commands(row, warnings, row_ref)
     if experience_commands:
-        vals['experience_ids'] = experience_commands
+        vals["experience_ids"] = experience_commands
 
     document_commands = build_document_commands(row, warnings, row_ref, download_files)
     if document_commands:
-        vals['document_ids'] = document_commands
+        vals["document_ids"] = document_commands
 
     if download_files:
         for column, (bin_field, fname_field) in FILE_FIELDS.items():
-            url = (row.get(column) or '').strip()
+            url = (row.get(column) or "").strip()
             if not url:
                 continue
             data = download_base64(url, warnings, row_ref, column)
@@ -737,42 +861,45 @@ def build_inscription_vals(row, session_id, warnings, row_ref, download_files):
 # Boucle principale
 # ──────────────────────────────────────────────────────────────────────
 
+
 def process_row(odoo, country_resolver, session_id, row, args, warnings, stats):
-    submission_id = row.get('Submission ID', '?')
-    email = (row.get('Email') or '').strip().lower()
+    submission_id = row.get("Submission ID", "?")
+    email = (row.get("Email") or "").strip().lower()
     row_ref = f"{submission_id} / {email or '(sans email)'}"
 
     if not email:
         warnings.append(f"[{row_ref}] Pas d'email — ligne ignorée.")
-        stats['errors'] += 1
+        stats["errors"] += 1
         return
 
     partner_vals = build_partner_vals(row, country_resolver, warnings, row_ref)
 
     existing_partners = odoo.search_read(
-        'res.partner', [('email', '=ilike', email)], ['id'] + list(partner_vals.keys()), limit=1,
+        "res.partner",
+        [("email", "=ilike", email)],
+        ["id"] + list(partner_vals.keys()),
+        limit=1,
     )
 
     if existing_partners:
         partner = existing_partners[0]
-        partner_id = partner['id']
+        partner_id = partner["id"]
         # Ne compléter que les champs actuellement vides (jamais d'écrasement).
         to_write = {
-            k: v for k, v in partner_vals.items()
-            if k != 'email' and not partner.get(k)
+            k: v for k, v in partner_vals.items() if k != "email" and not partner.get(k)
         }
         if to_write and not args.dry_run:
-            odoo.write('res.partner', [partner_id], to_write)
+            odoo.write("res.partner", [partner_id], to_write)
     else:
         if args.dry_run:
             partner_id = None
         else:
-            partner_id = odoo.create('res.partner', partner_vals)[0]
+            partner_id = odoo.create("res.partner", partner_vals)[0]
 
     if partner_id:
         existing_inscription = odoo.search(
-            'training.inscription',
-            [('partner_id', '=', partner_id), ('session_id', '=', session_id)],
+            "training.inscription",
+            [("partner_id", "=", partner_id), ("session_id", "=", session_id)],
             limit=1,
         )
     else:
@@ -780,103 +907,124 @@ def process_row(odoo, country_resolver, session_id, row, args, warnings, stats):
 
     if existing_inscription:
         print(f"  = déjà importé, ignoré  [{row_ref}]")
-        stats['skipped'] += 1
+        stats["skipped"] += 1
         return
 
     inscription_vals = build_inscription_vals(
-        row, session_id, warnings, row_ref, download_files=not args.no_files,
+        row,
+        session_id,
+        warnings,
+        row_ref,
+        download_files=not args.no_files,
     )
 
     structure_id = find_or_create_structure(odoo, row, warnings, row_ref, args.dry_run)
     if structure_id:
-        inscription_vals['structure_accueil_id'] = structure_id
+        inscription_vals["structure_accueil_id"] = structure_id
 
     tuteur_id = find_or_create_person(
-        odoo, structure_id,
-        (row.get('Prénom du tuteur') or '').strip(),
-        (row.get('Nom du tuteur') or '').strip(),
-        args.dry_run, 'tuteur',
-        email=(row.get('Email du tuteur') or '').strip().lower(),
-        phone=(row.get('Téléphone du tuteur') or '').strip(),
-        function=(row.get('Fonction du tuteur') or '').strip(),
+        odoo,
+        structure_id,
+        (row.get("Prénom du tuteur") or "").strip(),
+        (row.get("Nom du tuteur") or "").strip(),
+        args.dry_run,
+        "tuteur",
+        email=(row.get("Email du tuteur") or "").strip().lower(),
+        phone=(row.get("Téléphone du tuteur") or "").strip(),
+        function=(row.get("Fonction du tuteur") or "").strip(),
     )
     if tuteur_id:
-        inscription_vals['tuteur_id'] = tuteur_id
+        inscription_vals["tuteur_id"] = tuteur_id
 
     representant_id = find_or_create_person(
-        odoo, structure_id,
-        (row.get('Prénom du représentant de la structure') or '').strip(),
-        (row.get('Nom du représentant de la structure') or '').strip(),
-        args.dry_run, 'représentant de la structure',
-        function=(row.get('Fonction du représentant de la structure') or '').strip(),
+        odoo,
+        structure_id,
+        (row.get("Prénom du représentant de la structure") or "").strip(),
+        (row.get("Nom du représentant de la structure") or "").strip(),
+        args.dry_run,
+        "représentant de la structure",
+        function=(row.get("Fonction du représentant de la structure") or "").strip(),
     )
     if representant_id:
-        inscription_vals['representant_structure_id'] = representant_id
+        inscription_vals["representant_structure_id"] = representant_id
 
     if args.dry_run:
         print(f"  + serait créé  [{row_ref}]  statut={inscription_vals.get('statut')}")
-        stats['created'] += 1
+        stats["created"] += 1
         return
 
-    inscription_vals['partner_id'] = partner_id
+    inscription_vals["partner_id"] = partner_id
     try:
-        new_id = odoo.create('training.inscription', inscription_vals)[0]
+        new_id = odoo.create("training.inscription", inscription_vals)[0]
         odoo.message_post(
-            'training.inscription', new_id,
+            "training.inscription",
+            new_id,
             f"Dossier importé automatiquement depuis Tally "
-            f"(Submission ID: {submission_id}, soumis le {row.get('Submitted at', '?')})."
+            f"(Submission ID: {submission_id}, soumis le {row.get('Submitted at', '?')}).",
         )
         print(f"  + créé #{new_id}  [{row_ref}]")
-        stats['created'] += 1
+        stats["created"] += 1
     except xmlrpc.client.Fault as exc:
         warnings.append(f"[{row_ref}] Échec de création : {exc.faultString}")
-        stats['errors'] += 1
+        stats["errors"] += 1
 
 
 def main():
-    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument('csv_path', help="Fichier CSV exporté depuis Tally")
-    parser.add_argument('--dry-run', action='store_true', help="N'écrit rien, affiche le résultat prévu")
-    parser.add_argument('--no-files', action='store_true', help="Ne télécharge pas les pièces jointes")
-    parser.add_argument('--session-id', type=int, default=None, help="Force l'id de la session cible")
-    parser.add_argument('--formation-intitule', default='DEJEPS ASEC 25-30')
-    parser.add_argument('--formation-mention', default='Coordination de projets')
+    parser = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    parser.add_argument("csv_path", help="Fichier CSV exporté depuis Tally")
+    parser.add_argument(
+        "--dry-run", action="store_true", help="N'écrit rien, affiche le résultat prévu"
+    )
+    parser.add_argument(
+        "--no-files", action="store_true", help="Ne télécharge pas les pièces jointes"
+    )
+    parser.add_argument(
+        "--session-id", type=int, default=None, help="Force l'id de la session cible"
+    )
+    parser.add_argument("--formation-intitule", default="DEJEPS ASEC 25-30")
+    parser.add_argument("--formation-mention", default="Coordination de projets")
     args = parser.parse_args()
 
-    url = os.environ.get('ODOO_URL', 'http://localhost:8070')
-    db = os.environ.get('ODOO_DB', 'frmjc_v20_test')
-    user = os.environ.get('ODOO_USER') or input('Utilisateur Odoo : ').strip()
-    password = os.environ.get('ODOO_PASSWORD') or getpass.getpass('Mot de passe Odoo : ')
+    url = os.environ.get("ODOO_URL", "http://localhost:8070")
+    db = os.environ.get("ODOO_DB", "frmjc_v20_test")
+    user = os.environ.get("ODOO_USER") or input("Utilisateur Odoo : ").strip()
+    password = os.environ.get("ODOO_PASSWORD") or getpass.getpass(
+        "Mot de passe Odoo : "
+    )
 
     odoo = OdooClient(url, db, user, password)
     session_id = resolve_session(odoo, args)
     country_resolver = CountryResolver(odoo)
 
     warnings = []
-    stats = {'created': 0, 'skipped': 0, 'errors': 0}
+    stats = {"created": 0, "skipped": 0, "errors": 0}
 
-    with open(args.csv_path, encoding='utf-8-sig', newline='') as f:
+    with open(args.csv_path, encoding="utf-8-sig", newline="") as f:
         reader = csv.DictReader(f)
         check_expected_columns(reader.fieldnames or [])
         rows = list(reader)
 
-    print(f"{len(rows)} soumission(s) dans le fichier."
-          f"{' (DRY-RUN — rien ne sera écrit)' if args.dry_run else ''}")
+    print(
+        f"{len(rows)} soumission(s) dans le fichier."
+        f"{' (DRY-RUN — rien ne sera écrit)' if args.dry_run else ''}"
+    )
 
     for row in rows:
         process_row(odoo, country_resolver, session_id, row, args, warnings, stats)
 
     print()
-    print('── Résumé ' + '─' * 50)
+    print("── Résumé " + "─" * 50)
     print(f"  Créés   : {stats['created']}")
     print(f"  Ignorés (déjà importés) : {stats['skipped']}")
     print(f"  Erreurs : {stats['errors']}")
     if warnings:
         print()
-        print(f"── Avertissements ({len(warnings)}) " + '─' * 30)
+        print(f"── Avertissements ({len(warnings)}) " + "─" * 30)
         for w in warnings:
             print(f"  ! {w}")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
